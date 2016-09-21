@@ -1,17 +1,17 @@
-class Ship {
+class Enemy {
 	constructor(scene,x,y,z){
-		this.ship = new THREE.Object3D();
+		this.enemy = new THREE.Object3D();
 		this.velocity = 0;
 
 		this.setPosition(x,y,z);
 		this.updatePosition();
 
-		this.material = new THREE.MeshBasicMaterial({color: 0x0000ff, wireframe:false});
+		this.material = new THREE.MeshBasicMaterial({color: 0xff0000, wireframe:false});
 		this.geometry = new THREE.CubeGeometry(2,2,2);
 		this.mesh	  = new THREE.Mesh(this.geometry,this.material);
 
-		this.ship.add(this.mesh);
-		scene.add(this.ship);
+		this.enemy.add(this.mesh);
+		scene.add(this.enemy);
 	}
 
 	setPosition(x,y,z){
@@ -21,8 +21,8 @@ class Ship {
 	}
 
 	updatePosition(){
-		this.ship.position.x = this.x;
-		this.ship.position.y = this.y;
-		this.ship.position.z = this.z;
+		this.enemy.position.x = this.x;
+		this.enemy.position.y = this.y;
+		this.enemy.position.z = this.z;
 	}
 }
