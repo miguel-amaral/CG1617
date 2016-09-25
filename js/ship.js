@@ -4,7 +4,6 @@ class Ship {
 		this.velocity = 0;
 
 		this.setPosition(x,y,z);
-		this.updatePosition();
 
 		this.material = new THREE.MeshBasicMaterial({color: 0x0000ff, wireframe:false});
 		this.geometry = new THREE.CubeGeometry(2,2,2);
@@ -18,6 +17,7 @@ class Ship {
 		this.x = x;
 		this.y = y;
 		this.z = z;
+		this.updatePosition();
 	}
 
 	updatePosition(){

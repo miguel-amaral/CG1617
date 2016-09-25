@@ -1,4 +1,10 @@
+'use strict'
 var scene, camera, renderer;
+
+var nave3;
+
+var shipSpeed=0;
+var shipAcceleration=0;
 
 function init(){
 	camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 1000 );
@@ -10,16 +16,17 @@ function init(){
 	createScene();
 	camera.lookAt(new THREE.Vector3(20,0,0));
 
-	//window.addEventListener('keydown', onKeyDown(event));
-
-	render();
+	window.addEventListener("keydown", checkKey);
+	window.addEventListener("keyup", onKeyUp);
+	
+	animate();
 }
 
 function createScene(){
 	'use strict';
 	scene  = new THREE.Scene();
 
-	var nave3 = new Ship(scene,20,0,80);
+	nave3 = new Ship(scene,20,0,80);
 
 	var j = 0;
 	while(j < 2){
@@ -34,14 +41,42 @@ function createScene(){
 
 }
 
-function render(){
-	'use strict';
+function animate(){
+
+	shipSpeed+=shipAcceleration;
+	
+
+	nave3.setPosition(nave3.x+shipSpeed, nave3.y, nave3.z);
+
 	renderer.render(scene, camera);
+	requestAnimationFrame(animate);
+	
+
 }
 
-function animate(){
-	'use strict';
-	render();
-	requestAnimationFrame(animate);
+function checkKey (event) {
+	
+	switch (event.keyCode) {
 
+		case 37: 
+			//alert ("left key");
+			shipAcceleration=-0.01;
+			break;
+		case 38:
+			//alert("up key");
+			break;
+		case 39: 
+			//alert ("right key");
+			shipAcceleration=0.01;
+			break;
+		case 40: 
+			//alert ("down key");
+			break;
+	}	
+
+}
+
+function onKeyUp (event) {
+	shipAcceleration=0;
+	shipSpeed=0;
 }
