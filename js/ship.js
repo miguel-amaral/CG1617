@@ -1,9 +1,9 @@
-const TOP_SPEED   = 50;
-const DEBUG       = 0;
+const TOP_SPEED   = 150;
+const DEBUG       = 1;
 const MIN_SPEED   = 1.3;
-const ACELARATION = Math.pow(TOP_SPEED,2);
+const ACELARATION = 400;
 class Ship {
-	constructor(scene,x,y,z){
+	constructor(scene,x,y,z,x_min,x_max){
 		this.ship = new THREE.Object3D();
 
 		this.speed = 0;
@@ -20,6 +20,8 @@ class Ship {
 
 		this.left =0;
 		this.right=0;
+		this.x_max = x_max;
+		this.x_min = x_min;
 
 	}
 
@@ -41,11 +43,16 @@ class Ship {
 		this.x = x;
 		this.y = y;
 		this.z = z;
+		if (this.x > this.x_max){
+			this.x = this.x_max;
+		} else if (this.x < this.x_min) {
+			this.x = this.x_min;
+		}
 	}
 
 	timePassed(dt){
 		var positive = this.speed>0 ? 1:-1
-
+		
 		//No key pressed: slow down
 		if((this.left + this.right) == 0){
 
