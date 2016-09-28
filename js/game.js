@@ -78,7 +78,11 @@ function onKeyDown (event) {
 			break;
 		case 97: //a
 		case 65: //A
-			//TODO
+			scene.traverse(function (node) {
+				if (node instanceof THREE.Mesh){
+					node.material.wireframe = !node.material.wireframe;
+				}
+			});
 			break;
 	}
 
