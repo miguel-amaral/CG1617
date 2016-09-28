@@ -52,7 +52,7 @@ class Ship {
 
 	timePassed(dt){
 		var positive = this.speed>0 ? 1:-1
-		
+
 		//No key pressed: slow down
 		if((this.left + this.right) == 0){
 
@@ -69,7 +69,8 @@ class Ship {
 		}
 
 		if(DEBUG){	console.log("speed: " + this.speed); }
-		this.setPosition(this.x+this.speed*dt, this.y, this.z);
+		var new_x = this.x+this.speed*dt;
+		this.setPosition(new_x, this.y, this.z);
 	}
 
 	updatePosition(dt){

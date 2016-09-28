@@ -2,12 +2,12 @@
 var scene, camera, renderer;
 
 var nave;
-var inimigos = {};
+var inimigos = [];
 var clk;
 
 const X_MAX = 80;
 const X_MIN = -80;
-	
+
 
 function init(){
 	clk = new THREE.Clock();
@@ -37,7 +37,7 @@ function createScene(){
 		var i = 0;
 		while(i < 4){
 			var enemy1 = new Enemy(scene,i*5,0,j*5);
-			//inimigos.push(enemy1);
+			inimigos.push(enemy1);
 			i++;
 		}
 		j++;
@@ -48,8 +48,15 @@ function createScene(){
 
 function animate(){
     var dt = clk.getDelta();
+	//Update ship
 	nave.updatePosition(dt);
 
+	//update all enemies
+	for (var i = 0; i < inimigos.length; i++) {
+    	inimigos[i].updatePosition(dt);
+	}
+
+	
 	renderer.render(scene, camera);
 	requestAnimationFrame(animate);
 }

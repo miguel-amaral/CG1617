@@ -20,7 +20,7 @@ class Enemy {
 		this.z = z;
 	}
 
-	updatePosition(){
+	updatePosition(dt){
 		this.enemy.position.x = this.x;
 		this.enemy.position.y = this.y;
 		this.enemy.position.z = this.z;
