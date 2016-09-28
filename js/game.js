@@ -22,6 +22,7 @@ function init(){
 
 	window.addEventListener("keydown", onKeyDown);
 	window.addEventListener("keyup", onKeyUp);
+	window.addEventListener("resize", onResize);
 
 	animate();
 }
@@ -56,7 +57,7 @@ function animate(){
     	inimigos[i].updatePosition(dt);
 	}
 
-	
+
 	renderer.render(scene, camera);
 	requestAnimationFrame(animate);
 }
@@ -97,4 +98,14 @@ function onKeyUp (event) {
 			break;
 
 		}
+}
+
+function onResize(){
+	'use strict';
+
+	renderer.setSize( window.innerWidth, window.innerHeight );
+	if (window.innerWidth > 0 & window.innerHeight > 0 ){
+		camera.aspect = renderer.getSize().width / renderer.getSize().height;
+		camera.updateProjectionMatrix();
+	}
 }
