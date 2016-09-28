@@ -43,7 +43,20 @@ function createScene(){
 		}
 		j++;
 	}
-	scene.add(new THREE.AxisHelper(10));
+	if(DEBUG){
+
+		var background = new THREE.Object3D();
+		var back_material = new THREE.MeshBasicMaterial({color: 0xffffff, wireframe:true});
+		var back_geometry = new THREE.CubeGeometry(160,1,80);
+		var back_mesh	  = new THREE.Mesh(back_geometry,back_material);
+		background.add(back_mesh);
+		background.position.x = 0;
+		background.position.y = -1;
+		background.position.z = 40;
+		scene.add(background);
+		scene.add(new THREE.AxisHelper(10));
+	}
+
 
 }
 
