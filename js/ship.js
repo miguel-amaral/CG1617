@@ -11,18 +11,32 @@ class Ship {
 		this.setPosition(x,y,z);
 		this.updatePosition(0);
 
-		this.material = new THREE.MeshBasicMaterial({color: 0x0000ff, wireframe:false});
-		this.geometry = new THREE.CubeGeometry(2,2,2);
-		this.mesh	  = new THREE.Mesh(this.geometry,this.material);
+    this.addGeometryShip(this.ship);
 
-		this.ship.add(this.mesh);
 		scene.add(this.ship);
 
-		this.left =0;
-		this.right=0;
+		this.left = 0;
+		this.right = 0;
 		this.x_max = x_max;
 		this.x_min = x_min;
+	}
 
+  addGeometryShip(obj) {
+				this.material = new THREE.MeshBasicMaterial({color: 0x0000ff, wireframe:false});
+				this.geometry = new THREE.CubeGeometry(8, 4, 4);
+				this.positionElementsShip(obj, this.geometry, this.material, 0, 0, 0);
+
+		    this.geometry = new THREE.CubeGeometry(4.5, 4.5, 4);
+				this.positionElementsShip(obj, this.geometry, this.material, 0, 2, 0);
+
+				this.geometry = new THREE.CubeGeometry(2, 4, 4);
+				this.positionElementsShip(obj, this.geometry, this.material, 0, 4, 0);
+	}
+
+	positionElementsShip(obj, geometry, material, x, y, z) {
+			this.mesh	  = new THREE.Mesh(this.geometry,this.material);
+			this.mesh.position.set(x,y,z);
+			obj.add(this.mesh);
 	}
 
 	stopLeft(){
