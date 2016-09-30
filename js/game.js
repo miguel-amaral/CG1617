@@ -12,7 +12,7 @@ const X_MIN = -80;
 function init(){
 	clk = new THREE.Clock();
 	camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 1000 );
-	camera.position.set(0,100,100);
+	camera.position.set(0,150,0);
 	camera.lookAt(new THREE.Vector3(0,0,0));
 	renderer = new THREE.WebGLRenderer();
   	renderer.setSize( window.innerWidth, window.innerHeight );
@@ -31,13 +31,13 @@ function createScene(){
 	'use strict';
 	scene  = new THREE.Scene();
 
-	nave = new Ship(scene,20,0,80,X_MIN,X_MAX);
+	nave = new Ship(scene,20,0,100,X_MIN,X_MAX);
 
 	var j = 0;
 	while(j < 2){
 		var i = 0;
 		while(i < 4){
-			var enemy1 = new Enemy(scene,i*5,0,j*5);
+			var enemy1 = new Enemy(scene,i*20,0,j*20);
 			inimigos.push(enemy1);
 			i++;
 		}

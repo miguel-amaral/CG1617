@@ -21,16 +21,19 @@ class Ship {
 		this.x_min = x_min;
 	}
 
-  addGeometryShip(obj) {
-				this.material = new THREE.MeshBasicMaterial({color: 0x0000ff, wireframe:false});
-				this.geometry = new THREE.CubeGeometry(8, 4, 4);
-				this.positionElementsShip(obj, this.geometry, this.material, 0, 0, 0);
+	addGeometryShip(obj) {
+		this.material = new THREE.MeshBasicMaterial({color: 0x0000ff, wireframe:false});
+	  this.geometry = new THREE.CubeGeometry(14, 1, 5);
+	  this.positionElementsShip(obj, this.geometry, this.material, 0, 0, 0);
 
-		    this.geometry = new THREE.CubeGeometry(4.5, 4.5, 4);
-				this.positionElementsShip(obj, this.geometry, this.material, 0, 2, 0);
+	  this.geometry = new THREE.CubeGeometry(8, 1, 5);
+	  this.positionElementsShip(obj, this.geometry, this.material, 0, 0, -2);
 
-				this.geometry = new THREE.CubeGeometry(2, 4, 4);
-				this.positionElementsShip(obj, this.geometry, this.material, 0, 4, 0);
+	  this.geometry = new THREE.CubeGeometry(4, 1, 4);
+    this.positionElementsShip(obj, this.geometry, this.material, 0, 0, -4);
+
+		this.geometry = new THREE.CubeGeometry(2, 1, 2);
+	  this.positionElementsShip(obj, this.geometry, this.material, 0, 0, -6);
 	}
 
 	positionElementsShip(obj, geometry, material, x, y, z) {
