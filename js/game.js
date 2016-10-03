@@ -15,9 +15,21 @@ const X_MIN = -80;
 function init(){
 	clk = new THREE.Clock();
 	//camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 1000 );
-	camera = new THREE.OrthographicCamera( -window.innerWidth/6, window.innerWidth/6, window.innerHeight/6, -window.innerHeight/6, 1, 1000 );
+	//var relAspect = window.innerWidth / window.innerHeight;
+	//camera = new THREE.OrthographicCamera( -window.innerWidth/6, window.innerWidth/6, window.innerHeight/6, -window.innerHeight/6, 1, 1000 );
+	camera = new THREE.OrthographicCamera( -100, 100, 50, -150, 1, 1000 );
+	//camera.aspect = window.innerWidth / window.innerHeight;
 	camera.position.set(0,150,0);
 	camera.lookAt(new THREE.Vector3(0,0,0));
+	cameras.push(camera);
+
+	camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 1000 );
+	camera.position.set(0,100,100);
+	camera.lookAt(new THREE.Vector3(0,0,0));
+	cameras.push(camera);
+
+	camera = cameras[camera_index];
+
 	renderer = new THREE.WebGLRenderer();
   	renderer.setSize( window.innerWidth, window.innerHeight );
 	document.body.appendChild( renderer.domElement ) ;
@@ -106,8 +118,12 @@ function onKeyDown (event) {
 				}
 			});
 			break;
+	case 99: // c
+	case 67: // C
+		var num_cameras = 2;
+		camera = cameras[(camera_index+1)%num_cameras];
+		break;
 	}
-
 }
 
 function onKeyUp (event) {
