@@ -42,6 +42,10 @@ class Ship {
 			obj.add(this.mesh);
 	}
 
+	inverseWireframe(){
+		this.material.wireframe = !this.material.wireframe;
+	}
+
 	stopLeft(){
 		this.left = 0;
 	}

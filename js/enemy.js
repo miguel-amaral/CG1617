@@ -36,6 +36,10 @@ class Enemy {
 		this.positionElementsEnemy(obj, this.geometry, this.material, 5, 1, -3)
 	}
 
+	inverseWireframe(){
+		this.material.wireframe = !this.material.wireframe;
+	}
+
 	positionElementsEnemy(obj, geometry, material, x, y, z) {
 		this.mesh	  = new THREE.Mesh(this.geometry,this.material);
 		this.mesh.position.set(x,y,z);

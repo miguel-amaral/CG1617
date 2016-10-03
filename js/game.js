@@ -24,14 +24,14 @@ function init(){
 	cameras.push(camera);
 
 	camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 1000 );
-	camera.position.set(0,100,100);
+	camera.position.set(0,100,150);
 	camera.lookAt(new THREE.Vector3(0,0,0));
 	cameras.push(camera);
 
 	camera = cameras[camera_index];
 
 	renderer = new THREE.WebGLRenderer();
-  	renderer.setSize( window.innerWidth, window.innerHeight );
+  renderer.setSize( window.innerWidth, window.innerHeight );
 	document.body.appendChild( renderer.domElement ) ;
 
 	createScene();
@@ -112,16 +112,16 @@ function onKeyDown (event) {
 			break;
 		case 97: //a
 		case 65: //A
-			scene.traverse(function (node) {
-				if (node instanceof THREE.Mesh){
-					node.material.wireframe = !node.material.wireframe;
-				}
-			});
+			nave.inverseWireframe();
+			for (var i = 0; i < inimigos.length; i++) {
+					inimigos[i].inverseWireframe();
+			}
 			break;
 	case 99: // c
 	case 67: // C
 		var num_cameras = 2;
-		camera = cameras[(camera_index+1)%num_cameras];
+		camera_index = (camera_index+1)%num_cameras
+		camera = cameras[camera_index];
 		break;
 	}
 }
