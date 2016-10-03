@@ -14,15 +14,15 @@ class Enemy {
 
   addGeometryEnemy(obj) {
 		this.material = new THREE.MeshBasicMaterial({color: 0xff0000, wireframe:false});
-		this.geometry = new THREE.CubeGeometry(10, 1, 2);
+		this.geometry = new THREE.CubeGeometry(10, 10, 2);
 		this.positionElementsEnemy(obj, this.geometry, this.material, 5, 0, 1);
-		this.geometry = new THREE.CubeGeometry(2, 1, 4);
+		this.geometry = new THREE.CubeGeometry(2, 10, 4);
 		this.positionElementsEnemy(obj, this.geometry, this.material, 1, 0, 2);
-		this.geometry = new THREE.CubeGeometry(2, 1, 4);
+		this.geometry = new THREE.CubeGeometry(2, 10, 4);
 		this.positionElementsEnemy(obj, this.geometry, this.material, 5, 0, 2);
-		this.geometry = new THREE.CubeGeometry(2, 1, 4);
+		this.geometry = new THREE.CubeGeometry(2, 10, 4);
 		this.positionElementsEnemy(obj, this.geometry, this.material, 9, 0, 2);
-		this.geometry = new THREE.CubeGeometry(10, 1, 2);
+		this.geometry = new THREE.CubeGeometry(10, 10, 2);
 		this.positionElementsEnemy(obj, this.geometry, this.material, 5, 0, 5);
 
 		this.geometry = new THREE.CubeGeometry(2, 1, 2);

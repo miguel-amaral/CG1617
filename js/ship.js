@@ -23,7 +23,7 @@ class Ship {
 
 	addGeometryShip(obj) {
 		this.material = new THREE.MeshBasicMaterial({color: 0x0000ff, wireframe:false});
-	  this.geometry = new THREE.CubeGeometry(14, 1, 5);
+	  this.geometry = new THREE.CubeGeometry(14, 10, 5);
 	  this.positionElementsShip(obj, this.geometry, this.material, 0, 0, 0);
 
 	  this.geometry = new THREE.CubeGeometry(8, 1, 5);

@@ -3,7 +3,10 @@ var scene, camera, renderer;
 
 var nave;
 var inimigos = [];
+var cameras = [];
+var camera_index = 0;
 var clk;
+var stats;
 
 const X_MAX = 80;
 const X_MIN = -80;
@@ -11,7 +14,8 @@ const X_MIN = -80;
 
 function init(){
 	clk = new THREE.Clock();
-	camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 1000 );
+	//camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 1000 );
+	camera = new THREE.OrthographicCamera( -window.innerWidth/6, window.innerWidth/6, window.innerHeight/6, -window.innerHeight/6, 1, 1000 );
 	camera.position.set(0,150,0);
 	camera.lookAt(new THREE.Vector3(0,0,0));
 	renderer = new THREE.WebGLRenderer();
@@ -23,6 +27,10 @@ function init(){
 	window.addEventListener("keydown", onKeyDown);
 	window.addEventListener("keyup", onKeyUp);
 	window.addEventListener("resize", onResize);
+
+	stats = new Stats();
+	stats.showPanel( 0 ); // 0: fps, 1: ms, 2: mb, 3+: custom
+	document.body.appendChild( stats.dom );
 
 	animate();
 }
@@ -61,7 +69,8 @@ function createScene(){
 }
 
 function animate(){
-    var dt = clk.getDelta();
+	stats.begin();
+  var dt = clk.getDelta();
 	//Update ship
 	nave.updatePosition(dt);
 
@@ -70,7 +79,7 @@ function animate(){
     	inimigos[i].updatePosition(dt);
 	}
 
-
+	stats.end();
 	renderer.render(scene, camera);
 	requestAnimationFrame(animate);
 }
