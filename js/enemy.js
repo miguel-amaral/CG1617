@@ -25,9 +25,9 @@ class Enemy {
 		this.geometry = new THREE.CubeGeometry(10, 10, 2);
 		this.positionElementsEnemy(obj, this.geometry, this.material, 5, 0, 5);
 
-		this.geometry = new THREE.CubeGeometry(2, 1, 2);
+		this.geometry = new THREE.CubeGeometry(2, 10, 2);
 		this.positionElementsEnemy(obj, this.geometry, this.material, 10, 0, 6);
-		this.geometry = new THREE.CubeGeometry(2, 1, 2);
+		this.geometry = new THREE.CubeGeometry(2, 10, 2);
 		this.positionElementsEnemy(obj, this.geometry, this.material, 0, 0, 6);
 
 

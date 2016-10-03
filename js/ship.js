@@ -1,12 +1,15 @@
+'use strict'
 const TOP_SPEED   = 150;
 const DEBUG       = 1;
 const MIN_SPEED   = 1.3;
-const ACELARATION = 400;
+const ACELARATION = 22500;
 class Ship {
 	constructor(scene,x,y,z,x_min,x_max){
 		this.ship = new THREE.Object3D();
 
 		this.speed = 0;
+		this.left = 0;
+		this.right = 0;
 
 		this.setPosition(x,y,z);
 		this.updatePosition(0);
@@ -15,8 +18,6 @@ class Ship {
 
 		scene.add(this.ship);
 
-		this.left = 0;
-		this.right = 0;
 		this.x_max = x_max;
 		this.x_min = x_min;
 	}
@@ -52,12 +53,12 @@ class Ship {
 	stopRight(){
 		this.right = 0;
 	}
-	startRight(clockValue){
-		this.right = clockValue;
+	startRight(){
+		this.right = 1;
 	}
 
-	startLeft(clockValue){
-		this.left = clockValue;
+	startLeft(){
+		this.left = 1;
 	}
 
 	setPosition(x,y,z){
@@ -65,29 +66,35 @@ class Ship {
 		this.y = y;
 		this.z = z;
 		if (this.x > this.x_max){
-			this.x = this.x_max;
+			//this.x = this.x_max;
+			//this.speed = 0;
+
 		} else if (this.x < this.x_min) {
-			this.x = this.x_min;
+			//this.x = this.x_min;
+			//this.speed = 0;
 		}
 	}
 
 	timePassed(dt){
 		var positive = this.speed>0 ? 1:-1
+		var atrito = -1 * positive*Math.pow(this.speed,2)*0.3;
 
-		//No key pressed: slow down
-		if((this.left + this.right) == 0){
+		var acelaration = -1 * this.left * ACELARATION + this.right * ACELARATION + atrito;
+		this.speed += acelaration*dt;
 
-											//Stop if too slow o:r slow speed
-			this.speed = (Math.abs(this.speed) < MIN_SPEED) ? 0 : this.speed*0.95;
+		console.log("ACELARATION: " + ACELARATION);
+		console.log("positive: " + positive);
+		console.log("speed: " + this.speed);
+		console.log("left: " + this.left);
+		console.log("right: " + this.right);
+		console.log("atrito: " + atrito);
+		console.log("acelar: " + acelaration);
+		//Stop if too slow
+		if(Math.abs(this.speed) < MIN_SPEED)
+			this.speed = 0;
 
-		//Key pressed	: full throtle
-		} else {
-			var acelaration = ((this.left>this.right) ? -1:1)*ACELARATION
-			this.speed += acelaration*dt;
-
-			//Stop accelarating if max speed achieved
-			this.speed = (Math.abs(this.speed) > TOP_SPEED) ? TOP_SPEED * positive : this.speed;
-		}
+		//Stop accelarating if max speed achieved
+		this.speed = (Math.abs(this.speed) > TOP_SPEED) ? TOP_SPEED * positive : this.speed;
 
 		if(DEBUG){	console.log("speed: " + this.speed); }
 		var new_x = this.x+this.speed*dt;

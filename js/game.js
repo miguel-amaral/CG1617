@@ -56,10 +56,13 @@ function createScene(){
 	var j = 0;
 	while(j < 2){
 		var i = 0;
-		while(i < 4){
-			var enemy1 = new Enemy(scene,i*20,0,j*20);
+		var pos_x = X_MIN;
+		while(i < 8){
+
+			var enemy1 = new Enemy(scene,pos_x,0,j*20);
 			inimigos.push(enemy1);
 			i++;
+			pos_x += 20;
 		}
 		j++;
 	}
@@ -101,12 +104,12 @@ function onKeyDown (event) {
 	switch (event.keyCode) {
 
 		case 37://alert ("left key");
-			nave.startLeft(clk.getElapsedTime());
+			nave.startLeft();
 			break;
 		case 38://alert("up key");
 			break;
 		case 39://alert ("right key");
-			nave.startRight(clk.getElapsedTime());
+			nave.startRight();
 			break;
 		case 40://alert ("down key");
 			break;
