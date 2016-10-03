@@ -19,10 +19,10 @@ function init(){
 	//camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 1000 );
 	//var relAspect = window.innerWidth / window.innerHeight;
 	//camera = new THREE.OrthographicCamera( -window.innerWidth/6, window.innerWidth/6, window.innerHeight/6, -window.innerHeight/6, 1, 1000 );
-        
+
 	camera = new THREE.OrthographicCamera( 0, 0, 0, 0, 1, 1000 );
         calculateCameraBondaries(camera);
-        
+
 	camera.position.set(0,150,0);
 	camera.lookAt(new THREE.Vector3(0,0,0));
 	cameras.push(camera);
@@ -54,7 +54,7 @@ function init(){
 function createScene(){
 	'use strict';
 	scene  = new THREE.Scene();
-    
+
 	nave = new Ship(scene,20,0,80);
 
 	var j = 0;
@@ -108,12 +108,12 @@ function onKeyDown (event) {
 	switch (event.keyCode) {
 
 		case 37://alert ("left key");
-			nave.startLeft(clk.getElapsedTime());
+			nave.startLeft();
 			break;
 		case 38://alert("up key");
 			break;
 		case 39://alert ("right key");
-			nave.startRight(clk.getElapsedTime());
+			nave.startRight();
 			break;
 		case 40://alert ("down key");
 			break;
@@ -158,13 +158,13 @@ function onResize(){
 function calculateCameraBondaries(camera) {
     var windowHeight = window.innerHeight;
     var windowWidth = window.innerWidth;
-    
+
     var aspect = windowWidth / windowHeight;
     var lowX = X_MIN;
     var upX  = X_MAX;
     var lowZ = Z_MIN;
     var upZ  = Z_MAX;
-    
+
     if (aspect > 1) {
       var newWidth = aspect*(X_MAX-X_MIN);
       lowX = -newWidth/2;
