@@ -104,12 +104,12 @@ function onKeyDown (event) {
 	switch (event.keyCode) {
 
 		case 37://alert ("left key");
-			nave.startLeft();
+			nave.startLeft(clk.getElapsedTime());
 			break;
 		case 38://alert("up key");
 			break;
 		case 39://alert ("right key");
-			nave.startRight();
+			nave.startRight(clk.getElapsedTime());
 			break;
 		case 40://alert ("down key");
 			break;
