@@ -8,8 +8,10 @@ var camera_index = 0;
 var clk;
 var stats;
 
-const X_MAX = 80;
-const X_MIN = -80;
+const X_MAX = 100;
+const X_MIN = -100;
+const Z_MAX = 100;
+const Z_MIN = -100;
 
 
 function init(){
@@ -17,8 +19,10 @@ function init(){
 	//camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 1000 );
 	//var relAspect = window.innerWidth / window.innerHeight;
 	//camera = new THREE.OrthographicCamera( -window.innerWidth/6, window.innerWidth/6, window.innerHeight/6, -window.innerHeight/6, 1, 1000 );
-	camera = new THREE.OrthographicCamera( -100, 100, 50, -150, 1, 1000 );
-	//camera.aspect = window.innerWidth / window.innerHeight;
+        
+	camera = new THREE.OrthographicCamera( 0, 0, 0, 0, 1, 1000 );
+        calculateCameraBondaries(camera);
+        
 	camera.position.set(0,150,0);
 	camera.lookAt(new THREE.Vector3(0,0,0));
 	cameras.push(camera);
@@ -50,8 +54,8 @@ function init(){
 function createScene(){
 	'use strict';
 	scene  = new THREE.Scene();
-
-	nave = new Ship(scene,20,0,100,X_MIN,X_MAX);
+    
+	nave = new Ship(scene,20,0,80);
 
 	var j = 0;
 	while(j < 2){
@@ -70,12 +74,12 @@ function createScene(){
 
 		var background = new THREE.Object3D();
 		var back_material = new THREE.MeshBasicMaterial({color: 0xffffff, wireframe:true});
-		var back_geometry = new THREE.CubeGeometry(160,1,80);
+		var back_geometry = new THREE.CubeGeometry((X_MAX-X_MIN),1,(Z_MAX-Z_MIN));
 		var back_mesh	  = new THREE.Mesh(back_geometry,back_material);
 		background.add(back_mesh);
 		background.position.x = 0;
 		background.position.y = -1;
-		background.position.z = 40;
+		background.position.z = 0;
 		scene.add(background);
 		scene.add(new THREE.AxisHelper(10));
 	}
@@ -85,7 +89,7 @@ function createScene(){
 
 function animate(){
 	stats.begin();
-  var dt = clk.getDelta();
+        var dt = clk.getDelta();
 	//Update ship
 	nave.updatePosition(dt);
 
@@ -117,7 +121,7 @@ function onKeyDown (event) {
 		case 65: //A
 			nave.inverseWireframe();
 			for (var i = 0; i < inimigos.length; i++) {
-					inimigos[i].inverseWireframe();
+                            inimigos[i].inverseWireframe();
 			}
 			break;
 	case 99: // c
@@ -147,10 +151,34 @@ function onKeyUp (event) {
 
 function onResize(){
 	'use strict';
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        calculateCameraBondaries(camera);
+}
 
-	renderer.setSize( window.innerWidth, window.innerHeight );
-	if (window.innerWidth > 0 & window.innerHeight > 0 ){
-		camera.aspect = renderer.getSize().width / renderer.getSize().height;
-		camera.updateProjectionMatrix();
-	}
+function calculateCameraBondaries(camera) {
+    var windowHeight = window.innerHeight;
+    var windowWidth = window.innerWidth;
+    
+    var aspect = windowWidth / windowHeight;
+    var lowX = X_MIN;
+    var upX  = X_MAX;
+    var lowZ = Z_MIN;
+    var upZ  = Z_MAX;
+    
+    if (aspect > 1) {
+      var newWidth = aspect*(X_MAX-X_MIN);
+      lowX = -newWidth/2;
+      upX  =  newWidth/2;
+    }
+    else {
+      var newHeight = (Z_MAX-Z_MIN)/aspect;
+      lowZ = -newHeight/2;
+      upZ  = newHeight/2;
+    }
+    camera.left   = lowX;
+    camera.right  = upX;
+    camera.bottom = lowZ;
+    camera.top    = upZ;
+    camera.updateProjectionMatrix();
+    console.log("resizing");
 }

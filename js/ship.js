@@ -4,7 +4,7 @@ const DEBUG       = 1;
 const MIN_SPEED   = 1.3;
 const ACELARATION = 400;
 class Ship {
-	constructor(scene,x,y,z,x_min,x_max){
+	constructor(scene,x,y,z){
 		this.ship = new THREE.Object3D();
 
 		this.speed = 0;
@@ -14,16 +14,13 @@ class Ship {
 		this.setPosition(x,y,z);
 		this.updatePosition(0);
 
-    this.addGeometryShip(this.ship);
+                this.addGeometryShip(this.ship);
 
 		scene.add(this.ship);
-
-		this.x_max = x_max;
-		this.x_min = x_min;
-	}
+        }
 
 	addGeometryShip(obj) {
-		this.material = new THREE.MeshBasicMaterial({color: 0x0000ff, wireframe:false});
+          this.material = new THREE.MeshBasicMaterial({color: 0x0000ff, wireframe:false});
 	  this.geometry = new THREE.CubeGeometry(14, 10, 5);
 	  this.positionElementsShip(obj, this.geometry, this.material, 0, 0, 0);
 
@@ -31,16 +28,16 @@ class Ship {
 	  this.positionElementsShip(obj, this.geometry, this.material, 0, 0, -2);
 
 	  this.geometry = new THREE.CubeGeometry(4, 1, 4);
-    this.positionElementsShip(obj, this.geometry, this.material, 0, 0, -4);
+          this.positionElementsShip(obj, this.geometry, this.material, 0, 0, -4);
 
-		this.geometry = new THREE.CubeGeometry(2, 1, 2);
+          this.geometry = new THREE.CubeGeometry(2, 1, 2);
 	  this.positionElementsShip(obj, this.geometry, this.material, 0, 0, -6);
 	}
 
 	positionElementsShip(obj, geometry, material, x, y, z) {
-			this.mesh	  = new THREE.Mesh(this.geometry,this.material);
-			this.mesh.position.set(x,y,z);
-			obj.add(this.mesh);
+            this.mesh	  = new THREE.Mesh(this.geometry,this.material);
+	    this.mesh.position.set(x,y,z);
+            obj.add(this.mesh);
 	}
 
 	inverseWireframe(){
@@ -65,14 +62,7 @@ class Ship {
 		this.x = x;
 		this.y = y;
 		this.z = z;
-		if (this.x > this.x_max){
-			this.x = this.x_max;
-			//this.speed = 0;
-
-		} else if (this.x < this.x_min) {
-			this.x = this.x_min;
-			//this.speed = 0;
-		}
+		
 	}
 
 	timePassed(dt){
