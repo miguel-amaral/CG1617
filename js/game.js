@@ -8,6 +8,7 @@ var camera_index = 0;
 var clk;
 var stats;
 
+//Game Boundaries
 const X_MAX = 100;
 const X_MIN = -100;
 const Z_MAX = 100;
