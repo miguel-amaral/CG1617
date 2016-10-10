@@ -1,7 +1,7 @@
 'use strict'
-const TOP_SPEED   = 150;
+const TOP_SPEED_c   = 150;
 const DEBUG       = 1;
-const MIN_SPEED   = 0.8;
+const MIN_SPEED_c   = 0.8;
 const ACELARATION = 200;
 class Ship extends Movable {
 	constructor(scene,x,y,z){
@@ -10,7 +10,8 @@ class Ship extends Movable {
 
 		this.left = 0;
 		this.right = 0;
-
+		this.MIN_SPEED = MIN_SPEED_c;
+		this.TOP_SPEED = TOP_SPEED_c;
 		this.updatePosition(0);
 
     this.addGeometryShip(this.ship);
@@ -52,11 +53,11 @@ class Ship extends Movable {
 	calculateAcelaration(){
 		var acelaration;
 		if(this.left > 0) {
-			if(Math.abs(this.speed) < TOP_SPEED){
+			if(Math.abs(this.speed) < this.getTopSpeed()){
 				return ACELARATION * -1;
 			}
 		}else if (this.right > 0) {
-			if(Math.abs(this.speed) < TOP_SPEED){
+			if(Math.abs(this.speed) < this.getTopSpeed()){
 				return ACELARATION;
 			}
 		}
@@ -68,18 +69,12 @@ class Ship extends Movable {
 		}
 		return 0;
 	}
-
-	timePassed(dt){
-
-			var acelaration = this.calculateAcelaration();
-
-			this.speed = this.speed + acelaration*dt;
-			this.speed = (Math.abs(this.speed) < MIN_SPEED) ? 0 : this.speed;
-
-			if(DEBUG){	console.log("speed: " + this.speed); }
-			var new_x = this.x+this.speed*dt;
-			this.setPosition(new_x, this.y, this.z);
-		}
+	getMinSpeed(){
+		return this.MIN_SPEED;
+	}
+	getTopSpeed(){
+		return this.TOP_SPEED;
+	}
 
 	updatePosition(dt){
 		this.timePassed(dt);

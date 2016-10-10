@@ -17,21 +17,18 @@ const Z_MIN = -100;
 
 function init(){
 	clk = new THREE.Clock();
-	//camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 1000 );
-	//var relAspect = window.innerWidth / window.innerHeight;
-	//camera = new THREE.OrthographicCamera( -window.innerWidth/6, window.innerWidth/6, window.innerHeight/6, -window.innerHeight/6, 1, 1000 );
 
 	camera = new THREE.OrthographicCamera( 0, 0, 0, 0, 1, 1000 );
-        calculateCameraBondaries(camera);
+  calculateCameraBondaries(camera);
 
 	camera.position.set(0,150,0);
 	camera.lookAt(new THREE.Vector3(0,0,0));
 	cameras.push(camera);
 
-	camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 1000 );
-	camera.position.set(0,100,150);
-	camera.lookAt(new THREE.Vector3(0,0,0));
-	cameras.push(camera);
+	//camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 1000 );
+	//camera.position.set(0,100,150);
+	//camera.lookAt(new THREE.Vector3(0,0,0));
+	//cameras.push(camera);
 
 	camera = cameras[camera_index];
 
@@ -127,7 +124,7 @@ function onKeyDown (event) {
 			break;
 	case 99: // c
 	case 67: // C
-		var num_cameras = 2;
+		var num_cameras = cameras.length;
 		camera_index = (camera_index+1)%num_cameras
 		camera = cameras[camera_index];
 		break;
@@ -161,6 +158,7 @@ function calculateCameraBondaries(camera) {
     var windowWidth = window.innerWidth;
 
     var aspect = windowWidth / windowHeight;
+		var innerGameAspect = (X_MAX-X_MIN)/(Z_MAX-Z_MIN);
     var lowX = X_MIN;
     var upX  = X_MAX;
     var lowZ = Z_MIN;
