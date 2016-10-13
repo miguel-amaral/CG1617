@@ -52,15 +52,14 @@ class Ship extends Movable {
 
 	calculateAcelaration(){
 		var acelaration;
-		if(this.left > 0) {
-			if(Math.abs(this.speed) < this.getTopSpeed()){
+		if(Math.abs(this.speed) < this.getTopSpeed()){
+			if(this.left > 0) {
 				return ACELARATION * -1;
-			}
-		}else if (this.right > 0) {
-			if(Math.abs(this.speed) < this.getTopSpeed()){
+			} else if (this.right > 0) {
 				return ACELARATION;
 			}
 		}
+
 		if (this.speed < 0){
 			return ACELARATION;
 		}
