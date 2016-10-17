@@ -25,10 +25,10 @@ function init(){
 	camera.lookAt(new THREE.Vector3(0,0,0));
 	cameras.push(camera);
 
-	//camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 1000 );
-	//camera.position.set(0,100,150);
-	//camera.lookAt(new THREE.Vector3(0,0,0));
-	//cameras.push(camera);
+	camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 1000 );
+	camera.position.set(0,100,150);
+	camera.lookAt(new THREE.Vector3(0,0,0));
+	cameras.push(camera);
 
 	camera = cameras[camera_index];
 
@@ -158,13 +158,14 @@ function calculateCameraBondaries(camera) {
     var windowWidth = window.innerWidth;
 
     var aspect = windowWidth / windowHeight;
-		var innerGameAspect = (X_MAX-X_MIN)/(Z_MAX-Z_MIN);
+	var innerGameAspect = (X_MAX-X_MIN)/(Z_MAX-Z_MIN);
+
     var lowX = X_MIN;
     var upX  = X_MAX;
     var lowZ = Z_MIN;
     var upZ  = Z_MAX;
 
-    if (aspect > 1) {
+    if (aspect > innerGameAspect) {
       var newWidth = aspect*(X_MAX-X_MIN);
       lowX = -newWidth/2;
       upX  =  newWidth/2;

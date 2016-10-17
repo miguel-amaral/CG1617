@@ -1,6 +1,6 @@
 'use strict'
 const TOP_SPEED_c   = 150;
-const DEBUG       = 0;
+const DEBUG       = 1;
 const MIN_SPEED_c   = 0.8;
 const ACELARATION = 200;
 class Ship extends Movable {
