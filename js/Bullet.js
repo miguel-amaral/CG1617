@@ -5,10 +5,10 @@ class Bullet extends Movable{
 		this.bullet = new THREE.Object3D();
 
 		this.updatePosition();
-		this.addGeometryBullet(this.enemy);
+		this.addGeometryBullet(this.bullet);
 
-		this.enemy.add(this.mesh);
-		scene.add(this.enemy);
+		this.bullet.add(this.mesh);
+		scene.add(this.bullet);
 	}
 
 	addGeometryBullet(){

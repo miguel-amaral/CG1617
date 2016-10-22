@@ -1,11 +1,11 @@
 class Movable {
   constructor(x,y,z){
-	this.position = new Vector3(x,y,z);
+	  this.position = new THREE.Vector3(x,y,z);
     this.speed = new THREE.Vector3(0,0,0);
   }
 
   inverseWireframe(){
-      this.material.wireframe = !this.material.wireframe;
+    this.material.wireframe = !this.material.wireframe;
   }
 
   setPosition(x,y,z){
@@ -28,26 +28,28 @@ class Movable {
   }
 
   setSpeed(newSpeedX, newSpeedY, newSpeedZ){
-	this.speed.set(newSpeedX,newSpeedY,newSpeedZ)
+	   this.speed.set(newSpeedX,newSpeedY,newSpeedZ);
   }
 
   positionElementsObj(obj, geometry, material, x, y, z) {
-      this.mesh	  = new THREE.Mesh(geometry,material);
-	  this.mesh.position.set(x,y,z);
-      obj.add(this.mesh);
+     this.mesh = new THREE.Mesh(geometry, material);
+	   this.mesh.position.set(x,y,z);
+     obj.add(this.mesh);
 	}
 
   timePassed(dt){
 
-      var acelarationx = this.calculateAcelaration();
+      var acelaration_x = this.calculateAcelaration();
+      var acelaration = new THREE.Vector3(acelaration_x, 0, 0);
 
-      this.speed.addVectors(this.speed , acelaration.multiplyScalar(dt));
+      this.speed.addScaledVector(acelaration, dt);
+      //this.speed.addVectors(this.getSpeed(), acelaration.multiplyScalar(dt));
 
-      this.speed = (this.speed.length < this.getMinSpeed()) ? this.setSpeed(0,0,0) : this.speed;
+      this.speed = (this.speed.length() < this.getMinSpeed()) ? new THREE.Vector3(0,0,0) : this.speed;
 
-      if(DEBUG){	console.log("speed: " + this.speed); }
+      if(DEBUG){	console.log("speed: (" + this.speed.x + "," + this.speed.y + "," + this.speed.z + ")"); }
 
-	  this.position.add(this.getSpeed().multiplyScalar(dt));
+	    this.position.addScaledVector(this.getSpeed(), dt);
   }
 
   //Needs to be overrided if another movement type desired

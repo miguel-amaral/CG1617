@@ -36,8 +36,6 @@ class Enemy extends Movable{
 	}
 
 	updatePosition(){
-		this.enemy.position.x = this.x;
-		this.enemy.position.y = this.y;
-		this.enemy.position.z = this.z;
+		this.enemy.position.set(this.position.x,this.position.y,this.position.z);
 	}
 }

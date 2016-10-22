@@ -1,5 +1,5 @@
 'use strict'
-const TOP_SPEED_c   = 150;
+const TOP_SPEED_c  = 150;
 const DEBUG       = 1;
 const MIN_SPEED_c   = 0.8;
 const ACELARATION = 200;
@@ -8,8 +8,8 @@ class Ship extends Movable {
 		super(x,y,z);
 		this.ship = new THREE.Object3D();
 
-		this.left = 0;
-		this.right = 0;
+		this.left = false;
+		this.right = false;
 		this.MIN_SPEED = MIN_SPEED_c;
 		this.TOP_SPEED = TOP_SPEED_c;
 		this.updatePosition(0);
@@ -34,52 +34,51 @@ class Ship extends Movable {
 	  this.positionElementsObj(obj, this.geometry, this.material, 0, 0, -6);
 	}
 
-
-
 	stopLeft(){
-		this.left = 0;
+		this.left = false;
 	}
 	stopRight(){
-		this.right = 0;
+		this.right = false;
 	}
 	startRight(){
 		this.right = true;
 	}
-
 	startLeft(){
 		this.left = true;
 	}
 
 	calculateAcelaration(){
 		var acelaration;
-		if(Math.abs(this.speed) < this.getTopSpeed()){
-			if(this.left > 0) {
+		if(Math.abs(this.speed.length()) < this.getTopSpeed()){
+			if(this.left) {
 				return ACELARATION * -1;
-			} else if (this.right > 0) {
+			} else if (this.right) {
 				return ACELARATION;
 			}
 		}
 
-		if (this.speed < 0){
+		if (this.speed.x < 0){
 			return ACELARATION;
 		}
-		if (this.speed > 0){
+		if (this.speed.x > 0){
 			return -1 * ACELARATION;
 		}
 		return 0;
 	}
+
 	getMinSpeed(){
 		return this.MIN_SPEED;
 	}
+
 	getTopSpeed(){
 		return this.TOP_SPEED;
 	}
 
 	updatePosition(dt){
 		this.timePassed(dt);
-
-		this.ship.position.x = this.x;
-		this.ship.position.y = this.y;
-		this.ship.position.z = this.z;
+		this.ship.position.set(this.position.x,this.position.y,this.position.z);
+		//this.ship.position.x = this.x;
+		//this.ship.position.y = this.y;
+		//this.ship.position.z = this.z;
 	}
 }

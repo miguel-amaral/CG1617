@@ -87,7 +87,7 @@ function createScene(){
 
 function animate(){
 	stats.begin();
-        var dt = clk.getDelta();
+  var dt = clk.getDelta();
 	//Update ship
 	nave.updatePosition(dt);
 
@@ -119,7 +119,7 @@ function onKeyDown (event) {
 		case 65: //A
 			nave.inverseWireframe();
 			for (var i = 0; i < inimigos.length; i++) {
-                            inimigos[i].inverseWireframe();
+      	inimigos[i].inverseWireframe();
 			}
 			break;
 	case 99: // c
