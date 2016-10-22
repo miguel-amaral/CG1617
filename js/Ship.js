@@ -77,8 +77,5 @@ class Ship extends Movable {
 	updatePosition(dt){
 		this.timePassed(dt);
 		this.ship.position.set(this.position.x,this.position.y,this.position.z);
-		//this.ship.position.x = this.x;
-		//this.ship.position.y = this.y;
-		//this.ship.position.z = this.z;
 	}
 }

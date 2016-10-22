@@ -81,8 +81,6 @@ function createScene(){
 		scene.add(background);
 		scene.add(new THREE.AxisHelper(10));
 	}
-
-
 }
 
 function animate(){
@@ -158,7 +156,7 @@ function calculateCameraBondaries(camera) {
     var windowWidth = window.innerWidth;
 
     var aspect = windowWidth / windowHeight;
-	var innerGameAspect = (X_MAX-X_MIN)/(Z_MAX-Z_MIN);
+	  var innerGameAspect = (X_MAX-X_MIN)/(Z_MAX-Z_MIN);
 
     var lowX = X_MIN;
     var upX  = X_MAX;

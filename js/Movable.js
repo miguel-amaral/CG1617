@@ -47,9 +47,17 @@ class Movable {
 
       this.speed = (this.speed.length() < this.getMinSpeed()) ? new THREE.Vector3(0,0,0) : this.speed;
 
-      if(DEBUG){	console.log("speed: (" + this.speed.x + "," + this.speed.y + "," + this.speed.z + ")"); }
-
-	    this.position.addScaledVector(this.getSpeed(), dt);
+      if(DEBUG){console.log("speed: (" + this.speed.x + "," + this.speed.y + "," + this.speed.z + ")"); }
+      if(this.position.x > X_MAX) {
+        this.position.x = X_MAX;
+        this.setSpeed(0,0,0);
+      }
+      else if(this.position.x < X_MIN) {
+        this.position.x = X_MIN;
+        this.setSpeed(0,0,0);
+      }
+      else
+	       this.position.addScaledVector(this.getSpeed(), dt);
   }
 
   //Needs to be overrided if another movement type desired
@@ -60,5 +68,9 @@ class Movable {
   //Needs to be overrided if another movement type desired
   getMinSpeed(){
     return 0;
+  }
+
+  onWall(){
+
   }
 }
