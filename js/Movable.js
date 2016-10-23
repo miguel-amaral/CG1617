@@ -1,7 +1,8 @@
 class Movable {
   constructor(x,y,z){
-	  this.position = new THREE.Vector3(x,y,z);
-    this.speed = new THREE.Vector3(0,0,0);
+		this.position = new THREE.Vector3(x,y,z);
+		this.speed = new THREE.Vector3(0,0,0);
+		this.body = new THREE.Object3D();
   }
 
   inverseWireframe(){
@@ -37,13 +38,17 @@ class Movable {
      obj.add(this.mesh);
 	}
 
+	addChild(child, x, y, z) {
+		child.position.set(x,y,z);
+		this.body.add(child);
+	}
+
   timePassed(dt){
 
       var acelaration_x = this.calculateAcelaration();
       var acelaration = new THREE.Vector3(acelaration_x, 0, 0);
 
       this.speed.addScaledVector(acelaration, dt);
-      //this.speed.addVectors(this.getSpeed(), acelaration.multiplyScalar(dt));
 
       this.speed = (this.speed.length() < this.getMinSpeed()) ? new THREE.Vector3(0,0,0) : this.speed;
 

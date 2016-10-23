@@ -2,13 +2,13 @@
 class Enemy extends Movable{
 	constructor(scene,x,y,z){
 		super(x,y,z);
-		this.enemy = new THREE.Object3D();
+		//this.enemy = new THREE.Object3D();
 
 		this.updatePosition();
-		this.addGeometryEnemy(this.enemy);
+		this.addGeometryEnemy(this.body);
 
-		this.enemy.add(this.mesh);
-		scene.add(this.enemy);
+		this.body.add(this.mesh);
+		scene.add(this.body);
 	}
 
   addGeometryEnemy(obj) {
@@ -36,6 +36,6 @@ class Enemy extends Movable{
 	}
 
 	updatePosition(){
-		this.enemy.position.set(this.position.x,this.position.y,this.position.z);
+		this.body.position.set(this.position.x,this.position.y,this.position.z);
 	}
 }

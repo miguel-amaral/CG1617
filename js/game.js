@@ -18,25 +18,38 @@ const Z_MIN = -100;
 function init(){
 	clk = new THREE.Clock();
 
+	createScene();
+
+	// ---------- Ortographic Camera ------------- //
 	camera = new THREE.OrthographicCamera( 0, 0, 0, 0, 1, 1000 );
-  calculateCameraBondaries(camera);
+  	calculateCameraBondaries(camera);
 
 	camera.position.set(0,150,0);
 	camera.lookAt(new THREE.Vector3(0,0,0));
 	cameras.push(camera);
 
+	// ----------Fixed Perspective Camera ------------- //
+
 	camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 1000 );
 	camera.position.set(0,100,150);
 	camera.lookAt(new THREE.Vector3(0,0,0));
 	cameras.push(camera);
+	
+	// ----------Ship's Perspective Camera ------------- //
+
+	camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 1000 );
+	camera.up.set(0, 1, 0);
+	camera.lookAt(new THREE.Vector3(0,0,0));
+	nave.addChild(camera, 0, 35, 80);
+	cameras.push(camera);
+	//---------------------------------------------------//
 
 	camera = cameras[camera_index];
 
 	renderer = new THREE.WebGLRenderer();
-  renderer.setSize( window.innerWidth, window.innerHeight );
+  	renderer.setSize( window.innerWidth, window.innerHeight );
 	document.body.appendChild( renderer.domElement ) ;
 
-	createScene();
 
 	window.addEventListener("keydown", onKeyDown);
 	window.addEventListener("keyup", onKeyUp);

@@ -6,7 +6,7 @@ const ACELARATION = 200;
 class Ship extends Movable {
 	constructor(scene,x,y,z){
 		super(x,y,z);
-		this.ship = new THREE.Object3D();
+		//this.ship = new THREE.Object3D();
 
 		this.left = false;
 		this.right = false;
@@ -14,9 +14,9 @@ class Ship extends Movable {
 		this.TOP_SPEED = TOP_SPEED_c;
 		this.updatePosition(0);
 
-    this.addGeometryShip(this.ship);
+    this.addGeometryShip(this.body);
 
-		scene.add(this.ship);
+		scene.add(this.body);
   }
 
 	addGeometryShip(obj) {
@@ -76,6 +76,6 @@ class Ship extends Movable {
 
 	updatePosition(dt){
 		this.timePassed(dt);
-		this.ship.position.set(this.position.x,this.position.y,this.position.z);
+		this.body.position.copy(this.position);
 	}
 }
