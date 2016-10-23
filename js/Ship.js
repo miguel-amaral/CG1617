@@ -1,6 +1,6 @@
 'use strict'
 const TOP_SPEED_c  = 150;
-const DEBUG       = 1;
+const DEBUG       = 0;
 const MIN_SPEED_c   = 0.8;
 const ACELARATION = 200;
 class Ship extends Movable {
@@ -48,22 +48,21 @@ class Ship extends Movable {
 	}
 
 	calculateAcelaration(){
-		var acelaration;
 		if(Math.abs(this.speed.length()) < this.getTopSpeed()){
 			if(this.left) {
-				return ACELARATION * -1;
+				return new THREE.Vector3 (-1 * ACELARATION, 0 , 0);
 			} else if (this.right) {
-				return ACELARATION;
+				return new THREE.Vector3 (ACELARATION, 0 , 0);
 			}
 		}
 
 		if (this.speed.x < 0){
-			return ACELARATION;
+			return new THREE.Vector3 (ACELARATION, 0 , 0);
 		}
 		if (this.speed.x > 0){
-			return -1 * ACELARATION;
+			return new THREE.Vector3 (-1 * ACELARATION, 0 , 0);
 		}
-		return 0;
+		return new THREE.Vector3(0, 0, 0);
 	}
 
 	getMinSpeed(){

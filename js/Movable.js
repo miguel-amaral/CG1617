@@ -45,8 +45,7 @@ class Movable {
 
   timePassed(dt){
 
-      var acelaration_x = this.calculateAcelaration();
-      var acelaration = new THREE.Vector3(acelaration_x, 0, 0);
+      var acelaration = this.calculateAcelaration();
 
       this.speed.addScaledVector(acelaration, dt);
 

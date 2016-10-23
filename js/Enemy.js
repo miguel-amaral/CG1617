@@ -1,10 +1,14 @@
 'use strict'
+const ALIEN_SPEED = 10;
 class Enemy extends Movable{
 	constructor(scene,x,y,z){
 		super(x,y,z);
 		//this.enemy = new THREE.Object3D();
 
-		this.updatePosition();
+		var velocity = new THREE.Vector3 (Math.random(), 0, Math.random()).normalize(); // Random direction
+		velocity.multiplyScalar(ALIEN_SPEED); // Initial speed
+		this.setSpeed(velocity.x, velocity.y, velocity.z);
+		this.updatePosition(0);
 		this.addGeometryEnemy(this.body);
 
 		this.body.add(this.mesh);
@@ -35,7 +39,12 @@ class Enemy extends Movable{
 		this.positionElementsObj(obj, this.geometry, this.material, 5, 1, -3)
 	}
 
-	updatePosition(){
-		this.body.position.set(this.position.x,this.position.y,this.position.z);
+	calculateAcelaration(){
+		return new THREE.Vector3(0,0,0);
+	}
+
+	updatePosition(dt){
+		this.timePassed(dt);
+		this.body.position.copy(this.position);
 	}
 }
