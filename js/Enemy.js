@@ -5,7 +5,7 @@ class Enemy extends Movable{
 		super(x,y,z);
 		//this.enemy = new THREE.Object3D();
 
-		var velocity = new THREE.Vector3 (Math.random(), 0, Math.random()).normalize(); // Random direction
+		var velocity = new THREE.Vector3 ((Math.random()*2)-1, 0, (Math.random()*2)-1).normalize(); // Random direction
 		velocity.multiplyScalar(ALIEN_SPEED); // Initial speed
 		this.setSpeed(velocity.x, velocity.y, velocity.z);
 		this.updatePosition(0);
