@@ -3,6 +3,7 @@ class Movable {
 		this.position = new THREE.Vector3(x,y,z);
 		this.speed = new THREE.Vector3(0,0,0);
 		this.body = new THREE.Object3D();
+		this.updatePosition(0);
   }
 
   inverseWireframe(){
@@ -75,7 +76,7 @@ class Movable {
 
   //Needs to be overrided if another movement type desired
   calculateAcelaration(){
-    return new Vector3(0,0,0);
+    return new THREE.Vector3(0,0,0);
   }
 
   //Needs to be overrided if another movement type desired

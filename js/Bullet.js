@@ -7,13 +7,12 @@ class Bullet extends Movable{
 //		this.updatePosition(0);
 		this.addGeometryBullet(this.body);
 
-		this.body.add(this.mesh);
 		scene.add(this.body);
 	}
 
 	addGeometryBullet(obj){
 		this.material = new THREE.MeshBasicMaterial({color: 0x00ff00, wireframe:false});
-		this.geometry = new THREE.CubeGeometry(2, 10, 10);
-		this.positionElementsObj(obj, this.geometry, this.material, 5, 0, 1);
+		this.geometry = new THREE.CubeGeometry(2, 2, 5);
+		this.positionElementsObj(obj, this.geometry, this.material, 0, 0, 0);
 	}
 }

@@ -8,10 +8,9 @@ class Enemy extends Movable{
 		var velocity = new THREE.Vector3 ((Math.random()*2)-1, 0, (Math.random()*2)-1).normalize(); // Random direction
 		velocity.multiplyScalar(ALIEN_SPEED); // Initial speed
 		this.setSpeed(velocity.x, velocity.y, velocity.z);
-		this.updatePosition(0);
+
 		this.addGeometryEnemy(this.body);
 
-		this.body.add(this.mesh);
 		scene.add(this.body);
 	}
 
@@ -37,9 +36,5 @@ class Enemy extends Movable{
 		this.material.side = THREE.DoubleSide;
 		this.geometry = new THREE.SphereGeometry(1.5, 0, 0, Math.PI/2, Math.PI*2, 0, Math.PI);
 		this.positionElementsObj(obj, this.geometry, this.material, 5, 1, -3)
-	}
-
-	calculateAcelaration(){
-		return new THREE.Vector3(0,0,0);
 	}
 }

@@ -1,6 +1,6 @@
 'use strict'
 const TOP_SPEED_c  = 150;
-const DEBUG       = 1;
+const DEBUG       = 0;
 const MIN_SPEED_c   = 0.8;
 const ACELARATION = 200;
 class Ship extends Movable {
@@ -12,7 +12,6 @@ class Ship extends Movable {
 		this.right = false;
 		this.MIN_SPEED = MIN_SPEED_c;
 		this.TOP_SPEED = TOP_SPEED_c;
-		this.updatePosition(0);
 
     this.addGeometryShip(this.body);
 

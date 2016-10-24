@@ -8,13 +8,14 @@ var cameras = [];
 var camera_index = 0;
 var clk;
 var stats;
-var bulletSpeed = 50;
 //Game Boundaries
 const X_MAX = 100;
 const X_MIN = -100;
 const Z_MAX = 100;
 const Z_MIN = -100;
 
+//Speeds
+const BULLET_SPEED = 50;
 
 function init(){
 	clk = new THREE.Clock();
@@ -31,17 +32,18 @@ function init(){
 
 	// ----------Fixed Perspective Camera ------------- //
 
-	camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 1000 );
+	camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 250 );
 	camera.position.set(0,100,150);
 	camera.lookAt(new THREE.Vector3(0,0,0));
 	cameras.push(camera);
 
 	// ----------Ship's Perspective Camera ------------- //
 
-	camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 1000 );
+	camera = new THREE.PerspectiveCamera( 85, window.innerWidth / window.innerHeight, 1, 180 );
 	camera.up.set(0, 1, 0);
 	camera.lookAt(new THREE.Vector3(0,0,0));
-	nave.addChild(camera, 0, 35, 80);
+//	nave.addChild(camera, 0, 35, 80);
+	nave.addChild(camera, 0, 20, 35);
 	cameras.push(camera);
 	//---------------------------------------------------//
 
@@ -108,6 +110,11 @@ function animate(){
     	inimigos[i].updatePosition(dt);
 	}
 
+	//update all bullets
+	for (var i = 0; i < bullets.length; i++) {
+    	bullets[i].updatePosition(dt);
+	}
+
 	stats.end();
 	renderer.render(scene, camera);
 	requestAnimationFrame(animate);
@@ -133,20 +140,32 @@ function onKeyDown (event) {
 			for (var i = 0; i < inimigos.length; i++) {
 				inimigos[i].inverseWireframe();
 			}
+			for (var i = 0; i < bullets.length; i++) {
+				bullets[i].inverseWireframe();
+			}
 			break;
 		case 98: //b
 		case 66: //B
 			var bullet = new Bullet(scene,nave.getPositionX(),nave.getPositionY(),nave.getPositionZ());
-			bullet.setSpeed(0,0,bulletSpeed);
+			bullet.setSpeed(0,0,-BULLET_SPEED);
 			bullets.push(bullet);
 			break;
 		case 99: // c
 		case 67: // C
 			var num_cameras = cameras.length;
-			camera_index = (camera_index+1)%num_cameras
+			camera_index = (camera_index+1)%num_cameras;
 			camera = cameras[camera_index];
 			break;
-	}
+    	case 49: // 1
+        	camera=cameras[0];
+        	break;
+    	case 50: // 2
+        	camera=cameras[1];
+        	break;
+    	case 51: // 3
+        	camera=cameras[2];
+        	break;
+    }
 }
 
 function onKeyUp (event) {
@@ -172,31 +191,27 @@ function onResize(){
 }
 
 function calculateCameraBondaries(camera) {
-    var windowHeight = window.innerHeight;
-    var windowWidth = window.innerWidth;
-
-    var aspect = windowWidth / windowHeight;
+	var windowHeight = window.innerHeight;
+	var windowWidth = window.innerWidth;
+	var aspect = windowWidth / windowHeight;
 	var innerGameAspect = (X_MAX-X_MIN)/(Z_MAX-Z_MIN);
-
-    var lowX = X_MIN;
-    var upX  = X_MAX;
-    var lowZ = Z_MIN;
-    var upZ  = Z_MAX;
-
-    if (aspect > innerGameAspect) {
-      var newWidth = aspect*(X_MAX-X_MIN);
-      lowX = -newWidth/2;
-      upX  =  newWidth/2;
-    }
-    else {
-      var newHeight = (Z_MAX-Z_MIN)/aspect;
-      lowZ = -newHeight/2;
-      upZ  = newHeight/2;
-    }
-    camera.left   = lowX;
-    camera.right  = upX;
-    camera.bottom = lowZ;
-    camera.top    = upZ;
-    camera.updateProjectionMatrix();
-    console.log("resizing");
+	var lowX = X_MIN;
+	var upX  = X_MAX;
+	var lowZ = Z_MIN;
+	var upZ  = Z_MAX;
+	if (aspect > innerGameAspect) {
+		var newWidth = aspect*(X_MAX-X_MIN);
+		lowX = -newWidth/2;
+		upX  =  newWidth/2;
+	} else {
+		var newHeight = (Z_MAX-Z_MIN)/aspect;
+		lowZ = -newHeight/2;
+		upZ  = newHeight/2;
+	}
+	camera.left   = lowX;
+	camera.right  = upX;
+	camera.bottom = lowZ;
+	camera.top    = upZ;
+	camera.updateProjectionMatrix();
+	console.log("resizing");
 }
