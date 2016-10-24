@@ -12,26 +12,22 @@ class Ship extends Movable {
 		this.right = false;
 		this.MIN_SPEED = MIN_SPEED_c;
 		this.TOP_SPEED = TOP_SPEED_c;
+        
+        this.material = new THREE.MeshBasicMaterial({color: 0x0000ff, wireframe:false});
+        this.geometry = new THREE.CubeGeometry(14, 10, 5);
+        this.positionElement(this.geometry, this.material, 0, 0, 0);
 
-    this.addGeometryShip(this.body);
+        this.geometry = new THREE.CubeGeometry(8, 8, 5);
+        this.positionElement(this.geometry, this.material, 0, 0, -2);
 
-		scene.add(this.body);
-  }
+        this.geometry = new THREE.CubeGeometry(4, 4, 4);
+        this.positionElement(this.geometry, this.material, 0, 0, -4);
 
-	addGeometryShip(obj) {
-    this.material = new THREE.MeshBasicMaterial({color: 0x0000ff, wireframe:false});
-	  this.geometry = new THREE.CubeGeometry(14, 10, 5);
-	  this.positionElementsObj(obj, this.geometry, this.material, 0, 0, 0);
+        this.geometry = new THREE.CubeGeometry(2, 2, 2);
+        this.positionElement(this.geometry, this.material, 0, 0, -6);
 
-	  this.geometry = new THREE.CubeGeometry(8, 8, 5);
-	  this.positionElementsObj(obj, this.geometry, this.material, 0, 0, -2);
-
-	  this.geometry = new THREE.CubeGeometry(4, 4, 4);
-      this.positionElementsObj(obj, this.geometry, this.material, 0, 0, -4);
-
-      this.geometry = new THREE.CubeGeometry(2, 2, 2);
-	  this.positionElementsObj(obj, this.geometry, this.material, 0, 0, -6);
-	}
+		scene.add(this);
+    }
 
 	stopLeft(){
 		this.left = false;
