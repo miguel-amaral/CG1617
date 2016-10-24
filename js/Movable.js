@@ -2,6 +2,7 @@ class Movable extends THREE.Object3D{
   constructor(x,y,z){
         super();
 		this.setPosition(x,y,z);
+        this.acceleration = new THREE.Vector3(0,0,0);
 		this.speed = new THREE.Vector3(0,0,0);
   }
 
@@ -11,6 +12,10 @@ class Movable extends THREE.Object3D{
 
     setPosition(x,y,z){
         this.position.set(x,y,z);
+    }
+    
+    setAcceleration(ax,ay,az) {
+        this.acceleration.set(ax,ay,az);
     }
     getPositionX(){
         return this.position.getComponent(0);
@@ -54,11 +59,11 @@ class Movable extends THREE.Object3D{
 
   updatePosition(dt){
 
-      var acelaration = this.calculateAcelaration();
+      this.calculateAcelaration();
 
-      this.speed.addScaledVector(acelaration, dt);
+      this.speed.addScaledVector(this.acceleration, dt);
 
-      this.speed = (this.speed.length() < this.getMinSpeed()) ? new THREE.Vector3(0,0,0) : this.speed;
+      if (this.speed.length() < this.getMinSpeed()) { this.setSpeed(0,0,0); }
 
       if(DEBUG){console.log("speed: (" + this.speed.x + "," + this.speed.y + "," + this.speed.z + ")"); }
       if(this.position.x > X_MAX) {

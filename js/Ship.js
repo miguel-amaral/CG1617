@@ -45,20 +45,17 @@ class Ship extends Movable {
 	calculateAcelaration(){
 		if(Math.abs(this.speed.length()) < this.getTopSpeed()){
 			if(this.left) {
-				return new THREE.Vector3 (-1 * ACELARATION, 0 , 0);
+				this.setAcceleration (-1 * ACELARATION, 0 , 0);
+                return;
 			} else if (this.right) {
-				return new THREE.Vector3 (ACELARATION, 0 , 0);
-			}
-		}
-
-		if (this.speed.x < 0){
-			return new THREE.Vector3 (ACELARATION, 0 , 0);
-		}
-		if (this.speed.x > 0){
-			return new THREE.Vector3 (-1 * ACELARATION, 0 , 0);
-		}
-		return new THREE.Vector3(0, 0, 0);
-	}
+				this.setAcceleration (ACELARATION, 0 , 0);
+                return;
+            }
+        }
+        if (this.speed.x < 0) { this.setAcceleration (ACELARATION, 0 , 0); }
+        else if (this.speed.x > 0){ this.setAcceleration (-1 * ACELARATION, 0 , 0); }
+        else { this.setAcceleration (0, 0, 0); }
+    }
 
 	getMinSpeed(){
 		return this.MIN_SPEED;
