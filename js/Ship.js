@@ -4,7 +4,7 @@ const MIN_SPEED_c   = 0.8;
 const ACELARATION = 200;
 class Ship extends Movable {
 	constructor(scene,x,y,z){
-		super(x,y,z);
+		super(scene,x,y,z);
 		//this.ship = new THREE.Object3D();
 		this.left = false;
 		this.right = false;
@@ -33,6 +33,11 @@ class Ship extends Movable {
 	startLeft(){
 		this.left = true;
 	}
+	stop(){
+		this.right = false;
+		this.left = false;
+		this.setSpeed(0,0,0);
+	}
 	calculateAcelaration(){
 		if(Math.abs(this.speed.length()) < this.getTopSpeed()){
 			if(this.left) {
@@ -43,7 +48,7 @@ class Ship extends Movable {
 				return;
 			}
 		}
-		if (this.speed.x < 0) { this.setAcceleration (ACELARATION, 0 , 0); }
+		if (this.speed.x < 0 ) { this.setAcceleration (ACELARATION, 0 , 0); }
 		else if (this.speed.x > 0){ this.setAcceleration (-1 * ACELARATION, 0 , 0); }
 		else { this.setAcceleration (0, 0, 0); }
 	}
@@ -54,18 +59,6 @@ class Ship extends Movable {
 
 	getTopSpeed(){
 		return this.TOP_SPEED;
-	}
-
-	showBoundingCircle(obj){
-		var material = new THREE.MeshBasicMaterial({color: 0xffffff, wireframe:true});
-		var height = 10; var nr_triangles = 8;
-
-		var radius = Math.sqrt(this.getPowRadius());
-		var geometry = new THREE.CylinderGeometry(radius, radius, height, nr_triangles);
-		var x = this.getObjectCenter().getComponent(0);
-		var y = this.getObjectCenter().getComponent(1);
-		var z = this.getObjectCenter().getComponent(2);
-		this.positionElement(geometry, material, x,y,z);
 	}
 
 	getObjectCenter() {

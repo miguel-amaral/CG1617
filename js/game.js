@@ -8,8 +8,8 @@ var cameras = [];
 var camera_index = 0;
 var clk;
 var stats;
-
 var cheat_infinite_ammo = false;
+var bullet_counter=0;
 //const DEBUG       = 0;
 
 //Game Boundaries
@@ -47,14 +47,14 @@ function init(){
 
 	// ----------Fixed Perspective Camera ------------- //
 
-	camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 250 );
+	camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 1000 );
 	camera.position.set(0,100,150);
 	camera.lookAt(new THREE.Vector3(0,0,0));
 	cameras.push(camera);
 
 	// ----------Ship's Perspective Camera ------------- //
 
-	camera = new THREE.PerspectiveCamera( 85, window.innerWidth / window.innerHeight, 1, 180 );
+	camera = new THREE.PerspectiveCamera( 85, window.innerWidth / window.innerHeight, 1, 1000 );
 	camera.up.set(0, 1, 0);
 	camera.lookAt(new THREE.Vector3(0,0,0));
 //	nave.addChild(camera, 0, 35, 80);
@@ -87,12 +87,12 @@ function createScene(){
 	nave = new Ship(scene,20,0,80);
 
 	var j = 0;
-	while(j < 2){
+	while(j < 4){
 		var i = 0;
-		var pos_x = X_MIN;
-		while(i < 8){
+		var pos_x = X_MIN+5;
+		while(i < 9){
 
-			var enemy1 = new Enemy(scene,pos_x,0,j*20);
+			var enemy1 = new Enemy(scene,pos_x,0,j*20-50);
 			inimigos.push(enemy1);
 			i++;
 			pos_x += 20;
@@ -114,50 +114,103 @@ function createScene(){
 	}
 }
 
+function calculateColisions(dt){
+	//detectColision
+	if(nave.hasLeftRightWallColision(X_MIN,X_MAX)){
+		nave.stop();
+		nave.updatePosition(dt);
+	}
+
+	for (var b = 0; b < bullets.length;) {
+		if(bullets[b].hasTopBotWallColision(Z_MIN,Z_MAX)) {
+			scene.remove(bullets[b]);
+			bullets.splice(b,1);
+		} else {
+			b++;
+		}
+	}
+
+	for (var i = 0; i < inimigos.length;) {
+		if(inimigos[i].hasLeftRightWallColision(X_MIN,X_MAX)) {
+			inimigos[i].collidedLeftRightWall();
+			inimigos[i].updatePosition(dt);
+		}else if(inimigos[i].hasTopBotWallColision(Z_MIN,Z_MAX)) {
+			inimigos[i].collidedTopBotWall();
+			inimigos[i].updatePosition(dt);
+		}
+		for (var j = i+1; j < inimigos.length; j++) {
+			if(inimigos[i].hasColision(inimigos[j])){
+				inimigos[i].collidedAnotherEnemy();
+				inimigos[j].collidedAnotherEnemy();
+				inimigos[i].updatePosition(dt);
+				inimigos[j].updatePosition(dt);
+			}
+		}
+		var bullet_colision = false;
+		for (var b = 0; b < bullets.length; b++) {
+			if(inimigos[i].hasColision(bullets[b])){
+				scene.remove(inimigos[i]);
+				scene.remove(bullets[b]);
+				inimigos.splice(i,1);
+				bullets.splice(b,1);
+				bullet_colision = true;
+				break;
+			}
+		}
+		if(!bullet_colision) { i++; }
+	}
+}
+
 function animate(){
 	stats.begin();
-  var dt = clk.getDelta();
+	var dt = clk.getDelta();
+
+	//cheat_infinite_ammo ACTIVATED
+	if(cheat_infinite_ammo) {
+		createNewBullet()
+	}
+	
+	//CalculateNextPositions
 	//Update ship
 	nave.updatePosition(dt);
 
 	//update all enemies
 	for (var i = 0; i < inimigos.length; i++) {
-    	inimigos[i].updatePosition(dt);
+		inimigos[i].updatePosition(dt);
 	}
 
 	//update all bullets
 	for (var i = 0; i < bullets.length; i++) {
-    	bullets[i].updatePosition(dt);
+		bullets[i].updatePosition(dt);
 	}
 
-	//cheat_infinite_ammo ACTIVATED
-	if(cheat_infinite_ammo) {
-		var bullet = new Bullet(scene,nave.getPositionX(),nave.getPositionY(),nave.getPositionZ());
-		bullet.setSpeed(0,0,-BULLET_SPEED);
-		bullets.push(bullet);
-	}
 
-	//detectColision
+	calculateColisions(dt);
+
+	//Push Updates
+	//Update ship
+	nave.realUpdatePosition();
+
+	//update all enemies
 	for (var i = 0; i < inimigos.length; i++) {
-		for (var j = i+1; j < inimigos.length; j++) {
-			if (inimigos[i].hasColision(inimigos[j])){
-				if(inimigos[i].hasHorizontalColision(inimigos[j])){
-					inimigos[i].collidedHorizontal();
-					inimigos[j].collidedHorizontal();
-				} else {
-					inimigos[i].collidedVertical();
-					inimigos[j].collidedVertical();
-				}
-			}
-		}
+		inimigos[i].realUpdatePosition();
 	}
 
+	//update all bullets
+	for (var i = 0; i < bullets.length; i++) {
+		bullets[i].realUpdatePosition();
+	}
 
 	stats.end();
 	renderer.render(scene, camera);
 	requestAnimationFrame(animate);
 }
-
+function createNewBullet(){
+	var bullet = new Bullet(scene,nave.getPositionX(),nave.getPositionY(),nave.getPositionZ());
+	bullet.setSpeed(0,0,-BULLET_SPEED);
+	bullets.push(bullet);
+	bullet_counter = bullet_counter+1;
+}
 function onKeyDown (event) {
 
 	switch (event.keyCode) {
@@ -184,9 +237,7 @@ function onKeyDown (event) {
 			break;
 		case 98: //b
 		case 66: //B
-			var bullet = new Bullet(scene,nave.getPositionX(),nave.getPositionY(),nave.getPositionZ());
-			bullet.setSpeed(0,0,-BULLET_SPEED);
-			bullets.push(bullet);
+			createNewBullet();
 			break;
 		case 79: // O
 		case 111: // o

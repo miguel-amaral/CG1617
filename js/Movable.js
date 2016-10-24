@@ -2,15 +2,20 @@ const DEBUG       = 1;
 
 
 class Movable extends THREE.Object3D{
-	constructor(x,y,z){
+	constructor(scene,x,y,z){
 		super();
+
 		this.setPosition(x,y,z);
+		this.nextPosition = new THREE.Vector3(0,0,0);
+		this.nextPosition.copy(this.position);
 		this.acceleration = new THREE.Vector3(0,0,0);
 		this.speed = new THREE.Vector3(0,0,0);
-		this.body = new THREE.Object3D();
+//		this.body = new THREE.Object3D();
+		this.radius = Math.sqrt(this.getPowRadius());
 		this.updatePosition(0);
+		scene.add(this);
 		if(DEBUG){
-			this.showBoundingCircle(this.body);
+			this.showBoundingCircle(this);
 		}
 	}
 	inverseWireframe(){
@@ -32,6 +37,7 @@ class Movable extends THREE.Object3D{
 	getPositionZ(){
 		return this.position.getComponent(2);
 	}
+
 	getSpeedX(){
 		return this.speed.getComponent(0);
 	}
@@ -58,19 +64,17 @@ class Movable extends THREE.Object3D{
 		this.add(child);
 	}
 	updatePosition(dt){
+		this.nextPosition.copy(this.position);
 		this.calculateAcelaration();
 		this.speed.addScaledVector(this.acceleration, dt);
-		if (this.speed.length() < this.getMinSpeed()) { this.setSpeed(0,0,0); }
-		if(this.position.x > X_MAX) {
-			this.position.x = X_MAX;
+		if (this.speed.length() < this.getMinSpeed()) {
 			this.setSpeed(0,0,0);
+		} else {
+			this.nextPosition.addScaledVector(this.getSpeed(), dt);
 		}
-		else if(this.position.x < X_MIN) {
-			this.position.x = X_MIN;
-			this.setSpeed(0,0,0);
-		}
-		else
-		this.position.addScaledVector(this.getSpeed(), dt);
+	}
+	realUpdatePosition(){
+		this.position.copy(this.nextPosition);
 	}
 	//Needs to be overrided if another movement type desired
 	calculateAcelaration(){
@@ -85,17 +89,55 @@ class Movable extends THREE.Object3D{
 		return new THREE.Vector3(0,0,0);
 	}
 	hasColision(movable){
-		var myOrigin    = this.getObjectCenter();
-		var otherOrigin = movable.getObjectCenter();
+		var myOrigin    = new THREE.Vector3(0,0,0);
+		myOrigin.copy(this.getObjectCenter());
+		myOrigin.add(this.nextPosition);
+
+		var otherOrigin = new THREE.Vector3(0,0,0);
+		otherOrigin.copy(movable.getObjectCenter());
+		otherOrigin.add(movable.nextPosition);
 
 		myOrigin.sub(otherOrigin);
 
 		var x = myOrigin.getComponent(0);
 		var y = myOrigin.getComponent(1);
 		var z = myOrigin.getComponent(2);
-		var distance = Math.pow(x,2) + Math.pow(y,2) + Math.pow(z,2);
-//		console.log(distance);
-		var sumRadius = this.getPowRadius() + movable.getPowRadius();
+
+		var distance = Math.sqrt(Math.pow(x,2) + Math.pow(y,2) + Math.pow(z,2));
+
+		var sumRadius = this.getRadius() + movable.getRadius();
+
 		return distance < sumRadius;
 	}
+	hasLeftRightWallColision(x_left,x_right){
+
+		var myOrigin    = this.getObjectCenter();
+		myOrigin.add(this.nextPosition);
+		var radius = this.getRadius();
+		var pos_x = myOrigin.getComponent(0);
+
+		return x_left >= (pos_x - radius) || x_right <= (pos_x + radius);
+	}
+	hasTopBotWallColision(x_bottom, x_top){
+		var myOrigin    = this.getObjectCenter();
+		myOrigin.add(this.nextPosition);
+		var radius = this.getRadius();
+		var pos_z = myOrigin.getComponent(2);
+
+		return x_bottom >= (pos_z - radius) || x_top <= (pos_z + radius);
+	}
+	getRadius() {
+		return this.radius;
+	}
+	showBoundingCircle(obj){
+		var material = new THREE.MeshBasicMaterial({color: 0xffffff, wireframe:true});
+		var height = 10; var nr_triangles = 50;
+
+		var geometry = new THREE.CylinderGeometry(this.radius, this.radius, height, nr_triangles);
+		var x = this.getObjectCenter().getComponent(0);
+		var y = this.getObjectCenter().getComponent(1);
+		var z = this.getObjectCenter().getComponent(2);
+		this.positionElement(geometry, material, x,y,z);
+	}
+
 }
