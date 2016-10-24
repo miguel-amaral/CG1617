@@ -136,10 +136,19 @@ function onKeyDown (event) {
 	case 99: // c
 	case 67: // C
 		var num_cameras = cameras.length;
-		camera_index = (camera_index+1)%num_cameras
+		camera_index = (camera_index+1)%num_cameras;
 		camera = cameras[camera_index];
 		break;
-	}
+    case 49: // 1
+        camera=cameras[0];
+        break;
+    case 50: // 2
+        camera=cameras[1];
+        break;
+    case 51: // 3
+        camera=cameras[2];
+        break;
+    }
 }
 
 function onKeyUp (event) {
