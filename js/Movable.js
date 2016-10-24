@@ -12,6 +12,15 @@ class Movable {
   setPosition(x,y,z){
 	  this.position.set(x,y,z);
   }
+  getPositionX(){
+	return this.position.getComponent(0);
+  }
+  getPositionY(){
+	return this.position.getComponent(1);
+  }
+  getPositionZ(){
+	return this.position.getComponent(2);
+  }
 
   getSpeedX(){
     return this.speed.getComponent(0);
@@ -61,7 +70,7 @@ class Movable {
         this.setSpeed(0,0,0);
       }
       else
-	       this.position.addScaledVector(this.getSpeed(), dt);
+	    this.position.addScaledVector(this.getSpeed(), dt);
   }
 
   //Needs to be overrided if another movement type desired
@@ -74,7 +83,8 @@ class Movable {
     return 0;
   }
 
-  onWall(){
-
+  updatePosition(dt){
+	  this.timePassed(dt);
+	  this.body.position.copy(this.position);
   }
 }

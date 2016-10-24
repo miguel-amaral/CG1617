@@ -28,10 +28,10 @@ class Enemy extends Movable{
 		this.geometry = new THREE.CubeGeometry(10, 10, 2);
 		this.positionElementsObj(obj, this.geometry, this.material, 5, 0, 5);
 
-		this.geometry = new THREE.CubeGeometry(2, 10, 2);
-		this.positionElementsObj(obj, this.geometry, this.material, 10, 0, 6);
-		this.geometry = new THREE.CubeGeometry(2, 10, 2);
-		this.positionElementsObj(obj, this.geometry, this.material, 0, 0, 6);
+		//this.geometry = new THREE.CubeGeometry(2, 10, 2);
+		//this.positionElementsObj(obj, this.geometry, this.material, 10, 0, 6);
+		//this.geometry = new THREE.CubeGeometry(2, 10, 2);
+		//this.positionElementsObj(obj, this.geometry, this.material, 0, 0, 6);
 
 
 		this.material.side = THREE.DoubleSide;
@@ -41,10 +41,5 @@ class Enemy extends Movable{
 
 	calculateAcelaration(){
 		return new THREE.Vector3(0,0,0);
-	}
-
-	updatePosition(dt){
-		this.timePassed(dt);
-		this.body.position.copy(this.position);
 	}
 }

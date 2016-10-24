@@ -3,11 +3,12 @@ var scene, camera, renderer;
 
 var nave;
 var inimigos = [];
+var bullets = [];
 var cameras = [];
 var camera_index = 0;
 var clk;
 var stats;
-
+var bulletSpeed = 50;
 //Game Boundaries
 const X_MAX = 100;
 const X_MIN = -100;
@@ -34,7 +35,7 @@ function init(){
 	camera.position.set(0,100,150);
 	camera.lookAt(new THREE.Vector3(0,0,0));
 	cameras.push(camera);
-	
+
 	// ----------Ship's Perspective Camera ------------- //
 
 	camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 1000 );
@@ -130,15 +131,21 @@ function onKeyDown (event) {
 		case 65: //A
 			nave.inverseWireframe();
 			for (var i = 0; i < inimigos.length; i++) {
-      	inimigos[i].inverseWireframe();
+				inimigos[i].inverseWireframe();
 			}
 			break;
-	case 99: // c
-	case 67: // C
-		var num_cameras = cameras.length;
-		camera_index = (camera_index+1)%num_cameras
-		camera = cameras[camera_index];
-		break;
+		case 98: //b
+		case 66: //B
+			var bullet = new Bullet(scene,nave.getPositionX(),nave.getPositionY(),nave.getPositionZ());
+			bullet.setSpeed(0,0,bulletSpeed);
+			bullets.push(bullet);
+			break;
+		case 99: // c
+		case 67: // C
+			var num_cameras = cameras.length;
+			camera_index = (camera_index+1)%num_cameras
+			camera = cameras[camera_index];
+			break;
 	}
 }
 
@@ -169,7 +176,7 @@ function calculateCameraBondaries(camera) {
     var windowWidth = window.innerWidth;
 
     var aspect = windowWidth / windowHeight;
-	  var innerGameAspect = (X_MAX-X_MIN)/(Z_MAX-Z_MIN);
+	var innerGameAspect = (X_MAX-X_MIN)/(Z_MAX-Z_MIN);
 
     var lowX = X_MIN;
     var upX  = X_MAX;

@@ -1,6 +1,6 @@
 'use strict'
 const TOP_SPEED_c  = 150;
-const DEBUG       = 0;
+const DEBUG       = 1;
 const MIN_SPEED_c   = 0.8;
 const ACELARATION = 200;
 class Ship extends Movable {
@@ -28,9 +28,9 @@ class Ship extends Movable {
 	  this.positionElementsObj(obj, this.geometry, this.material, 0, 0, -2);
 
 	  this.geometry = new THREE.CubeGeometry(4, 4, 4);
-    this.positionElementsObj(obj, this.geometry, this.material, 0, 0, -4);
+      this.positionElementsObj(obj, this.geometry, this.material, 0, 0, -4);
 
-    this.geometry = new THREE.CubeGeometry(2, 2, 2);
+      this.geometry = new THREE.CubeGeometry(2, 2, 2);
 	  this.positionElementsObj(obj, this.geometry, this.material, 0, 0, -6);
 	}
 
@@ -71,10 +71,5 @@ class Ship extends Movable {
 
 	getTopSpeed(){
 		return this.TOP_SPEED;
-	}
-
-	updatePosition(dt){
-		this.timePassed(dt);
-		this.body.position.copy(this.position);
 	}
 }
