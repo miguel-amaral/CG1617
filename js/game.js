@@ -130,11 +130,26 @@ function animate(){
     	bullets[i].updatePosition(dt);
 	}
 
-	//PISS MODE ACTIVATED
+	//cheat_infinite_ammo ACTIVATED
 	if(cheat_infinite_ammo) {
 		var bullet = new Bullet(scene,nave.getPositionX(),nave.getPositionY(),nave.getPositionZ());
 		bullet.setSpeed(0,0,-BULLET_SPEED);
 		bullets.push(bullet);
+	}
+
+	//detectColision
+	for (var i = 0; i < inimigos.length; i++) {
+		for (var j = i+1; j < inimigos.length; j++) {
+			if (inimigos[i].hasColision(inimigos[j])){
+				if(inimigos[i].hasHorizontalColision(inimigos[j])){
+					inimigos[i].collidedHorizontal();
+					inimigos[j].collidedHorizontal();
+				} else {
+					inimigos[i].collidedVertical();
+					inimigos[j].collidedVertical();
+				}
+			}
+		}
 	}
 
 

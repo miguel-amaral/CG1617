@@ -16,26 +16,34 @@ class Enemy extends Movable{
   addGeometryEnemy(obj) {
 		this.material = new THREE.MeshBasicMaterial({color: 0xff0000, wireframe:false});
 		this.geometry = new THREE.CubeGeometry(10, 10, 2);
-		this.positionElementsObj(obj, this.geometry, this.material, 5, 0, 1);
+		this.positionElement(this.geometry, this.material, 5, 0, 1);
 		this.geometry = new THREE.CubeGeometry(2, 10, 4);
-		this.positionElementsObj(obj, this.geometry, this.material, 1, 0, 2);
+		this.positionElement(this.geometry, this.material, 1, 0, 2);
 		this.geometry = new THREE.CubeGeometry(2, 10, 4);
-		this.positionElementsObj(obj, this.geometry, this.material, 5, 0, 2);
+		this.positionElement(this.geometry, this.material, 5, 0, 2);
 		this.geometry = new THREE.CubeGeometry(2, 10, 4);
-		this.positionElementsObj(obj, this.geometry, this.material, 9, 0, 2);
+		this.positionElement(this.geometry, this.material, 9, 0, 2);
 		this.geometry = new THREE.CubeGeometry(10, 10, 2);
-		this.positionElementsObj(obj, this.geometry, this.material, 5, 0, 5);
+		this.positionElement(this.geometry, this.material, 5, 0, 5);
 
 		//Legs
 		this.geometry = new THREE.CubeGeometry(2, 10, 2);
-		this.positionElementsObj(obj, this.geometry, this.material, 10, 0, 6);
+		this.positionElement(this.geometry, this.material, 10, 0, 6);
 		this.geometry = new THREE.CubeGeometry(2, 10, 2);
-		this.positionElementsObj(obj, this.geometry, this.material, 0, 0, 6);
+		this.positionElement(this.geometry, this.material, 0, 0, 6);
 
 		//Hat
 		this.material.side = THREE.DoubleSide;
 		this.geometry = new THREE.SphereGeometry(1.5, 0, 0, Math.PI/2, Math.PI*2, 0, Math.PI);
-		this.positionElementsObj(obj, this.geometry, this.material, 5, 1, -3)
+		this.positionElement(this.geometry, this.material, 5, 1, -3)
+
+		scene.add(this);
+	}
+	hasHorizontalColision(movable){
+		var myOrigin    = this.getObjectCenter();
+		var otherOrigin = movable.getObjectCenter();
+
+		myOrigin.sub(otherOrigin);
 	}
 
 	collidedHorizontal() {
@@ -46,9 +54,9 @@ class Enemy extends Movable{
 		this.setSpeed(this.getSpeedX(),-this.getSpeedY(),this.getSpeedZ());
 	}
 
-    setSpeed(newSpeedX, newSpeedY, newSpeedZ){
-  	   this.speed.set(newSpeedX,newSpeedY,newSpeedZ);
-    }
+	setSpeed(newSpeedX, newSpeedY, newSpeedZ){
+		this.speed.set(newSpeedX,newSpeedY,newSpeedZ);
+	}
 
 	showBoundingCircle(obj){
 		var material = new THREE.MeshBasicMaterial({color: 0xffffff, wireframe:true});
@@ -59,7 +67,7 @@ class Enemy extends Movable{
 		var x = this.getObjectCenter().getComponent(0);
 		var y = this.getObjectCenter().getComponent(1);
 		var z = this.getObjectCenter().getComponent(2);
-		this.positionElementsObj(obj, geometry, material, x,y,z);
+		this.positionElement(geometry, material, x,y,z);
 	}
 
 	getObjectCenter() {
