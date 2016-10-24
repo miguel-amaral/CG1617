@@ -14,9 +14,9 @@ class Movable extends THREE.Object3D{
 		this.radius = Math.sqrt(this.getPowRadius());
 		this.updatePosition(0);
 		scene.add(this);
-		if(DEBUG){
-			this.showBoundingCircle(this);
-		}
+
+		this.addBoundingCircle(this);
+
 	}
 	inverseWireframe(){
 		this.material.wireframe = !this.material.wireframe;
@@ -129,15 +129,21 @@ class Movable extends THREE.Object3D{
 	getRadius() {
 		return this.radius;
 	}
-	showBoundingCircle(obj){
-		var material = new THREE.MeshBasicMaterial({color: 0xffffff, wireframe:true});
-		var height = 10; var nr_triangles = 50;
+	addBoundingCircle(){
+		this.bounding_box_material = new THREE.MeshBasicMaterial({color: 0xffffff, wireframe:true, visible:false});
+		var height = 10; var nr_triangles = 20;
 
 		var geometry = new THREE.CylinderGeometry(this.radius, this.radius, height, nr_triangles);
 		var x = this.getObjectCenter().getComponent(0);
 		var y = this.getObjectCenter().getComponent(1);
 		var z = this.getObjectCenter().getComponent(2);
-		this.positionElement(geometry, material, x,y,z);
+		this.positionElement(geometry, this.bounding_box_material, x,y,z);
 	}
+
+	inverseBoundingBox() {
+		this.bounding_box_material.visible = !this.bounding_box_material.visible;
+	}
+
+
 
 }

@@ -34,8 +34,6 @@ class Ship extends Movable {
 		this.left = true;
 	}
 	stop(){
-		this.right = false;
-		this.left = false;
 		this.setSpeed(0,0,0);
 	}
 	calculateAcelaration(){

@@ -5,6 +5,7 @@ var nave;
 var inimigos = [];
 var bullets = [];
 var cameras = [];
+
 var camera_index = 0;
 var clk;
 var stats;
@@ -57,7 +58,6 @@ function init(){
 	camera = new THREE.PerspectiveCamera( 85, window.innerWidth / window.innerHeight, 1, 1000 );
 	camera.up.set(0, 1, 0);
 	camera.lookAt(new THREE.Vector3(0,0,0));
-//	nave.addChild(camera, 0, 35, 80);
 	nave.addChild(camera, 0, 20, 35);
 	cameras.push(camera);
 	//---------------------------------------------------//
@@ -87,7 +87,7 @@ function createScene(){
 	nave = new Ship(scene,20,0,80);
 
 	var j = 0;
-	while(j < 4){
+	while(j < 2){
 		var i = 0;
 		var pos_x = X_MIN+5;
 		while(i < 9){
@@ -169,7 +169,7 @@ function animate(){
 	if(cheat_infinite_ammo) {
 		createNewBullet()
 	}
-	
+
 	//CalculateNextPositions
 	//Update ship
 	nave.updatePosition(dt);
@@ -235,6 +235,16 @@ function onKeyDown (event) {
 				bullets[i].inverseWireframe();
 			}
 			break;
+		case 115: //s
+		case 83: //S
+			nave.inverseBoundingBox();
+			for (var i = 0; i < inimigos.length; i++) {
+				inimigos[i].inverseBoundingBox();
+			}
+			for (var i = 0; i < bullets.length; i++) {
+				bullets[i].inverseBoundingBox();
+			}
+			break;
 		case 98: //b
 		case 66: //B
 			createNewBullet();
@@ -248,15 +258,22 @@ function onKeyDown (event) {
 			var num_cameras = cameras.length;
 			camera_index = (camera_index+1)%num_cameras;
 			camera = cameras[camera_index];
+			calculateCameraBondaries(camera)
 			break;
     	case 49: // 1
         	camera=cameras[0];
+			camera_index = 0;
+			calculateCameraBondaries(camera);
         	break;
     	case 50: // 2
         	camera=cameras[1];
+			camera_index = 1;
+			calculateCameraBondaries(camera);
         	break;
     	case 51: // 3
         	camera=cameras[2];
+			camera_index = 2;
+			calculateCameraBondaries(camera);
         	break;
     }
 }
@@ -284,27 +301,34 @@ function onResize(){
 }
 
 function calculateCameraBondaries(camera) {
-	var windowHeight = window.innerHeight;
-	var windowWidth = window.innerWidth;
-	var aspect = windowWidth / windowHeight;
-	var innerGameAspect = (X_MAX-X_MIN)/(Z_MAX-Z_MIN);
-	var lowX = X_MIN;
-	var upX  = X_MAX;
-	var lowZ = Z_MIN;
-	var upZ  = Z_MAX;
-	if (aspect > innerGameAspect) {
-		var newWidth = aspect*(X_MAX-X_MIN);
-		lowX = -newWidth/2;
-		upX  =  newWidth/2;
+	if(camera_index != 0 ) {
+		renderer.setSize(window.innerWidth, window.innerHeight);
+		if (window.innerHeight > 0 && window.innerWidth > 0) {
+			camera.aspect = window.innerWidth / window.innerHeight;
+			camera.updateProjectionMatrix();
+		}
 	} else {
-		var newHeight = (Z_MAX-Z_MIN)/aspect;
-		lowZ = -newHeight/2;
-		upZ  = newHeight/2;
+		var windowHeight = window.innerHeight;
+		var windowWidth = window.innerWidth;
+		var aspect = windowWidth / windowHeight;
+		var innerGameAspect = (X_MAX-X_MIN)/(Z_MAX-Z_MIN);
+		var lowX = X_MIN;
+		var upX  = X_MAX;
+		var lowZ = Z_MIN;
+		var upZ  = Z_MAX;
+		if (aspect > innerGameAspect) {
+			var newWidth = aspect*(X_MAX-X_MIN);
+			lowX = -newWidth/2;
+			upX  =  newWidth/2;
+		} else {
+			var newHeight = (Z_MAX-Z_MIN)/aspect;
+			lowZ = -newHeight/2;
+			upZ  = newHeight/2;
+		}
+		camera.left   = lowX;
+		camera.right  = upX;
+		camera.bottom = lowZ;
+		camera.top    = upZ;
+		camera.updateProjectionMatrix();
 	}
-	camera.left   = lowX;
-	camera.right  = upX;
-	camera.bottom = lowZ;
-	camera.top    = upZ;
-	camera.updateProjectionMatrix();
-	console.log("resizing");
 }
