@@ -4,6 +4,8 @@ class Movable {
 		this.speed = new THREE.Vector3(0,0,0);
 		this.body = new THREE.Object3D();
 		this.updatePosition(0);
+
+		//this.showBoundingCircle(this.body);
   }
 
   inverseWireframe(){
@@ -87,5 +89,18 @@ class Movable {
   updatePosition(dt){
 	  this.timePassed(dt);
 	  this.body.position.copy(this.position);
+  }
+
+  showBoundingCircle(obj){}
+  getObjectCenter() {
+	  return new THREE.Vector3(0,0,0);
+  }
+
+  detectColision(movable){
+	  var myOrigin    = this.getObjectCenter();
+	  var otherOrigin = movable.getObjectCenter();
+
+	  var distances = myOrigin.sub(otherOrigin);
+
   }
 }

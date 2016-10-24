@@ -8,14 +8,29 @@ var cameras = [];
 var camera_index = 0;
 var clk;
 var stats;
+
+var cheat_infinite_ammo = false;
+//const DEBUG       = 0;
+
 //Game Boundaries
 const X_MAX = 100;
 const X_MIN = -100;
 const Z_MAX = 100;
 const Z_MIN = -100;
 
-//Speeds
+//movement variables
+
+//Bullet
 const BULLET_SPEED = 50;
+
+//Ship
+const SHIP_TOP_SPEED_c = 150;
+const SHIP_MIN_SPEED_c = 0.8;
+const SHIP_ACELARATION = 200;
+
+//Enemy
+const ENEMY_SPEED = 10;
+
 
 function init(){
 	clk = new THREE.Clock();
@@ -115,6 +130,14 @@ function animate(){
     	bullets[i].updatePosition(dt);
 	}
 
+	//PISS MODE ACTIVATED
+	if(cheat_infinite_ammo) {
+		var bullet = new Bullet(scene,nave.getPositionX(),nave.getPositionY(),nave.getPositionZ());
+		bullet.setSpeed(0,0,-BULLET_SPEED);
+		bullets.push(bullet);
+	}
+
+
 	stats.end();
 	renderer.render(scene, camera);
 	requestAnimationFrame(animate);
@@ -150,6 +173,10 @@ function onKeyDown (event) {
 			bullet.setSpeed(0,0,-BULLET_SPEED);
 			bullets.push(bullet);
 			break;
+		case 79: // O
+		case 111: // o
+			cheat_infinite_ammo = ! cheat_infinite_ammo;
+			break
 		case 99: // c
 		case 67: // C
 			var num_cameras = cameras.length;
