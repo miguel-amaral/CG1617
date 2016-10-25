@@ -1,4 +1,4 @@
-const DEBUG       = 1;
+const DEBUG       = 0;
 
 
 class Movable extends THREE.Object3D{

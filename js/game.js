@@ -1,6 +1,7 @@
 'use strict'
 var scene, camera, renderer;
 
+var back_material;
 var nave;
 var inimigos = [];
 var bullets = [];
@@ -99,19 +100,20 @@ function createScene(){
 		}
 		j++;
 	}
-	if(DEBUG){
 
-		var background = new THREE.Object3D();
-		var back_material = new THREE.MeshBasicMaterial({color: 0xffffff, wireframe:true});
-		var back_geometry = new THREE.CubeGeometry((X_MAX-X_MIN),1,(Z_MAX-Z_MIN));
-		var back_mesh	  = new THREE.Mesh(back_geometry,back_material);
-		background.add(back_mesh);
-		background.position.x = 0;
-		background.position.y = -1;
-		background.position.z = 0;
-		scene.add(background);
+	var background = new THREE.Object3D();
+	back_material = new THREE.MeshBasicMaterial({color: 0xffffff, wireframe:true, visible:false});
+	var back_geometry = new THREE.CubeGeometry((X_MAX-X_MIN),1,(Z_MAX-Z_MIN));
+	var back_mesh	  = new THREE.Mesh(back_geometry,back_material);
+	background.add(back_mesh);
+	background.position.x = 0;
+	background.position.y = -1;
+	background.position.z = 0;
+	scene.add(background);
+	if(DEBUG){
 		scene.add(new THREE.AxisHelper(10));
 	}
+
 }
 
 function calculateColisions(dt){
@@ -237,6 +239,7 @@ function onKeyDown (event) {
 			break;
 		case 115: //s
 		case 83: //S
+			back_material.visible = !back_material.visible;
 			nave.inverseBoundingBox();
 			for (var i = 0; i < inimigos.length; i++) {
 				inimigos[i].inverseBoundingBox();
