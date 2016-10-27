@@ -248,10 +248,6 @@ function onKeyDown (event) {
 				bullets[i].inverseBoundingBox();
 			}
 			break;
-		case 98: //b
-		case 66: //B
-			createNewBullet();
-			break;
 		case 79: // O
 		case 111: // o
 			cheat_infinite_ammo = ! cheat_infinite_ammo;
@@ -293,7 +289,10 @@ function onKeyUp (event) {
 			break;
 		case 40://alert ("down key");
 			break;
-
+		case 98: //b
+		case 66: //B
+			createNewBullet();
+			break;
 		}
 }
 
