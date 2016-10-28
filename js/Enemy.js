@@ -47,10 +47,10 @@ class Enemy extends Movable{
 	}
 
 	getObjectCenter() {
-		return new THREE.Vector3(5,0,3);
+		return new THREE.Vector3(5,0,3.2);
 	}
 
 	getPowRadius() {
-		return 55;
+		return 60.0625;
 	}
 }
