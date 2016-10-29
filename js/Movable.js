@@ -51,6 +51,7 @@ class Movable extends THREE.Object3D{
 	getSpeed(){
 		return this.speed;
 	}
+
 	setSpeed(newSpeedX, newSpeedY, newSpeedZ){
 		this.speed.set(newSpeedX,newSpeedY,newSpeedZ);
 	}

@@ -122,6 +122,9 @@ function calculateColisions(dt){
 		nave.stop();
 		nave.updatePosition(dt);
 	}
+	else{
+		nave.wallHit = 0;
+	}
 
 	for (var b = 0; b < bullets.length;) {
 		if(bullets[b].hasTopBotWallColision(Z_MIN,Z_MAX)) {

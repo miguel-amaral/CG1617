@@ -6,6 +6,7 @@ class Ship extends Movable {
 	constructor(scene,x,y,z){
 		super(scene,x,y,z);
 		//this.ship = new THREE.Object3D();
+		this.wallHit = 0;
 		this.left = false;
 		this.right = false;
 		this.MIN_SPEED = MIN_SPEED_c;
@@ -35,15 +36,30 @@ class Ship extends Movable {
 	}
 	stop(){
 		this.setSpeed(0,0,0);
+		if (this.position.x < 0) {
+			this.wallHit = -1;
+		}
+		if (this.position.x > 0) {
+			this.wallHit = 1;
+		}
 	}
+
 	calculateAcelaration(){
 		if(Math.abs(this.speed.length()) < this.getTopSpeed()){
 			if(this.left) {
-				this.setAcceleration (-1 * ACELARATION, 0 , 0);
-				return;
+				if (this.wallHit == -1) {
+					this.setAcceleration (0,0,0);
+					return;
+				}
+					this.setAcceleration (-1 * ACELARATION, 0 , 0);
+					return;
 			} else if (this.right) {
-				this.setAcceleration (ACELARATION, 0 , 0);
-				return;
+					if (this.wallHit == 1) {
+						this.setAcceleration (0,0,0);
+						return;
+					}
+					this.setAcceleration (ACELARATION, 0 , 0);
+					return;
 			}
 		}
 		if (this.speed.x < 0 ) { this.setAcceleration (ACELARATION, 0 , 0); }
