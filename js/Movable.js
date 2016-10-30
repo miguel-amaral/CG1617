@@ -1,4 +1,3 @@
-const DEBUG       = 0;
 
 
 class Movable extends THREE.Object3D{
@@ -10,7 +9,7 @@ class Movable extends THREE.Object3D{
 		this.nextPosition.copy(this.position);
 		this.acceleration = new THREE.Vector3(0,0,0);
 		this.speed = new THREE.Vector3(0,0,0);
-//		this.body = new THREE.Object3D();
+
 		this.radius = Math.sqrt(this.getPowRadius());
 		this.updatePosition(0);
 		scene.add(this);
@@ -55,6 +54,11 @@ class Movable extends THREE.Object3D{
 	setSpeed(newSpeedX, newSpeedY, newSpeedZ){
 		this.speed.set(newSpeedX,newSpeedY,newSpeedZ);
 	}
+
+	stop(){
+		this.setSpeed(0,0,0);
+		this.setAcceleration(0,0,0);
+	}
 	positionElement(geometry, material, x, y, z) {
 		this.mesh = new THREE.Mesh(geometry, material);
 		this.mesh.position.set(x,y,z);
@@ -64,9 +68,14 @@ class Movable extends THREE.Object3D{
 		child.position.set(x,y,z);
 		this.add(child);
 	}
-	updatePosition(dt){
+
+	update(dt) {
+		this.calculateAcceleration();	
+		this.updatePosition(dt);
+	}
+
+	updatePosition(dt) {
 		this.nextPosition.copy(this.position);
-		this.calculateAcelaration();
 		this.speed.addScaledVector(this.acceleration, dt);
 		if (this.speed.length() < this.getMinSpeed()) {
 			this.setSpeed(0,0,0);
@@ -74,11 +83,12 @@ class Movable extends THREE.Object3D{
 			this.nextPosition.addScaledVector(this.getSpeed(), dt);
 		}
 	}
+
 	realUpdatePosition(){
 		this.position.copy(this.nextPosition);
 	}
 	//Needs to be overrided if another movement type desired
-	calculateAcelaration(){
+	calculateAcceleration(){
 		return new THREE.Vector3(0,0,0);
 	}
 	//Needs to be overrided if another movement type desired
@@ -110,6 +120,21 @@ class Movable extends THREE.Object3D{
 
 		return distance < sumRadius;
 	}
+
+	// ---------------- Border Collision check ------------------- //
+
+	borderCollision () {
+		if ( (this.nextPosition.x + this.radius > X_MAX) || (this.nextPosition.x - this.radius < X_MIN) ) {
+			return 1;
+		}
+		if ( (this.nextPosition.z + this.radius > Z_MAX) || (this.nextPosition.z - this.radius < Z_MIN) ) {
+			return 1;
+		}
+		return 0;
+	}
+
+	// -------------------------------------------------------------
+
 	hasLeftRightWallColision(x_left,x_right){
 
 		var myOrigin    = this.getObjectCenter();
@@ -119,6 +144,7 @@ class Movable extends THREE.Object3D{
 
 		return x_left >= (pos_x - radius) || x_right <= (pos_x + radius);
 	}
+
 	hasTopBotWallColision(x_bottom, x_top){
 		var myOrigin    = this.getObjectCenter();
 		myOrigin.add(this.nextPosition);

@@ -1,16 +1,17 @@
 'use strict'
 const TOP_SPEED_c  = 150;
 const MIN_SPEED_c   = 0.8;
-const ACELARATION = 200;
+const ACCELERATION = 200;
 class Ship extends Movable {
 	constructor(scene,x,y,z){
 		super(scene,x,y,z);
-		//this.ship = new THREE.Object3D();
-		this.wallHit = 0;
+
 		this.left = false;
 		this.right = false;
 		this.MIN_SPEED = MIN_SPEED_c;
 		this.TOP_SPEED = TOP_SPEED_c;
+		
+		// ------------------------------ SHIP GEOMETRY --------------------------------------- //
 		this.material = new THREE.MeshBasicMaterial({color: 0x0000ff, wireframe:false});
 		this.geometry = new THREE.CubeGeometry(14, 10, 5);
 		this.positionElement(this.geometry, this.material, 0, 0, 0);
@@ -20,7 +21,7 @@ class Ship extends Movable {
 		this.positionElement(this.geometry, this.material, 0, 0, -4);
 		this.geometry = new THREE.CubeGeometry(2, 2, 2);
 		this.positionElement(this.geometry, this.material, 0, 0, -6);
-		scene.add(this);
+		// -------------------------------------------------------------------------------------- //
 	}
 	stopLeft(){
 		this.left = false;
@@ -34,36 +35,19 @@ class Ship extends Movable {
 	startLeft(){
 		this.left = true;
 	}
-	stop(){
-		this.setSpeed(0,0,0);
-		if (this.position.x < 0) {
-			this.wallHit = -1;
-		}
-		if (this.position.x > 0) {
-			this.wallHit = 1;
-		}
-	}
 
-	calculateAcelaration(){
+	calculateAcceleration() {
 		if(Math.abs(this.speed.length()) < this.getTopSpeed()){
 			if(this.left) {
-				if (this.wallHit == -1) {
-					this.setAcceleration (0,0,0);
-					return;
-				}
-					this.setAcceleration (-1 * ACELARATION, 0 , 0);
-					return;
+				this.setAcceleration (-1 * ACCELERATION, 0 , 0);
+				return;
 			} else if (this.right) {
-					if (this.wallHit == 1) {
-						this.setAcceleration (0,0,0);
-						return;
-					}
-					this.setAcceleration (ACELARATION, 0 , 0);
-					return;
+				this.setAcceleration (ACCELERATION, 0 , 0);
+				return;
 			}
 		}
-		if (this.speed.x < 0 ) { this.setAcceleration (ACELARATION, 0 , 0); }
-		else if (this.speed.x > 0){ this.setAcceleration (-1 * ACELARATION, 0 , 0); }
+		if (this.speed.x < 0 ) { this.setAcceleration (ACCELERATION, 0 , 0); }
+		else if (this.speed.x > 0){ this.setAcceleration (-1 * ACCELERATION, 0 , 0); }
 		else { this.setAcceleration (0, 0, 0); }
 	}
 

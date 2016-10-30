@@ -12,7 +12,7 @@ var clk;
 var stats;
 var cheat_infinite_ammo = false;
 var bullet_counter=0;
-//const DEBUG       = 0;
+const DEBUG       = 1;
 
 //Game Boundaries
 const X_MAX = 100;
@@ -117,13 +117,10 @@ function createScene(){
 }
 
 function calculateColisions(dt){
-	//detectColision
-	if(nave.hasLeftRightWallColision(X_MIN,X_MAX)){
+
+	if (nave.borderCollision()) {
 		nave.stop();
 		nave.updatePosition(dt);
-	}
-	else{
-		nave.wallHit = 0;
 	}
 
 	for (var b = 0; b < bullets.length;) {
@@ -136,7 +133,7 @@ function calculateColisions(dt){
 	}
 
 	for (var i = 0; i < inimigos.length;) {
-		if(inimigos[i].hasLeftRightWallColision(X_MIN,X_MAX)) {
+		if(inimigos[i].hasLeftRightWallColision(X_MIN,X_MAX)) { 
 			inimigos[i].collidedLeftRightWall();
 			inimigos[i].updatePosition(dt);
 		}else if(inimigos[i].hasTopBotWallColision(Z_MIN,Z_MAX)) {
@@ -177,16 +174,16 @@ function animate(){
 
 	//CalculateNextPositions
 	//Update ship
-	nave.updatePosition(dt);
+	nave.update(dt);
 
 	//update all enemies
 	for (var i = 0; i < inimigos.length; i++) {
-		inimigos[i].updatePosition(dt);
+		inimigos[i].update(dt);
 	}
 
 	//update all bullets
 	for (var i = 0; i < bullets.length; i++) {
-		bullets[i].updatePosition(dt);
+		bullets[i].update(dt);
 	}
 
 

@@ -9,6 +9,7 @@ class Enemy extends Movable{
 		velocity.multiplyScalar(ALIEN_SPEED); // Initial speed
 		this.setSpeed(velocity.x, velocity.y, velocity.z);
 
+		// ------------------------------ ALIEN GEOMETRY --------------------------------------- //
 		this.material = new THREE.MeshBasicMaterial({color: 0xff0000, wireframe:false});
 		this.geometry = new THREE.CubeGeometry(10, 10, 2);
 		this.positionElement(this.geometry, this.material, 5, 0, 1);
@@ -20,18 +21,16 @@ class Enemy extends Movable{
 		this.positionElement(this.geometry, this.material, 9, 0, 2);
 		this.geometry = new THREE.CubeGeometry(10, 10, 2);
 		this.positionElement(this.geometry, this.material, 5, 0, 5);
-
-		//Legs
+			//Legs
 		this.geometry = new THREE.CubeGeometry(2, 10, 2);
 		this.positionElement(this.geometry, this.material, 10, 0, 6);
 		this.geometry = new THREE.CubeGeometry(2, 10, 2);
 		this.positionElement(this.geometry, this.material, 0, 0, 6);
-
-		//Hat
+			//Hat
 		this.material.side = THREE.DoubleSide;
 		this.geometry = new THREE.SphereGeometry(1.5, 0, 0, Math.PI/2, Math.PI*2, 0, Math.PI);
 		this.positionElement(this.geometry, this.material, 5, 1, -3)
-
+		// -------------------------------------------------------------------------------------- //
 	}
 
 	collidedAnotherEnemy(){
