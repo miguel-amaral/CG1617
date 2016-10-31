@@ -10,7 +10,7 @@ class Enemy extends Movable{
 		this.setSpeed(velocity.x, velocity.y, velocity.z);
 
 		// ------------------------------ ALIEN GEOMETRY --------------------------------------- //
-		this.material = new THREE.MeshBasicMaterial({color: 0xff0000, wireframe:false});
+		this.material = new THREE.MeshStandardMaterial( { color: 0xff0000, roughness: 0.5, metalness: 1.0 } );;
 		this.geometry = new THREE.CubeGeometry(10, 10, 2);
 		this.positionElement(this.geometry, this.material, 5, 0, 1);
 		this.geometry = new THREE.CubeGeometry(2, 10, 4);
