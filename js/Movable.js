@@ -70,7 +70,7 @@ class Movable extends THREE.Object3D{
 	}
 
 	update(dt) {
-		this.calculateAcceleration();	
+		this.calculateAcceleration();
 		this.updatePosition(dt);
 	}
 
@@ -111,18 +111,20 @@ class Movable extends THREE.Object3D{
 		myOrigin.sub(otherOrigin);
 
 		var x = myOrigin.getComponent(0);
-		var y = myOrigin.getComponent(1);
+		//var y = myOrigin.getComponent(1);
 		var z = myOrigin.getComponent(2);
 
-		var distance = Math.sqrt(Math.pow(x,2) + Math.pow(y,2) + Math.pow(z,2));
+//		var distance = Math.sqrt(Math.pow(x,2) + Math.pow(y,2) + Math.pow(z,2));
+		var distance = Math.sqrt(Math.pow(x,2) + Math.pow(z,2));
 
+		var distance = myOrigin.length();
 		var sumRadius = this.getRadius() + movable.getRadius();
 
 		return distance < sumRadius;
 	}
 
 	// ---------------- Border Collision check ------------------- //
-
+/*
 	borderCollision () {
 		if ( (this.nextPosition.x + this.radius > X_MAX) || (this.nextPosition.x - this.radius < X_MIN) ) {
 			return 1;
@@ -132,7 +134,7 @@ class Movable extends THREE.Object3D{
 		}
 		return 0;
 	}
-
+*/
 	// -------------------------------------------------------------
 
 	hasLeftRightWallColision(x_left,x_right){

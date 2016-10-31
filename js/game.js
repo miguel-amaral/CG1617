@@ -118,7 +118,7 @@ function createScene(){
 
 function calculateColisions(dt){
 
-	if (nave.borderCollision()) {
+	if (nave.hasLeftRightWallColision(X_MIN,X_MAX)) {
 		nave.stop();
 		nave.updatePosition(dt);
 	}
@@ -133,7 +133,7 @@ function calculateColisions(dt){
 	}
 
 	for (var i = 0; i < inimigos.length;) {
-		if(inimigos[i].hasLeftRightWallColision(X_MIN,X_MAX)) { 
+		if(inimigos[i].hasLeftRightWallColision(X_MIN,X_MAX)) {
 			inimigos[i].collidedLeftRightWall();
 			inimigos[i].updatePosition(dt);
 		}else if(inimigos[i].hasTopBotWallColision(Z_MIN,Z_MAX)) {
