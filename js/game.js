@@ -12,6 +12,12 @@ var clk;
 var stats;
 var cheat_infinite_ammo = false;
 var bullet_counter=0;
+
+//Ligts
+var theSun ; //AKA the sun
+var stars = [] ;
+
+
 const DEBUG       = 1;
 
 //Game Boundaries
@@ -34,7 +40,7 @@ const SHIP_ACELARATION = 200;
 const ENEMY_SPEED = 10;
 
 //start
-const STAR_DIST = 150;
+const STAR_DIST = 70;
 
 function init(){
 	clk = new THREE.Clock();
@@ -84,7 +90,10 @@ function init(){
 }
 
 function createLights(){
-
+	//Create the Sun
+	//TODO
+	//theSun = new Light
+	//Create the stars
 	var intensity = 10;
 	var distance = 50;
 	var decay = 2.0;
@@ -93,13 +102,13 @@ function createLights(){
 	var sphere = new THREE.SphereGeometry( 2, 16, 8 );
 
 	var j = 0;
-	while(j < 50){
+	while(j < 6){
 		var light1 = new THREE.PointLight( colours[j%6], intensity, distance, decay );
 		light1.add( new THREE.Mesh( sphere, new THREE.MeshBasicMaterial( { color: colours[j%6] } ) ) );
 
-		light1.position.copy( new THREE.Vector3 ((Math.random()*2)-1, 0, (Math.random()*2)-1));
+		light1.position.copy( new THREE.Vector3 ((Math.random()*2)-1, 0.2, (Math.random()*2)-1));
 		light1.position.multiplyScalar(STAR_DIST);
-
+		stars.push( light1 );
 		scene.add( light1 );
 		j++;
 	}
