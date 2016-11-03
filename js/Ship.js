@@ -10,9 +10,13 @@ class Ship extends Movable {
 		this.right = false;
 		this.MIN_SPEED = MIN_SPEED_c;
 		this.TOP_SPEED = TOP_SPEED_c;
-		
+		this.single = true;
+
+		//var cor = 0x0000ff;
+		var cor = 0x0000ff;
+		cor = 0xffffff;
 		// ------------------------------ SHIP GEOMETRY --------------------------------------- //
-		this.material = new THREE.MeshBasicMaterial({color: 0x0000ff, wireframe:false});
+		this.material = new THREE.MeshBasicMaterial({color: cor, wireframe:false});
 		this.geometry = new THREE.CubeGeometry(14, 10, 5);
 		this.positionElement(this.geometry, this.material, 0, 0, 0);
 		this.geometry = new THREE.CubeGeometry(8, 8, 5);
@@ -22,6 +26,10 @@ class Ship extends Movable {
 		this.geometry = new THREE.CubeGeometry(2, 2, 2);
 		this.positionElement(this.geometry, this.material, 0, 0, -6);
 		// -------------------------------------------------------------------------------------- //
+		var phong   = new THREE.MeshPhongMaterial  ( { color: cor } );
+		var lambert = new THREE.MeshLambertMaterial( { color: cor } );
+		this.simpleMaterial = this.material;
+		this.complexMaterials = [phong, lambert];
 	}
 	stopLeft(){
 		this.left = false;

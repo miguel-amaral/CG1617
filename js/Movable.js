@@ -1,8 +1,13 @@
-
-
 class Movable extends THREE.Object3D{
 	constructor(scene,x,y,z){
 		super();
+
+		this.simpleMaterial = null;
+		this.complexMaterials = [];
+		this.complexIndex = 0;
+		this.complex = false;
+		this.meshes = [];
+		this.single = false;
 
 		this.setPosition(x,y,z);
 		this.nextPosition = new THREE.Vector3(0,0,0);
@@ -60,9 +65,11 @@ class Movable extends THREE.Object3D{
 		this.setAcceleration(0,0,0);
 	}
 	positionElement(geometry, material, x, y, z) {
-		this.mesh = new THREE.Mesh(geometry, material);
-		this.mesh.position.set(x,y,z);
-		this.add(this.mesh);
+		var mesh = new THREE.Mesh(geometry, material);
+		mesh.position.set(x,y,z);
+		this.add(mesh);
+		this.meshes.push(mesh);
+
 	}
 	addChild(child, x, y, z) {
 		child.position.set(x,y,z);
@@ -114,7 +121,7 @@ class Movable extends THREE.Object3D{
 		//var y = myOrigin.getComponent(1);
 		var z = myOrigin.getComponent(2);
 
-//		var distance = Math.sqrt(Math.pow(x,2) + Math.pow(y,2) + Math.pow(z,2));
+		//		var distance = Math.sqrt(Math.pow(x,2) + Math.pow(y,2) + Math.pow(z,2));
 		var distance = Math.sqrt(Math.pow(x,2) + Math.pow(z,2));
 
 		var distance = myOrigin.length();
@@ -166,13 +173,41 @@ class Movable extends THREE.Object3D{
 		var x = this.getObjectCenter().getComponent(0);
 		var y = this.getObjectCenter().getComponent(1);
 		var z = this.getObjectCenter().getComponent(2);
-		this.positionElement(geometry, this.bounding_box_material, x,y,z);
+		var mesh = new THREE.Mesh(geometry, this.bounding_box_material);
+		mesh.position.set(x,y,z);
+		this.add(mesh);
 	}
 
 	inverseBoundingBox() {
 		this.bounding_box_material.visible = !this.bounding_box_material.visible;
 	}
 
+	// ---------------- Lighting Stuff --------------------------- //
+	swapComplex(){
+		this.complexIndex = (this.complexIndex+1)%2;
+		if( this.complex == true ){
+			if( this.single ) { console.log("Now is " + (this.complexIndex > 0 ? "lambert" : "phong")) ; }
+			this.material = this.complexMaterials[this.complexIndex];
+			this.updateMaterial();
+		}
+	}
 
+	swapBasic(){
+		if( this.complex == true ) {
+			this.material = this.simpleMaterial;
+		} else {
+			this.material = this.complexMaterials[this.complexIndex];
+		}
+		this.complex = !this.complex;
+		if( this.single ) { console.log("Now is " + this.complex ? (this.complexIndex > 0 ? "lambert" : "phong") : "simple" ) ; }
+		this.updateMaterial();
+	}
 
+	updateMaterial(){
+		for (var i = 0; i < this.meshes.length; i++) {
+			this.meshes[i].material = this.material;
+		}
+	}
 }
+
+//funtion updateObjMaterial(obj, material)

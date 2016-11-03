@@ -46,32 +46,8 @@ function init(){
 	clk = new THREE.Clock();
 
 	createScene();
+	createCameras();
 
-	// ---------- Ortographic Camera ------------- //
-	camera = new THREE.OrthographicCamera( 0, 0, 0, 0, 1, 1000 );
-  	calculateCameraBondaries(camera);
-
-	camera.position.set(0,150,0);
-	camera.lookAt(new THREE.Vector3(0,0,0));
-	cameras.push(camera);
-
-	// ----------Fixed Perspective Camera ------------- //
-
-	camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 1000 );
-	camera.position.set(0,100,150);
-	camera.lookAt(new THREE.Vector3(0,0,0));
-	cameras.push(camera);
-
-	// ----------Ship's Perspective Camera ------------- //
-
-	camera = new THREE.PerspectiveCamera( 85, window.innerWidth / window.innerHeight, 1, 1000 );
-	camera.up.set(0, 1, 0);
-	camera.lookAt(new THREE.Vector3(0,0,0));
-	nave.addChild(camera, 0, 20, 35);
-	cameras.push(camera);
-	//---------------------------------------------------//
-
-	camera = cameras[camera_index];
 
 	renderer = new THREE.WebGLRenderer();
   	renderer.setSize( window.innerWidth, window.innerHeight );
@@ -89,12 +65,63 @@ function init(){
 	animate();
 }
 
+function createCameras(){
+	// ---------- Ortographic Camera ------------- //
+	camera = new THREE.OrthographicCamera( 0, 0, 0, 0, 1, 1000 );
+	calculateCameraBondaries(camera);
+
+	camera.position.set(0,150,0);
+	camera.lookAt(new THREE.Vector3(0,0,0));
+	cameras.push(camera);
+
+	// ----------Fixed Perspective Camera ------------- //
+
+	camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 1000 );
+	camera.position.set(0,100,150);
+	camera.lookAt(new THREE.Vector3(0,0,0));
+	cameras.push(camera);
+
+	// ----------Ship's Perspective Camera ------------- //
+
+	camera = new THREE.PerspectiveCamera( 85, window.innerWidth / window.innerHeight, 1, 1000 );
+	camera.up.set(0, 1, 0);
+	camera.lookAt(new THREE.Vector3(0,0,0));
+	nave.addChild(camera, 0, 20, 35); //Add to ship
+	cameras.push(camera);
+
+	// ----------Fixed Perspective Camera Behind ------------- //
+
+	camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 1000 );
+	camera.position.set(0,20,-150);
+	camera.lookAt(new THREE.Vector3(0,0,0));
+	cameras.push(camera);
+
+	// ----------Fixed Perspective Camera Left ------------- //
+
+	camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 1000 );
+	camera.position.set(-150,20,0);
+	camera.lookAt(new THREE.Vector3(0,0,0));
+	cameras.push(camera);
+	// ----------Fixed Perspective Camera Right ------------- //
+
+	camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 1000 );
+	camera.position.set(150,20,0);
+	camera.lookAt(new THREE.Vector3(0,0,0));
+	cameras.push(camera);
+
+
+	camera = cameras[camera_index];
+}
+
 function createLights(){
 	//Create the Sun
-	//TODO
-	//theSun = new Light
+	theSun = new THREE.DirectionalLight( 0xffffff, 10 );
+	//	sunSphere = new THREE.SphereGeometry( 2, 16, 8 );
+
+	theSun.position.set( 0, 1, 1);
+	scene.add( theSun );
 	//Create the stars
-	var intensity = 10;
+	var intensity = 1;
 	var distance = 50;
 	var decay = 2.0;
 	var c1 = 0xff0040, c2 = 0x0040ff, c3 = 0x80ff80, c4 = 0xffaa00, c5 = 0x00ffaa, c6 = 0xff1100;
@@ -102,9 +129,9 @@ function createLights(){
 	var sphere = new THREE.SphereGeometry( 2, 16, 8 );
 
 	var j = 0;
-	while(j < 6){
-		var light1 = new THREE.PointLight( colours[j%6], intensity, distance, decay );
-		light1.add( new THREE.Mesh( sphere, new THREE.MeshBasicMaterial( { color: colours[j%6] } ) ) );
+	while(j < 30){
+		var light1 = new THREE.PointLight( colours[j%colours.length], intensity, distance, decay );
+		light1.add( new THREE.Mesh( sphere, new THREE.MeshBasicMaterial( { color: colours[j%colours.length] } ) ) );
 
 		light1.position.copy( new THREE.Vector3 ((Math.random()*2)-1, 0.2, (Math.random()*2)-1));
 		light1.position.multiplyScalar(STAR_DIST);
@@ -112,6 +139,30 @@ function createLights(){
 		scene.add( light1 );
 		j++;
 	}
+//	j = 0;
+//	var light1 = new THREE.PointLight( colours[j%colours.length], intensity, distance, decay );
+//	light1.add( new THREE.Mesh( sphere, new THREE.MeshBasicMaterial( { color: colours[j%colours.length] } ) ) );
+//
+//	light1.position.copy( new THREE.Vector3 ((Math.random()*2)-1, 0.2, (Math.random()*2)-1));
+//	light1.position.multiplyScalar(STAR_DIST);
+//	stars.push( light1 );
+//	scene.add( light1 );
+
+}
+
+function inversePontual(){
+	for (var i = 0; i < stars.length; i++) {
+		stars[i].visible = !stars[i].visible;
+	}
+}
+
+function inverseFloor(){
+	back_material.visible = !back_material.visible;
+}
+
+function inverseSun(){
+	theSun.visible = !theSun.visible;
+
 }
 
 function createScene(){
@@ -135,12 +186,12 @@ function createScene(){
 	}
 
 	var background = new THREE.Object3D();
-	back_material = new THREE.MeshBasicMaterial({color: 0xffffff, wireframe:true, visible:false});
+	back_material = new THREE.MeshPhongMaterial({color: 0xffffff, wireframe:false, visible:false});
 	var back_geometry = new THREE.CubeGeometry((X_MAX-X_MIN),1,(Z_MAX-Z_MIN));
 	var back_mesh	  = new THREE.Mesh(back_geometry,back_material);
 	background.add(back_mesh);
 	background.position.x = 0;
-	background.position.y = -1;
+	background.position.y = -5;
 	background.position.z = 0;
 	scene.add(background);
 	if(DEBUG){
@@ -240,12 +291,14 @@ function animate(){
 	renderer.render(scene, camera);
 	requestAnimationFrame(animate);
 }
+
 function createNewBullet(){
-	var bullet = new Bullet(scene,nave.getPositionX(),nave.getPositionY(),nave.getPositionZ());
+	var bullet = new Bullet(scene,nave.getPositionX(),nave.getPositionY(),nave.getPositionZ(),nave.complex,nave.complexIndex);
 	bullet.setSpeed(0,0,-BULLET_SPEED);
 	bullets.push(bullet);
 	bullet_counter = bullet_counter+1;
 }
+
 function onKeyDown (event) {
 
 	switch (event.keyCode) {
@@ -270,9 +323,37 @@ function onKeyDown (event) {
 				bullets[i].inverseWireframe();
 			}
 			break;
+		case 110: //n
+		case 78 : //N
+			inverseSun();
+			break;
+		case 108: //l
+		case 76 : //L
+			nave.swapBasic();
+			for (var i = 0; i < inimigos.length; i++) {
+				inimigos[i].swapBasic();
+			}
+			for (var i = 0; i < bullets.length; i++) {
+				bullets[i].swapBasic();
+			}
+			break;
+		case 103: //g
+		case 71 : //G
+			nave.swapComplex();
+			for (var i = 0; i < inimigos.length; i++) {
+				inimigos[i].swapComplex();
+			}
+			for (var i = 0; i < bullets.length; i++) {
+				bullets[i].swapComplex();
+			}
+			break;
+		case 122: //z
+		case 90: //Z
+			inverseFloor();
+			break;
 		case 115: //s
 		case 83: //S
-			back_material.visible = !back_material.visible;
+			//back_material.visible = !back_material.visible;
 			nave.inverseBoundingBox();
 			for (var i = 0; i < inimigos.length; i++) {
 				inimigos[i].inverseBoundingBox();
@@ -287,6 +368,10 @@ function onKeyDown (event) {
 			break
 		case 99: // c
 		case 67: // C
+			inversePontual();
+			break;
+		case 86: // V
+		case 118: // v
 			var num_cameras = cameras.length;
 			camera_index = (camera_index+1)%num_cameras;
 			camera = cameras[camera_index];
@@ -307,6 +392,21 @@ function onKeyDown (event) {
 			camera_index = 2;
 			calculateCameraBondaries(camera);
         	break;
+    	case 52: // 4
+        	camera=cameras[3];
+			camera_index = 3;
+			calculateCameraBondaries(camera);
+        	break;
+    	case 53: // 5
+        	camera=cameras[4];
+			camera_index = 4;
+			calculateCameraBondaries(camera);
+        	break;
+    	case 54: // 6
+        	camera=cameras[5];
+			camera_index = 5;
+			calculateCameraBondaries(camera);
+        	break;
     }
 }
 
@@ -322,6 +422,7 @@ function onKeyUp (event) {
 			break;
 		case 40://alert ("down key");
 			break;
+		case 40: //space bar
 		case 98: //b
 		case 66: //B
 			createNewBullet();
