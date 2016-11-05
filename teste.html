@@ -46,8 +46,93 @@
 		var v3 = new THREE.Vector3(10,10,0);
 		var v4 = new THREE.Vector3(0,10,0);
 		//cubes_formation(v1, v2, v3, v4);
-		myCube();
+		//myCube();
+		cubic();
 		animate();
+
+		function cubic() {
+			var geometry = new THREE.Geometry();
+			var material = new THREE.MeshBasicMaterial({ color: 0xffaa00, wireframe: false });
+
+			geometry.vertices.push(
+				new THREE.Vector3( 0,  0, 0 ),  //0 Q1 bottom
+				new THREE.Vector3( 14, 0, 0 ),  //1 Q1 bottom
+				new THREE.Vector3( 14, 10, 0 ), //2 Q1 bottom
+				new THREE.Vector3( 0, 10, 0 ),  //3 Q1 bottom
+				new THREE.Vector3( 14, 0, 4 ),  //4 Q1 top
+				new THREE.Vector3( 0, 0, 4 ),   //5 Q1 top 
+				new THREE.Vector3( 14, 10, 4 ), //6 Q1 top
+				new THREE.Vector3( 0, 10, 4 ),   //7 Q1 top
+				new THREE.Vector3( 11, 1, 4 ), //8 Q1-Q2 buraco
+				new THREE.Vector3( 3, 1, 4 ), //9 Q1-Q2 buraco
+				new THREE.Vector3( 3, 9, 4 ), //10 Q1-Q2 buraco
+				new THREE.Vector3( 11, 9, 4 ), //11 Q1-Q2 buraco
+				new THREE.Vector3( 0, 1, 4 ), //12 Q1 top auxiliares
+				new THREE.Vector3( 0, 9, 4 ), //13 Q1 top auxiliares
+				new THREE.Vector3( 14, 1, 4 ), //14 Q1 top auxiliares
+				new THREE.Vector3( 14, 9, 4 ), //15 Q1 top auxiliares
+				new THREE.Vector3( 11, 3, 7), //16 Q2 top
+				new THREE.Vector3( 3, 1 , 7), // 17 Q2 top
+				new THREE.Vector3( 3, 9, 7), // 18 Q2 top
+				new THREE.Vector3( 11, 9, 7), // 19 Q2 top
+				new THREE.Vector3( 9, 3, 7), //20 Q2-Q3 buraco
+				new THREE.Vector3( 5, 3, 7), //21 Q2-Q3 buraco
+				new THREE.Vector3(5, 7, 7), //22 Q2-Q3 buraco
+				new THREE.Vector3(9, 7, 7), //23 Q2-Q3 buraco
+				new THREE.Vector3( 3, 3, 7), //24 Q2 auxiliares
+				new THREE.Vector3( 3, 7, 7), //25 Q2 auxiliares
+				new THREE.Vector3( 11, 3, 7), //26 Q2 auxiliares
+				new THREE.Vector3( 11, 7, 7), //27 Q2 auxiliares
+				new THREE.Vector3( 9, 3, 12), //28 Q3 top
+				new THREE.Vector3( 5, 3, 12), //29 Q3 top
+				new THREE.Vector3( 5, 7, 12), //30 Q3 top
+				new THREE.Vector3( 9, 7, 12), //31 Q3 top
+				new THREE.Vector3( 8, 4, 12), //32 Q3-Q4 buraco
+				new THREE.Vector3( 6, 4, 12), //33 Q3-Q4 buraco
+				new THREE.Vector3( 6, 6, 12), //34 Q3-Q4 buraco
+				new THREE.Vector3( 8, 6, 12), //35 Q3-Q4 buraco
+				new THREE.Vector3( 5, 4, 12), //36 Q3 auxiliar
+				new THREE.Vector3( 5, 6, 12), //37 Q3 auxiliar
+				new THREE.Vector3( 9, 6, 12), //38 Q3 auxiliar
+				new THREE.Vector3( 9, 4, 12), //39 Q3 auxiliar
+				new THREE.Vector3( 8, 4, 14), //40 Q4 top
+				new THREE.Vector3( 6, 4, 14), //41 Q4 top
+				new THREE.Vector3( 6, 6, 14), //42 Q4 top
+				new THREE.Vector3( 8, 6, 14) //43 Q4 top
+			);
+
+			geometry.faces.push( new THREE.Face3( 1, 5, 0), //x-z
+								 new THREE.Face3( 4, 5, 0), //x-z
+								 new THREE.Face3( 7, 3, 5), //z-y
+								 new THREE.Face3( 5, 3, 0), //z-y
+								 new THREE.Face3( 3, 2, 7), //x-z
+								 new THREE.Face3( 2, 6, 7), //x-z
+								 new THREE.Face3( 2, 6, 1), //z-y
+								 new THREE.Face3( 6, 4, 1), //z-y
+								 new THREE.Face3( 3, 2, 0), //x-y
+								 new THREE.Face3( 2, 1, 0), //x-y
+								 new THREE.Face3( 4, 14, 5), 
+								 new THREE.Face3( 14, 12, 5),
+								 new THREE.Face3( 14, 15, 11),
+								 new THREE.Face3( 11, 8, 14),
+								 new THREE.Face3( 9, 13, 12),
+								 new THREE.Face3( 9, 10, 13),
+								 new THREE.Face3( 7, 15, 6),
+								 new THREE.Face3( 15, 7, 13),
+								 new THREE.Face3( 8, 17, 9),
+								 new THREE.Face3( 16, 17, 9),
+								 new THREE.Face3( 10, 11, 18),
+								 new THREE.Face3( 11, 19, 18)
+
+		 	);	
+
+			geometry.computeBoundingSphere();
+			var mesh = new THREE.Mesh( geometry, material );
+			scene.add(mesh);
+		}
+
+
+
 
 		function myCube(){
 			var geometry = new THREE.Geometry();

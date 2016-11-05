@@ -62,20 +62,6 @@ function init(){
 	stats.showPanel( 0 ); // 0: fps, 1: ms, 2: mb, 3+: custom
 	document.body.appendChild( stats.dom );
 
-	var geometry_teste = new THREE.Geometry();
-	var material_teste = new THREE.MeshBasicMaterial({ color: 0xffaa00, wireframe: false });
-
-	geometry_teste.vertices.push(
-		new THREE.Vector3( 0, 0, 0 ),   //0
-		new THREE.Vector3( 0, 0, 100 ),   //1
-		new THREE.Vector3( 0, 100, 0 )   //2
-	);
-
-	geometry_teste.faces.push( new THREE.Face3( 0, 1, 2 ) );
-
-	geometry_teste.computeBoundingSphere();
-	var mesh_teste = new THREE.Mesh( geometry_teste, material_teste );
-	scene.add(mesh_teste);
 	animate();
 }
 
