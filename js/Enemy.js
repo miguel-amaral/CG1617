@@ -23,10 +23,14 @@ class Enemy extends Movable{
 		this.geometry = new THREE.CubeGeometry(10, 10, 2);
 		this.positionElement(this.geometry, this.material, 5, 0, 5);
 			//Legs
-		this.geometry = new THREE.CubeGeometry(2, 10, 2);
-		this.positionElement(this.geometry, this.material, 10, 0, 6);
-		this.geometry = new THREE.CubeGeometry(2, 10, 2);
-		this.positionElement(this.geometry, this.material, 0, 0, 6);
+		this.geometry = new THREE.CubeGeometry(2, 2, 2);
+		this.positionElement(this.geometry, this.material, 0, 5, 6);
+		this.geometry = new THREE.CubeGeometry(2, 2, 2);
+		this.positionElement(this.geometry, this.material, 0, -5, 6);
+		this.geometry = new THREE.CubeGeometry(2, 2, 2);
+		this.positionElement(this.geometry, this.material, 10, 5, 6);
+		this.geometry = new THREE.CubeGeometry(2, 2, 2);
+		this.positionElement(this.geometry, this.material, 10, -5, 6);
 			//Hat
 		this.material.side = THREE.DoubleSide;
 		this.geometry = new THREE.SphereGeometry(1.5, 0, 0, Math.PI/2, Math.PI*2, 0, Math.PI);
