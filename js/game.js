@@ -115,7 +115,7 @@ function createCameras(){
 
 function createLights(){
 	//Create the Sun
-	theSun = new THREE.DirectionalLight( 0xffffff, 10 );
+	theSun = new THREE.DirectionalLight( 0xffff00, 0.5 );
 	//	sunSphere = new THREE.SphereGeometry( 2, 16, 8 );
 
 	theSun.position.set( 0, 1, 1);
@@ -129,7 +129,7 @@ function createLights(){
 	var sphere = new THREE.SphereGeometry( 2, 16, 8 );
 
 	var j = 0;
-	while(j < 30){
+	while(j < 6){
 		var light1 = new THREE.PointLight( colours[j%colours.length], intensity, distance, decay );
 		light1.add( new THREE.Mesh( sphere, new THREE.MeshBasicMaterial( { color: colours[j%colours.length] } ) ) );
 

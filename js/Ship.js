@@ -12,17 +12,27 @@ class Ship extends Movable {
 		this.TOP_SPEED = TOP_SPEED_c;
 		this.single = true;
 
-		
+
 		this.material = new THREE.MeshBasicMaterial({color: cor, wireframe:false});
 		this.calculategeometry(this.material);
-		
+
+		var blue =0x0000ff;
 		var cor = 0x0000ff;
 		cor = 0xffffff;
-		var phong   = new THREE.MeshPhongMaterial  ( { color: cor, shininess: 120, shading: THREE.FlatShading } );
-		var lambert = new THREE.MeshLambertMaterial( { color: cor } );
+		var phong   = new THREE.MeshPhongMaterial  ( { color: cor ,             // Diffuse color of the material
+			  										   specular: cor,			// how shiny the material is and the color of its shine
+													   shininess: 200,			// How shiny the specular highlight is
+													   emissive: 0x0000ff, 		//(light) color of the material, essentially a solid color unaffected by other lighting
+													   emissiveIntensity: 0.1, 	//range [0,1]
+													   shading: THREE.FlatShading
+												     } );
+		var lambert = new THREE.MeshLambertMaterial( { color: cor,				// Diffuse color of the material
+													   emissive: 0x0000ff, 		//(light) color of the material, essentially a solid color unaffected by other lighting
+													   emissiveIntensity: 0.1, 	//range [0,1]
+													 } );
 		this.simpleMaterial = this.material;
 		this.complexMaterials = [phong, lambert];
-		
+
 	}
 	stopLeft(){
 		this.left = false;
@@ -61,11 +71,11 @@ class Ship extends Movable {
 	}
 
 	getObjectCenter() {
-		return new THREE.Vector3(0,0,-2);
+		return new THREE.Vector3(7,5,-2.9167);
 	}
 
 	getPowRadius() {
-		return 69.25;
+		return 57.56557289;
 	}
 	calculategeometry(material) {
 		var cor = 0x0000ff;
@@ -78,7 +88,7 @@ class Ship extends Movable {
 				new THREE.Vector3( 14, 10, 0 ), //2 Q1 bottom
 				new THREE.Vector3( 0, 10, 0 ),  //3 Q1 bottom
 				new THREE.Vector3( 14, 0, -4 ),  //4 Q1 top
-				new THREE.Vector3( 0, 0, -4 ),   //5 Q1 top 
+				new THREE.Vector3( 0, 0, -4 ),   //5 Q1 top
 				new THREE.Vector3( 14, 10, -4 ), //6 Q1 top
 				new THREE.Vector3( 0, 10, -4 ),   //7 Q1 top
 				new THREE.Vector3( 11, 1, -4 ), //8 Q1-Q2 buraco
@@ -123,7 +133,7 @@ class Ship extends Movable {
 				new THREE.Vector3( 8, 6, -10.5) //43 Q4 top
 				);
 
-			this.geometry.faces.push( 
+			this.geometry.faces.push(
 								//--lados--
 								 new THREE.Face3( 1, 0, 5), //x-z
 								 new THREE.Face3( 4, 1, 5), //x-z
@@ -136,7 +146,7 @@ class Ship extends Movable {
 								 new THREE.Face3( 0, 2, 3), //x-y tampa
 								 new THREE.Face3( 0, 1, 2), //x-y tampa
 								 //--parte de cima--
-								 new THREE.Face3( 4, 5, 14), 
+								 new THREE.Face3( 4, 5, 14),
 								 new THREE.Face3( 5, 12, 14),
 								 new THREE.Face3( 11, 15, 14),
 								 new THREE.Face3( 14, 8, 11),
@@ -154,7 +164,7 @@ class Ship extends Movable {
 								 new THREE.Face3( 18, 17, 10), //z-y
 								 new THREE.Face3( 10, 17, 9), //z-y
 								 //--parte de cima--Q2
-								 new THREE.Face3( 16, 17, 26), 
+								 new THREE.Face3( 16, 17, 26),
 								 new THREE.Face3( 17, 24, 26),
 								 new THREE.Face3( 23, 27, 26),
 								 new THREE.Face3( 26, 20, 23),
@@ -172,7 +182,7 @@ class Ship extends Movable {
 								 new THREE.Face3( 30, 29, 22), //z-y
 								 new THREE.Face3( 22, 29, 21), //z-y
 								 //--parte de cima Q3--
-								 new THREE.Face3( 28, 29, 39), 
+								 new THREE.Face3( 28, 29, 39),
 								 new THREE.Face3( 29, 36, 39),
 								 new THREE.Face3( 35, 38, 39),
 								 new THREE.Face3( 39, 32, 35),
@@ -196,7 +206,7 @@ class Ship extends Movable {
 
 
 
-								);	
+								);
 
 			this.geometry.computeBoundingSphere();
 			this.pushMesh(this.geometry, this.material);
@@ -213,5 +223,5 @@ class Ship extends Movable {
 		// this.positionElement(this.geometry, this.material, 0, 0, -4);
 		// this.geometry = new THREE.CubeGeometry(2, 2, 2);
 		// this.positionElement(this.geometry, this.material, 0, 0, -6);
-	
+
 }

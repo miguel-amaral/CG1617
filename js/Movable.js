@@ -66,7 +66,7 @@ class Movable extends THREE.Object3D{
 	}
 
 	pushMesh(geometry, material) {
-		var mesh = new THREE.Mesh( this.geometry, this.material );
+		var mesh = new THREE.Mesh( geometry, material );
 		this.add(mesh);
 		this.meshes.push(mesh);
 	}
