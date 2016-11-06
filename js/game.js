@@ -129,7 +129,7 @@ function createLights(){
 	var sphere = new THREE.SphereGeometry( 2, 16, 8 );
 
 	var j = 0;
-	while(j < 6){
+	while(j < 20){
 		var light1 = new THREE.PointLight( colours[j%colours.length], intensity, distance, decay );
 		light1.add( new THREE.Mesh( sphere, new THREE.MeshBasicMaterial( { color: colours[j%colours.length] } ) ) );
 
@@ -139,14 +139,14 @@ function createLights(){
 		scene.add( light1 );
 		j++;
 	}
-//	j = 0;
-//	var light1 = new THREE.PointLight( colours[j%colours.length], intensity, distance, decay );
-//	light1.add( new THREE.Mesh( sphere, new THREE.MeshBasicMaterial( { color: colours[j%colours.length] } ) ) );
-//
-//	light1.position.copy( new THREE.Vector3 ((Math.random()*2)-1, 0.2, (Math.random()*2)-1));
-//	light1.position.multiplyScalar(STAR_DIST);
-//	stars.push( light1 );
-//	scene.add( light1 );
+	//	j = 0;
+	//	var light1 = new THREE.PointLight( colours[j%colours.length], intensity, distance, decay );
+	//	light1.add( new THREE.Mesh( sphere, new THREE.MeshBasicMaterial( { color: colours[j%colours.length] } ) ) );
+	//
+	//	light1.position.copy( new THREE.Vector3 ((Math.random()*2)-1, 0.2, (Math.random()*2)-1));
+	//	light1.position.multiplyScalar(STAR_DIST);
+	//	stars.push( light1 );
+	//	scene.add( light1 );
 
 }
 
@@ -293,7 +293,7 @@ function animate(){
 }
 
 function createNewBullet(){
-	var bullet = new Bullet(scene,nave.getPositionX(),nave.getPositionY(),nave.getPositionZ(),nave.complex,nave.complexIndex);
+	var bullet = new Bullet(scene,nave.getPositionX()+nave.getObjectCenter().getComponent(0),nave.getPositionY()+nave.getObjectCenter().getComponent(1),nave.getPositionZ()+nave.getObjectCenter().getComponent(2),nave.complex,nave.complexIndex);
 	bullet.setSpeed(0,0,-BULLET_SPEED);
 	bullets.push(bullet);
 	bullet_counter = bullet_counter+1;
