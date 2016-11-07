@@ -175,7 +175,7 @@ function createPointLight(vector,colour,intensity, distance, decay){
 
 }
 
-function switchOnOffLights() {
+/*function switchOnOffLights() {
 	if(lightsOn) {
 		//save old values
 		starVisible = stars[0].visible;
@@ -210,7 +210,7 @@ function inversePontual(){
 			starsHelpers[i].visible = !starsHelpers[i].visible;
 		}
 	}
-}
+}*/
 
 function inverseFloor(){
 	back_material.visible = !back_material.visible;
