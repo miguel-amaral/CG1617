@@ -14,11 +14,6 @@ var stats;
 var cheat_infinite_ammo = false;
 var bullet_counter=0;
 
-//Ligts
-var lightsOn    = false ;
-var starVisible = false ;
-
-
 const DEBUG       = 1;
 
 //Game Boundaries
@@ -26,8 +21,6 @@ const X_MAX = 100;
 const X_MIN = -100;
 const Z_MAX = 100;
 const Z_MIN = -100;
-
-//movement variables
 
 //Bullet
 const BULLET_SPEED = 50;
@@ -39,9 +32,12 @@ const SHIP_ACELARATION = 200;
 
 //Enemy
 const ENEMY_SPEED = 10;
+var noEnemiesTime = 0;
 
 //start
 const STAR_DIST = 70;
+const RESTART_TIME = 5; //SECONDS
+
 
 function init(){
 	clk = new THREE.Clock();
@@ -118,30 +114,14 @@ function createScene(){
 	'use strict';
 	scene  = new THREE.Scene();
 
-	nave = new Ship(scene,20,0,80);
-
-	var j = 0;
-	while(j < 2){
-		var i = 0;
-		var pos_x = X_MIN+5;
-		while(i < 9){
-
-			var enemy1 = new Enemy(scene,pos_x,0,j*20-50);
-			inimigos.push(enemy1);
-			i++;
-			pos_x += 20;
-		}
-		j++;
-	}
+	restart();
 
 	var background = new THREE.Object3D();
 	back_material = new THREE.MeshPhongMaterial({color: 0xffffff, wireframe:false, visible:false});
 	var back_geometry = new THREE.CubeGeometry((X_MAX-X_MIN),1,(Z_MAX-Z_MIN));
 	var back_mesh	  = new THREE.Mesh(back_geometry,back_material);
 	background.add(back_mesh);
-	background.position.x = 0;
-	background.position.y = -5;
-	background.position.z = 0;
+	background.position.copy(new THREE.Vector3(0,-5,0));
 	scene.add(background);
 	if(DEBUG){
 		scene.add(new THREE.AxisHelper(10));
@@ -214,6 +194,42 @@ function calculateColisions(dt){
 	}
 }
 
+function restart(){
+	//Remove Everything
+	if(nave != null){
+		scene.remove(nave);
+	}
+	for (var b = 0; b < bullets.length;) {
+		scene.remove(bullets[b]);
+		bullets.splice(b,1);
+	}
+
+	for (var i = 0; i < inimigos.length;) {
+		scene.remove(inimigos[i]);
+		inimigos.splice(i,1);
+	}
+
+	nave = new Ship(scene,20,0,80,true,0);
+	createMoreEnemies()
+}
+
+function createMoreEnemies(){
+	var j = 0;
+	while(j < 2){
+		var i = 0;
+		var pos_x = X_MIN+5;
+		while(i < 9){
+
+			var enemy1 = new Enemy(scene,pos_x,0,j*20-50,nave.complex,nave.complexIndex);
+			inimigos.push(enemy1);
+			i++;
+			pos_x += 20;
+		}
+		j++;
+	}
+}
+
+
 function animate(){
 	stats.begin();
 	var dt = clk.getDelta();
@@ -260,7 +276,8 @@ function animate(){
 }
 
 function createNewBullet(){
-	var bullet = new Bullet(scene,nave.getPositionX()+nave.getObjectCenter().getComponent(0),nave.getPositionY()+nave.getObjectCenter().getComponent(1),nave.getPositionZ()+nave.getObjectCenter().getComponent(2),nave.complex,nave.complexIndex);
+	var bulletPosition = ( new THREE.Vector3 (nave.getPositionX(), nave.getPositionY(), nave.getPositionZ()) ).add(nave.getObjectCenter());
+	var bullet = new Bullet(scene, bulletPosition, nave.complex, nave.complexIndex);
 	bullet.setSpeed(0,0,-BULLET_SPEED);
 	bullets.push(bullet);
 	bullet_counter = bullet_counter+1;

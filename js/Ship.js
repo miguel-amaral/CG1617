@@ -3,7 +3,7 @@ const TOP_SPEED_c  = 150;
 const MIN_SPEED_c   = 0.8;
 const ACCELERATION = 200;
 class Ship extends Movable {
-	constructor(scene,x,y,z){
+	constructor(scene,x,y,z,complex,index){
 		super(scene,x,y,z);
 
 		this.left = false;
@@ -15,24 +15,31 @@ class Ship extends Movable {
 
 
 		var blue =0x0000ff;
-		var cor = 0x0000ff;
-		cor = 0xff0000;
+		var cor = 0xffffff;
+
 		this.material = new THREE.MeshBasicMaterial({color: cor, wireframe:false});
-		this.calculategeometry(this.material);
 		var phong   = new THREE.MeshPhongMaterial  ( { color: cor ,             // Diffuse color of the material
-			  										   specular: cor,			// how shiny the material is and the color of its shine
-													   shininess: 200,			// How shiny the specular highlight is
-													   //emissive: 0x0000ff, 		//(light) color of the material, essentially a solid color unaffected by other lighting
-													   //emissiveIntensity: 0.1, 	//range [0,1]
-													   //shading: THREE.FlatShading
-												     } );
+  										   specular: cor,			// how shiny the material is and the color of its shine
+										   shininess: 200,			// How shiny the specular highlight is
+										   //emissive: 0x0000ff, 		//(light) color of the material, essentially a solid color unaffected by other lighting
+										   //emissiveIntensity: 0.1, 	//range [0,1]
+										   //shading: THREE.FlatShading
+									     } );
 		var lambert = new THREE.MeshLambertMaterial( { color: cor				// Diffuse color of the material
-													   //,emissive: 0x0000ff 		//(light) color of the material, essentially a solid color unaffected by other lighting
-													   //,emissiveIntensity: 0.1 	//range [0,1]
-													 } );
+										   //,emissive: 0x0000ff 		//(light) color of the material, essentially a solid color unaffected by other lighting
+										   //,emissiveIntensity: 0.1 	//range [0,1]
+										 } );
 		this.simpleMaterial = this.material;
 		this.complexMaterials = [phong, lambert];
 
+		if(complex == true) {
+			this.material = this.complexMaterials[index];
+		} else {
+			this.material = this.simpleMaterial;
+		}
+
+
+		this.calculategeometry(this.material);
 	}
 	stopLeft(){
 		this.left = false;
