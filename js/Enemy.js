@@ -1,7 +1,7 @@
 'use strict'
 const ALIEN_SPEED = 10;
 class Enemy extends Movable{
-	constructor(scene,x,y,z){
+	constructor(scene,x,y,z,complex,index){
 		super(scene,x,y,z);
 		//this.enemy = new THREE.Object3D();
 		var cor = 0xff0000;
@@ -11,31 +11,8 @@ class Enemy extends Movable{
 		this.setSpeed(velocity.x, velocity.y, velocity.z);
 
 		// ------------------------------ ALIEN GEOMETRY --------------------------------------- //
-		this.material = new THREE.MeshBasicMaterial( { color: cor } );;
-		this.geometry = new THREE.CubeGeometry(10, 10, 2);
-		this.positionElement(this.geometry, this.material, 5, 0, 1);
-		this.geometry = new THREE.CubeGeometry(2, 10, 4);
-		this.positionElement(this.geometry, this.material, 1, 0, 2);
-		this.geometry = new THREE.CubeGeometry(2, 10, 4);
-		this.positionElement(this.geometry, this.material, 5, 0, 2);
-		this.geometry = new THREE.CubeGeometry(2, 10, 4);
-		this.positionElement(this.geometry, this.material, 9, 0, 2);
-		this.geometry = new THREE.CubeGeometry(10, 10, 2);
-		this.positionElement(this.geometry, this.material, 5, 0, 5);
-			//Legs
-		this.geometry = new THREE.CubeGeometry(2, 2, 2);
-		this.positionElement(this.geometry, this.material, 0, 5, 6);
-		this.geometry = new THREE.CubeGeometry(2, 2, 2);
-		this.positionElement(this.geometry, this.material, 0, -5, 6);
-		this.geometry = new THREE.CubeGeometry(2, 2, 2);
-		this.positionElement(this.geometry, this.material, 10, 5, 6);
-		this.geometry = new THREE.CubeGeometry(2, 2, 2);
-		this.positionElement(this.geometry, this.material, 10, -5, 6);
-			//Hat
+		this.material = new THREE.MeshBasicMaterial( { color: cor } );
 		this.material.side = THREE.DoubleSide;
-		this.geometry = new THREE.SphereGeometry(1.5, 0, 0, Math.PI/2, Math.PI*2, 0, Math.PI);
-		this.positionElement(this.geometry, this.material, 5, 1, -3)
-		// -------------------------------------------------------------------------------------- //
 		var phong   = new THREE.MeshPhongMaterial  ( { color: cor ,             // Diffuse color of the material
 													   specular: cor,			// how shiny the material is and the color of its shine
 													   shininess: 200,			// How shiny the specular highlight is
@@ -49,6 +26,37 @@ class Enemy extends Movable{
 													 } );
 		this.simpleMaterial = this.material;
 		this.complexMaterials = [phong, lambert];
+
+		if(complex == true) {
+			this.material = this.complexMaterials[index];
+		} else {
+			this.material = this.simpleMaterial;
+		}
+		//geometry
+		this.geometry = new THREE.CubeGeometry(10, 10, 2);
+		this.positionElement(this.geometry, this.material, 5, 5, 1);
+		this.geometry = new THREE.CubeGeometry(2, 10, 4);
+		this.positionElement(this.geometry, this.material, 1, 5, 2);
+		this.geometry = new THREE.CubeGeometry(2, 10, 4);
+		this.positionElement(this.geometry, this.material, 5, 5, 2);
+		this.geometry = new THREE.CubeGeometry(2, 10, 4);
+		this.positionElement(this.geometry, this.material, 9, 5, 2);
+		this.geometry = new THREE.CubeGeometry(10, 10, 2);
+		this.positionElement(this.geometry, this.material, 5, 5, 5);
+			//Legs
+		this.geometry = new THREE.CubeGeometry(2, 2, 2);
+		this.positionElement(this.geometry, this.material, 0, 10, 6);
+		this.geometry = new THREE.CubeGeometry(2, 2, 2);
+		this.positionElement(this.geometry, this.material, 0, 0, 6);
+		this.geometry = new THREE.CubeGeometry(2, 2, 2);
+		this.positionElement(this.geometry, this.material, 10, 10, 6);
+		this.geometry = new THREE.CubeGeometry(2, 2, 2);
+		this.positionElement(this.geometry, this.material, 10, 0, 6);
+		//Hat
+		this.geometry = new THREE.SphereGeometry(1.5, 0, 0, Math.PI/2, Math.PI*2, 0, Math.PI);
+		this.positionElement(this.geometry, this.material, 5, 6, -3)
+		// -------------------------------------------------------------------------------------- //
+
 	}
 
 	collidedAnotherEnemy(){
