@@ -13,22 +13,22 @@ class Ship extends Movable {
 		this.single = true;
 
 
-		this.material = new THREE.MeshBasicMaterial({color: cor, wireframe:false});
-		this.calculategeometry(this.material);
 
 		var blue =0x0000ff;
 		var cor = 0x0000ff;
-		cor = 0xffffff;
+		cor = 0xff0000;
+		this.material = new THREE.MeshBasicMaterial({color: cor, wireframe:false});
+		this.calculategeometry(this.material);
 		var phong   = new THREE.MeshPhongMaterial  ( { color: cor ,             // Diffuse color of the material
 			  										   specular: cor,			// how shiny the material is and the color of its shine
 													   shininess: 200,			// How shiny the specular highlight is
-													   emissive: 0x0000ff, 		//(light) color of the material, essentially a solid color unaffected by other lighting
-													   emissiveIntensity: 0.1, 	//range [0,1]
-													   shading: THREE.FlatShading
+													   //emissive: 0x0000ff, 		//(light) color of the material, essentially a solid color unaffected by other lighting
+													   //emissiveIntensity: 0.1, 	//range [0,1]
+													   //shading: THREE.FlatShading
 												     } );
-		var lambert = new THREE.MeshLambertMaterial( { color: cor,				// Diffuse color of the material
-													   emissive: 0x0000ff, 		//(light) color of the material, essentially a solid color unaffected by other lighting
-													   emissiveIntensity: 0.1, 	//range [0,1]
+		var lambert = new THREE.MeshLambertMaterial( { color: cor				// Diffuse color of the material
+													   //,emissive: 0x0000ff 		//(light) color of the material, essentially a solid color unaffected by other lighting
+													   //,emissiveIntensity: 0.1 	//range [0,1]
 													 } );
 		this.simpleMaterial = this.material;
 		this.complexMaterials = [phong, lambert];
@@ -209,6 +209,8 @@ class Ship extends Movable {
 								);
 
 			this.geometry.computeBoundingSphere();
+			this.geometry.computeFaceNormals();
+			this.geometry.computeVertexNormals();
 			this.pushMesh(this.geometry, this.material);
 
 		}

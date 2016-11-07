@@ -16,7 +16,9 @@ var bullet_counter=0;
 //Ligts
 var theSun ; //AKA the sun
 var stars = [] ;
-
+var lightsOn    = false ;
+var starVisible = false ;
+var sunVisible  = false ;
 
 const DEBUG       = 1;
 
@@ -117,7 +119,7 @@ function createLights(){
 	//Create the Sun
 	theSun = new THREE.DirectionalLight( 0xffff00, 0.5 );
 	//	sunSphere = new THREE.SphereGeometry( 2, 16, 8 );
-
+	theSun.visible = sunVisible;
 	theSun.position.set( 0, 1, 1);
 	scene.add( theSun );
 	//Create the stars
@@ -130,13 +132,20 @@ function createLights(){
 
 	var j = 0;
 	while(j < 20){
+
 		var light1 = new THREE.PointLight( colours[j%colours.length], intensity, distance, decay );
-		light1.add( new THREE.Mesh( sphere, new THREE.MeshBasicMaterial( { color: colours[j%colours.length] } ) ) );
+		light1.visible = starVisible;
+		//light1.add( new THREE.Mesh( sphere, new THREE.MeshBasicMaterial( { color: colours[j%colours.length] } ) ) );
 
 		light1.position.copy( new THREE.Vector3 ((Math.random()*2)-1, 0.2, (Math.random()*2)-1));
 		light1.position.multiplyScalar(STAR_DIST);
+
+
 		stars.push( light1 );
 		scene.add( light1 );
+
+		var helper = new THREE.PointLightHelper( light1 , 2 );
+		scene.add(helper);
 		j++;
 	}
 	//	j = 0;
@@ -148,6 +157,26 @@ function createLights(){
 	//	stars.push( light1 );
 	//	scene.add( light1 );
 
+}
+
+function switchOnOffLights() {
+	if(lightsOn) {
+		//save old values
+		starVisible = stars[0].visible;
+		sunVisible  = theSun.visible;
+		lightsOn = false;
+		for (var i = 0; i < stars.length; i++) {
+			stars[i].visible = lightsOn;
+		}
+		theSun.visible = lightsOn;
+	} else {
+		//Put old vectors
+		for (var i = 0; i < stars.length; i++) {
+			stars[i].visible = starVisible;
+		}
+		theSun.visible = sunVisible;
+		lightsOn = true;
+	}
 }
 
 function inversePontual(){
@@ -336,6 +365,7 @@ function onKeyDown (event) {
 			for (var i = 0; i < bullets.length; i++) {
 				bullets[i].swapBasic();
 			}
+			switchOnOffLights();
 			break;
 		case 103: //g
 		case 71 : //G

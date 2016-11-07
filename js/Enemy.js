@@ -36,8 +36,17 @@ class Enemy extends Movable{
 		this.geometry = new THREE.SphereGeometry(1.5, 0, 0, Math.PI/2, Math.PI*2, 0, Math.PI);
 		this.positionElement(this.geometry, this.material, 5, 1, -3)
 		// -------------------------------------------------------------------------------------- //
-		var phong   = new THREE.MeshPhongMaterial  ( { color: cor } );
-		var lambert = new THREE.MeshLambertMaterial( { color: cor } );
+		var phong   = new THREE.MeshPhongMaterial  ( { color: cor ,             // Diffuse color of the material
+													   specular: cor,			// how shiny the material is and the color of its shine
+													   shininess: 200,			// How shiny the specular highlight is
+													   //emissive: 0x0000ff, 		//(light) color of the material, essentially a solid color unaffected by other lighting
+													   //emissiveIntensity: 0.1, 	//range [0,1]
+													   //shading: THREE.FlatShading
+													 } );
+		var lambert = new THREE.MeshLambertMaterial( { color: cor				// Diffuse color of the material
+													   //,emissive: 0x0000ff 		//(light) color of the material, essentially a solid color unaffected by other lighting
+													   //,emissiveIntensity: 0.1 	//range [0,1]
+													 } );
 		this.simpleMaterial = this.material;
 		this.complexMaterials = [phong, lambert];
 	}
