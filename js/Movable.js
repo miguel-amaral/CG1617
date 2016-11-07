@@ -5,9 +5,9 @@ class Movable extends THREE.Object3D{
 		this.simpleMaterial = null;
 		this.complexMaterials = [];
 		this.complexIndex = 0;
-		this.complex = true;
+		this.complex = false;
 		this.meshes = [];
-		this.single = false; // Attribute that tells if movable is ship
+		this.single = false;
 
 		this.setPosition(x,y,z);
 		this.nextPosition = new THREE.Vector3(0,0,0);

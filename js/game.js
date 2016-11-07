@@ -1,6 +1,7 @@
 'use strict'
 var scene, camera, renderer;
 
+var lights;
 var back_material;
 var nave;
 var inimigos = [];
@@ -12,14 +13,11 @@ var clk;
 var stats;
 var cheat_infinite_ammo = false;
 var bullet_counter=0;
-var noEnemiesTime = 0;
+
 //Ligts
-var theSun ; //AKA the sun
-var stars = [] ;
-var starsHelpers = [];
-var lightsOn    = true ;
-var starVisible = true ;
-var sunVisible  = true ;
+var lightsOn    = false ;
+var starVisible = false ;
+
 
 const DEBUG       = 1;
 
@@ -44,7 +42,6 @@ const ENEMY_SPEED = 10;
 
 //start
 const STAR_DIST = 70;
-const RESTART_TIME = 5; //SECONDS
 
 function init(){
 	clk = new THREE.Clock();
@@ -117,114 +114,25 @@ function createCameras(){
 	camera = cameras[camera_index];
 }
 
-function createLights(){
-	//Create the Sun
-	theSun = new THREE.DirectionalLight( 0xffff00, 0.5 );
-	//	sunSphere = new THREE.SphereGeometry( 2, 16, 8 );
-	theSun.visible = sunVisible;
-	theSun.position.set( 0, 1, 1);
-	scene.add( theSun );
-	//Create the stars
-	var intensity = 1;
-	var distance = 75;
-	var decay = 1;
-	var c1 = 0xff0040, c2 = 0x0040ff, c3 = 0x80ff80, c4 = 0xffaa00, c5 = 0x00ffaa, c6 = 0xff1100;
-	var colours = [c1,c2,c3,c4,c5,c6];
-	var starsPosition = [ 	//new THREE.Vector3 (X_MIN          , 20, Z_MIN),			 					  // Canto Inferior Esquerdo
-							//new THREE.Vector3 (X_MIN          , 20, Z_MAX),			 					  // Canto Superior Esquerdo
-							//new THREE.Vector3 (X_MAX          , 20, Z_MIN),			 					  // Canto Inferior Direito
-							//new THREE.Vector3 (X_MAX          , 20, Z_MAX),			 					  // Canto Superior Direito
-							//new THREE.Vector3 (X_MIN          , 20, (Z_MAX+Z_MIN)/2),					  // Parede Esquerda Meio
-							//new THREE.Vector3 (X_MAX          , 20, (Z_MAX+Z_MIN)/2),					  // Parede Direita  Meio
-							//new THREE.Vector3 ((X_MAX+X_MIN)/2, 20, Z_MIN),								  // Parede De Cima Meio
-							new THREE.Vector3 ((X_MAX+X_MIN)/2, 20, Z_MAX),								  // Parede De Baixo Meio
-
-							new THREE.Vector3 (X_MAX-(X_MAX-X_MIN)*(1/4), 20, Z_MAX-(Z_MAX-Z_MIN)*(1/4)), // Meio Do Campo Superior Direito
-							new THREE.Vector3 (X_MAX-(X_MAX-X_MIN)*(1/4), 20, Z_MAX-(Z_MAX-Z_MIN)*(3/4)), // Meio Do Campo Inferior Direito
-							new THREE.Vector3 (X_MAX-(X_MAX-X_MIN)*(3/4), 20, Z_MAX-(Z_MAX-Z_MIN)*(1/4)), // Meio Do Campo Superior Esquerdo
-							new THREE.Vector3 (X_MAX-(X_MAX-X_MIN)*(3/4), 20, Z_MAX-(Z_MAX-Z_MIN)*(3/4)), // Meio Do Campo Inferior Esquerdo
-
-							new THREE.Vector3 ((X_MAX+X_MIN)/2, 20, (Z_MAX+Z_MIN)/2)					  // Centro de Jogo
-						];
-	var starsNumber = 0;
-	for (var i = 0; i < Math.max(starsNumber,starsPosition.length); i++) {
-		var positionVector;
-		if(i >= starsPosition.length){
-			positionVector = new THREE.Vector3 ((Math.random()*2)-1, 20/STAR_DIST, (Math.random()*2)-1);
-			positionVector.multiplyScalar(STAR_DIST);
-		} else {
-			positionVector = starsPosition[i];
-		}
-
-		createPointLight(positionVector,colours[i%colours.length],intensity, distance, decay);
-	}
-}
-
-function createPointLight(vector,colour,intensity, distance, decay){
-	var light1 = new THREE.PointLight( colour, intensity, distance, decay );
-
-	light1.visible = starVisible;
-	light1.position.copy( vector );
-
-	stars.push( light1 );
-	scene.add( light1 );
-
-	var helper = new THREE.PointLightHelper( light1 , 2 );
-	starsHelpers.push(helper);
-	scene.add(helper);
-
-}
-
-/*function switchOnOffLights() {
-	if(lightsOn) {
-		//save old values
-		starVisible = stars[0].visible;
-		sunVisible  = theSun.visible;
-		lightsOn = false;
-		for (var i = 0; i < stars.length; i++) {
-			stars[i].visible = lightsOn;
-		}
-		for (var i = 0; i < starsHelpers.length; i++) {
-			starsHelpers[i].visible = lightsOn;
-		}
-		theSun.visible = lightsOn;
-	} else {
-		//Put old vectors
-		for (var i = 0; i < stars.length; i++) {
-			stars[i].visible = starVisible;
-		}
-		for (var i = 0; i < starsHelpers.length; i++) {
-			starsHelpers[i].visible = starVisible;
-		}
-		theSun.visible = sunVisible;
-		lightsOn = true;
-	}
-}
-
-function inversePontual(){
-	if(lightsOn){
-		for (var i = 0; i < stars.length; i++) {
-			stars[i].visible = !stars[i].visible;
-		}
-		for (var i = 0; i < starsHelpers.length; i++) {
-			starsHelpers[i].visible = !starsHelpers[i].visible;
-		}
-	}
-}*/
-
-function inverseFloor(){
-	back_material.visible = !back_material.visible;
-}
-
-function inverseSun(){
-	theSun.visible = !theSun.visible;
-}
-
 function createScene(){
 	'use strict';
 	scene  = new THREE.Scene();
 
-	restart();
+	nave = new Ship(scene,20,0,80);
+
+	var j = 0;
+	while(j < 2){
+		var i = 0;
+		var pos_x = X_MIN+5;
+		while(i < 9){
+
+			var enemy1 = new Enemy(scene,pos_x,0,j*20-50);
+			inimigos.push(enemy1);
+			i++;
+			pos_x += 20;
+		}
+		j++;
+	}
 
 	var background = new THREE.Object3D();
 	back_material = new THREE.MeshPhongMaterial({color: 0xffffff, wireframe:false, visible:false});
@@ -241,39 +149,22 @@ function createScene(){
 	createLights();
 }
 
-function restart(){
-	//Remove Everything
-	if(nave != null){
-		scene.remove(nave);
-	}
-	for (var b = 0; b < bullets.length;) {
-		scene.remove(bullets[b]);
-		bullets.splice(b,1);
-	}
+function createLights(){
+	
+	lights = new LightManager(scene);
+	//	j = 0;
+	//	var light1 = new THREE.PointLight( colours[j%colours.length], intensity, distance, decay );
+	//	light1.add( new THREE.Mesh( sphere, new THREE.MeshBasicMaterial( { color: colours[j%colours.length] } ) ) );
+	//
+	//	light1.position.copy( new THREE.Vector3 ((Math.random()*2)-1, 0.2, (Math.random()*2)-1));
+	//	light1.position.multiplyScalar(STAR_DIST);
+	//	stars.push( light1 );
+	//	scene.add( light1 );
 
-	for (var i = 0; i < inimigos.length;) {
-		scene.remove(inimigos[i]);
-		inimigos.splice(i,1);
-	}
-
-	nave = new Ship(scene,20,0,80,true,0);
-	createMoreEnemies()
 }
 
-function createMoreEnemies(){
-	var j = 0;
-	while(j < 2){
-		var i = 0;
-		var pos_x = X_MIN+5;
-		while(i < 9){
-
-			var enemy1 = new Enemy(scene,pos_x,0,j*20-50,nave.complex,nave.complexIndex);
-			inimigos.push(enemy1);
-			i++;
-			pos_x += 20;
-		}
-		j++;
-	}
+function inverseFloor(){
+	back_material.visible = !back_material.visible;
 }
 
 function calculateColisions(dt){
@@ -326,15 +217,6 @@ function calculateColisions(dt){
 function animate(){
 	stats.begin();
 	var dt = clk.getDelta();
-	if(inimigos.length == 0){
-		if(noEnemiesTime < RESTART_TIME ){
-			noEnemiesTime += dt;
-		} else {
-			createMoreEnemies();
-		}
-	} else {
-		noEnemiesTime = 0;
-	}
 
 	//cheat_infinite_ammo ACTIVATED
 	if(cheat_infinite_ammo) {
@@ -410,7 +292,7 @@ function onKeyDown (event) {
 			break;
 		case 110: //n
 		case 78 : //N
-			inverseSun();
+			lights.toggleSun();
 			break;
 		case 108: //l
 		case 76 : //L
@@ -421,7 +303,7 @@ function onKeyDown (event) {
 			for (var i = 0; i < bullets.length; i++) {
 				bullets[i].swapBasic();
 			}
-			switchOnOffLights();
+			lights.toggle();
 			break;
 		case 103: //g
 		case 71 : //G
@@ -454,7 +336,7 @@ function onKeyDown (event) {
 			break
 		case 99: // c
 		case 67: // C
-			inversePontual();
+			lights.toggleStars();
 			break;
 		case 86: // V
 		case 118: // v
