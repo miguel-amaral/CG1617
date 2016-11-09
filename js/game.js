@@ -130,16 +130,8 @@ function createScene(){
 }
 
 function createLights(){
-	
+
 	lights = new LightManager(scene);
-	//	j = 0;
-	//	var light1 = new THREE.PointLight( colours[j%colours.length], intensity, distance, decay );
-	//	light1.add( new THREE.Mesh( sphere, new THREE.MeshBasicMaterial( { color: colours[j%colours.length] } ) ) );
-	//
-	//	light1.position.copy( new THREE.Vector3 ((Math.random()*2)-1, 0.2, (Math.random()*2)-1));
-	//	light1.position.multiplyScalar(STAR_DIST);
-	//	stars.push( light1 );
-	//	scene.add( light1 );
 
 }
 
