@@ -5,10 +5,10 @@ class LightManager {
 		this.lightsOn = true;
 
 		this.spotLight = this.createSpotlight();
-		var spotLightHelper = new THREE.SpotLightHelper( this.spotLight );
-//		scene.add(spotLight.target);
-		scene.add( spotLightHelper );
-		scene.add(this.spotLight);
+		scene.add( this.spotLight );
+	    scene.add( this.spotLight.target);
+		this.spotLightHelper = new THREE.SpotLightHelper( this.spotLight);
+		scene.add( this.spotLightHelper );
 
 		//Create the Sun
 		this.Sun = new THREE.DirectionalLight( 0xffff00, 0.5 );
@@ -66,17 +66,25 @@ class LightManager {
 	}
 
 	createSpotlight(){
-		var spotLight = new THREE.SpotLight( 0xffffff );
-		spotLight.position.set( 0, 0, 0 );
+		//						  SpotLight( color, intensity, distance, angle, penumbra, decay )
+		var spotLight = new THREE.SpotLight( 0xff00ff, 1, 100, Math.PI / 6, .2 ,0);
 
-		spotLight.castShadow = true;
+		//Centering on the ship
+		this.x = 7.5;
+		this.y = 5;
+		this.z = -10;
+		spotLight.position.set( this.x, this.y,this.z);
+//		spotLight.position.set( 0, 0, 0);
+		spotLight.target.position.set( 0, 0, 0 );
 
-		spotLight.shadow.mapSize.width = 1024;
-		spotLight.shadow.mapSize.height = 1024;
-
-		spotLight.shadow.camera.near = 500;
-		spotLight.shadow.camera.far = 4000;
-		spotLight.shadow.camera.fov = 30;
+//		spotLight.castShadow = true;
+//
+//		spotLight.shadow.mapSize.width  = 2000;
+//		spotLight.shadow.mapSize.height = 2000;
+//
+//		spotLight.shadow.camera.near = 500;
+//		spotLight.shadow.camera.far = 4000;
+//		spotLight.shadow.camera.fov = 15;
 
 		return spotLight;
 
@@ -95,6 +103,11 @@ class LightManager {
 		this.starsHelpers.push(helper);
 		scene.add(helper);
 
+	}
+
+	updateSpotlightTarget(x){
+		this.spotLight.target.position.set(this.x+x, 0, 0 );
+		this.spotLightHelper.update();
 	}
 
 
@@ -147,9 +160,21 @@ class LightManager {
 	getSpotlight(){
 		return this.spotLight;
 	}
+	getSpotlightHelper(){
+		return this.spotLightHelper;
+	}
 
 	toggleSpotLight(){
 		this.spotLight.visible  = !this.spotLight.visible;
+		this.spotLightHelper.visible  = this.spotLight.visible;
+	}
+
+	toggleHelpers(){
+		for (var i=0; i < nStars ; i++) {
+			this.starsHelpers[i].visible = !this.starsHelpers[i].visible;
+		}
+		this.spotLightHelper.visible  = !this.spotLightHelper.visible;
+
 	}
 
 }

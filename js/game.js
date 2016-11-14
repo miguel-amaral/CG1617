@@ -13,6 +13,7 @@ var clk;
 var stats;
 var cheat_infinite_ammo = false;
 var bullet_counter=0;
+var pause = false;
 
 const DEBUG       = 1;
 
@@ -38,13 +39,18 @@ var noEnemiesTime = 0;
 const STAR_DIST = 70;
 const RESTART_TIME = 5; //SECONDS
 
+var spotLight;
+
+function updateSpotlightTarget(){
+	lights.updateSpotlightTarget(nave.getPositionX());
+
+}
 
 function init(){
 	clk = new THREE.Clock();
 
 	createScene();
 	createCameras();
-	nave.add(lights.getSpotlight());
 
 
 	renderer = new THREE.WebGLRenderer();
@@ -115,7 +121,6 @@ function createScene(){
 	'use strict';
 	scene  = new THREE.Scene();
 
-	restart();
 
 	var background = new THREE.Object3D();
 	back_material = new THREE.MeshPhongMaterial({color: 0xffffff, wireframe:false, visible:false});
@@ -128,13 +133,14 @@ function createScene(){
 		scene.add(new THREE.AxisHelper(10));
 	}
 	createLights();
+	restart();
 
 }
 
 function createLights(){
-
 	lights = new LightManager(scene);
-
+	spotLight = lights.getSpotlight();
+	scene.add(spotLight)
 }
 
 function inverseFloor(){
@@ -203,7 +209,9 @@ function restart(){
 		inimigos.splice(i,1);
 	}
 
-	nave = new Ship(scene,20,0,80,true,0);
+	nave = new Ship(scene,20,0,95,true,0);
+	nave.add(spotLight);
+
 	createMoreEnemies()
 }
 
@@ -227,47 +235,49 @@ function createMoreEnemies(){
 function animate(){
 	stats.begin();
 	var dt = clk.getDelta();
+	if(!pause){
+		//cheat_infinite_ammo ACTIVATED
+		if(cheat_infinite_ammo) {
+			createNewBullet();
+		}
 
-	//cheat_infinite_ammo ACTIVATED
-	if(cheat_infinite_ammo) {
-		createNewBullet()
+		//CalculateNextPositions
+		//Update ship
+		nave.update(dt);
+
+		//update all enemies
+		for (var i = 0; i < inimigos.length; i++) {
+			inimigos[i].update(dt);
+		}
+
+		//update all bullets
+		for (var i = 0; i < bullets.length; i++) {
+			bullets[i].update(dt);
+		}
+
+
+		calculateColisions(dt);
+
+		//Push Updates
+		//Update ship
+		nave.realUpdatePosition();
+
+		//update all enemies
+		for (var i = 0; i < inimigos.length; i++) {
+			inimigos[i].realUpdatePosition();
+		}
+
+		//update all bullets
+		for (var i = 0; i < bullets.length; i++) {
+			bullets[i].realUpdatePosition();
+		}
+		updateSpotlightTarget();
 	}
-
-	//CalculateNextPositions
-	//Update ship
-	nave.update(dt);
-
-	//update all enemies
-	for (var i = 0; i < inimigos.length; i++) {
-		inimigos[i].update(dt);
-	}
-
-	//update all bullets
-	for (var i = 0; i < bullets.length; i++) {
-		bullets[i].update(dt);
-	}
-
-
-	calculateColisions(dt);
-
-	//Push Updates
-	//Update ship
-	nave.realUpdatePosition();
-
-	//update all enemies
-	for (var i = 0; i < inimigos.length; i++) {
-		inimigos[i].realUpdatePosition();
-	}
-
-	//update all bullets
-	for (var i = 0; i < bullets.length; i++) {
-		bullets[i].realUpdatePosition();
-	}
-
 	stats.end();
 	renderer.render(scene, camera);
 	requestAnimationFrame(animate);
 }
+
 
 function createNewBullet(){
 	var bulletPosition = ( new THREE.Vector3 (nave.getPositionX(), nave.getPositionY(), nave.getPositionZ()) ).add(nave.getObjectCenter());
@@ -275,6 +285,10 @@ function createNewBullet(){
 	bullet.setSpeed(0,0,-BULLET_SPEED);
 	bullets.push(bullet);
 	bullet_counter = bullet_counter+1;
+}
+
+function togglePause(){
+	pause = !pause;
 }
 
 function onKeyDown (event) {
@@ -334,6 +348,14 @@ function onKeyDown (event) {
 		case 104: //h
 			lights.toggleSpotLight();
 			break;
+		case 80://P
+		case 114://p
+			togglePause();
+			break;
+		case 81://Q
+		case 113://q
+			lights.toggleHelpers();
+			break;
 		case 115: //s
 		case 83: //S
 			//back_material.visible = !back_material.visible;
@@ -352,6 +374,10 @@ function onKeyDown (event) {
 		case 99: // c
 		case 67: // C
 			lights.toggleStars();
+			break;
+		case 82: //R
+		case 114: //r
+			restart()
 			break;
 		case 86: // V
 		case 118: // v
