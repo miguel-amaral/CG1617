@@ -7,7 +7,9 @@ class Bullet extends Movable{
 		var cor = 0xffffff;
 		this.material = new THREE.MeshBasicMaterial({color: corYellow, wireframe:false});
 
-		var phong   = new THREE.MeshPhongMaterial  ( { color: cor } );
+		var phong   = new THREE.MeshPhongMaterial  ( { color: cor,
+													   specular: cor,
+													   shininess: 256} );
 		var lambert = new THREE.MeshLambertMaterial( { color: cor } );
 		this.simpleMaterial = this.material;
 		this.complexMaterials = [phong, lambert];

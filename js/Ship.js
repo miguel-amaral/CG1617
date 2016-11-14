@@ -19,8 +19,8 @@ class Ship extends Movable {
 
 		this.material = new THREE.MeshBasicMaterial({color: blue, wireframe:false});
 		var phong   = new THREE.MeshPhongMaterial  ( { color: cor ,             // Diffuse color of the material
-  										   specular: cor,			// how shiny the material is and the color of its shine
-										   shininess: 200,			// How shiny the specular highlight is
+  										   			   specular: cor,			// how shiny the material is and the color of its shine
+										   			   shininess: 256,			// How shiny the specular highlight is
 										   //emissive: 0x0000ff, 		//(light) color of the material, essentially a solid color unaffected by other lighting
 										   //emissiveIntensity: 0.1, 	//range [0,1]
 										   //shading: THREE.FlatShading

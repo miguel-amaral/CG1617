@@ -123,7 +123,7 @@ function createScene(){
 
 
 	var background = new THREE.Object3D();
-	back_material = new THREE.MeshPhongMaterial({color: 0xffffff, wireframe:false, visible:false});
+	back_material = new THREE.MeshPhongMaterial({color: 0xffffff,specular: 0xffffff,shininess: 64, wireframe:false, visible:false});
 	var back_geometry = new THREE.CubeGeometry((X_MAX-X_MIN),1,(Z_MAX-Z_MIN));
 	var back_mesh	  = new THREE.Mesh(back_geometry,back_material);
 	background.add(back_mesh);
