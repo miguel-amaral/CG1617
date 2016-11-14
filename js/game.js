@@ -44,6 +44,7 @@ function init(){
 
 	createScene();
 	createCameras();
+	nave.add(lights.getSpotlight());
 
 
 	renderer = new THREE.WebGLRenderer();
@@ -127,6 +128,7 @@ function createScene(){
 		scene.add(new THREE.AxisHelper(10));
 	}
 	createLights();
+
 }
 
 function createLights(){
@@ -327,6 +329,10 @@ function onKeyDown (event) {
 		case 122: //z
 		case 90: //Z
 			inverseFloor();
+			break;
+		case 72: //H
+		case 104: //h
+			lights.toggleSpotLight();
 			break;
 		case 115: //s
 		case 83: //S

@@ -4,6 +4,12 @@ class LightManager {
 	constructor (scene) {
 		this.lightsOn = true;
 
+		this.spotLight = this.createSpotlight();
+		var spotLightHelper = new THREE.SpotLightHelper( this.spotLight );
+//		scene.add(spotLight.target);
+		scene.add( spotLightHelper );
+		scene.add(this.spotLight);
+
 		//Create the Sun
 		this.Sun = new THREE.DirectionalLight( 0xffff00, 0.5 );
 		//	sunSphere = new THREE.SphereGeometry( 2, 16, 8 );
@@ -57,6 +63,23 @@ class LightManager {
 
 			this.createPointLight(positionVector,colours[i%colours.length],intensity, distance, decay, scene);
 		}
+	}
+
+	createSpotlight(){
+		var spotLight = new THREE.SpotLight( 0xffffff );
+		spotLight.position.set( 0, 0, 0 );
+
+		spotLight.castShadow = true;
+
+		spotLight.shadow.mapSize.width = 1024;
+		spotLight.shadow.mapSize.height = 1024;
+
+		spotLight.shadow.camera.near = 500;
+		spotLight.shadow.camera.far = 4000;
+		spotLight.shadow.camera.fov = 30;
+
+		return spotLight;
+
 	}
 
 	createPointLight(vector,colour,intensity, distance, decay, scene){
@@ -121,5 +144,12 @@ class LightManager {
 		}
 	}
 
+	getSpotlight(){
+		return this.spotLight;
+	}
+
+	toggleSpotLight(){
+		this.spotLight.visible  = !this.spotLight.visible;
+	}
 
 }
