@@ -17,7 +17,7 @@ class Ship extends Movable {
 		var blue =0x0000ff;
 		var cor = 0xffffff;
 
-		this.material = new THREE.MeshBasicMaterial({color: cor, wireframe:false});
+		this.material = new THREE.MeshBasicMaterial({color: blue, wireframe:false});
 		var phong   = new THREE.MeshPhongMaterial  ( { color: cor ,             // Diffuse color of the material
   										   specular: cor,			// how shiny the material is and the color of its shine
 										   shininess: 200,			// How shiny the specular highlight is

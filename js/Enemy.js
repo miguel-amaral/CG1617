@@ -5,15 +5,15 @@ class Enemy extends Movable{
 
 		super(scene,x,y,z);
 
-		var cor = 0xff0000;
-		cor = 0xffffff;
+		var corRed = 0xff0000;
+		var cor = 0xffffff;
 		var velocity = new THREE.Vector3 ((Math.random()*2)-1, 0, (Math.random()*2)-1).normalize(); // Random direction
 		velocity.multiplyScalar(ALIEN_SPEED); // Initial speed
 		this.setSpeed(velocity.x, velocity.y, velocity.z);
 
 		// ------------------------------ ALIEN MATERIALS --------------------------------------- //
-		this.material = new THREE.MeshBasicMaterial( { color: cor } );
-		this.material.side = THREE.DoubleSide;
+		this.material = new THREE.MeshBasicMaterial( { color: corRed } );
+		//this.material.side = THREE.DoubleSide;
 
 		var phong   = new THREE.MeshPhongMaterial  ( { color: cor ,             // Diffuse color of the material
 											specular: cor,			// how shiny the material is and the color of its shine
@@ -38,7 +38,7 @@ class Enemy extends Movable{
 		// ------------------------------ ALIEN GEOMETRY --------------------------------------- //
 		this.geometry = new THREE.SphereGeometry(4.5, 0, 0, Math.PI/2, Math.PI*2, 0, Math.PI);
 		//this.geometry = new THREE.CubeGeometry(10, 10, 2);
-		 this.positionElement(this.geometry, this.material, 5, 0, 1);
+		 this.positionElement(this.geometry, this.material, 5, 5, 1);
 		// this.geometry = new THREE.CubeGeometry(2, 10, 4);
 		// this.positionElement(this.geometry, this.material, 1, 0, 2);
 		// this.geometry = new THREE.CubeGeometry(2, 10, 4);
@@ -55,23 +55,23 @@ class Enemy extends Movable{
 			vec_cylinder.push(cylinder);
 		}
 		this.geometry = vec_cylinder[0];
-		this.positionElement(this.geometry, this.material, 3, 1, 4.5);
+		this.positionElement(this.geometry, this.material, 3, 6, 4.5);
 		this.geometry = vec_cylinder[1];
-		this.positionElement(this.geometry, this.material, 3, -2, 4.5);
+		this.positionElement(this.geometry, this.material, 3, 3, 4.5);
 		this.geometry = vec_cylinder[2];
-		this.positionElement(this.geometry, this.material, 7, 1, 4.5);
+		this.positionElement(this.geometry, this.material, 7, 6, 4.5);
 		this.geometry = vec_cylinder[3];
-		this.positionElement(this.geometry, this.material, 7, -2, 4.5);
+		this.positionElement(this.geometry, this.material, 7, 3, 4.5);
 		//Hat
 		var hat =  new THREE.CylinderGeometry( 2, 0.5, 2, 3, 1, false);
 		hat.applyMatrix( new THREE.Matrix4().makeRotationX( THREE.Math.degToRad( 90 ) ) );
 		this.geometry = hat;
- 		this.positionElement(this.geometry, this.material, 5, 0, -5)
+ 		this.positionElement(this.geometry, this.material, 5, 5, -5)
 		//eyes
  		this.geometry = new THREE.SphereGeometry(1, 0, 0, Math.PI/2, Math.PI*2, 0, Math.PI);
-		this.positionElement(this.geometry, this.material, 3.5, 4, 0);
+		this.positionElement(this.geometry, this.material, 3.5, 9, 0);
  		this.geometry = new THREE.SphereGeometry(1, 0, 0, Math.PI/2, Math.PI*2, 0, Math.PI);
-		this.positionElement(this.geometry, this.material, 6, 4, 0);
+		this.positionElement(this.geometry, this.material, 6, 9, 0);
 		// -------------------------------------------------------------------------------------- //
 	}
 

@@ -3,8 +3,9 @@ class Bullet extends Movable{
 	constructor(scene , position, complex,index){
 		super(scene, position.x, position.y, position.z);
 
+		var corYellow = 0xffff00;
 		var cor = 0xffffff;
-		this.material = new THREE.MeshBasicMaterial({color: 0xffff00, wireframe:false});
+		this.material = new THREE.MeshBasicMaterial({color: corYellow, wireframe:false});
 
 		var phong   = new THREE.MeshPhongMaterial  ( { color: cor } );
 		var lambert = new THREE.MeshLambertMaterial( { color: cor } );

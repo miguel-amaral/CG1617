@@ -2,11 +2,20 @@
 
 class LightManager {
 	constructor (scene) {
+		this.lightsOn = true;
+
 		//Create the Sun
 		this.Sun = new THREE.DirectionalLight( 0xffff00, 0.5 );
 		//	sunSphere = new THREE.SphereGeometry( 2, 16, 8 );
 		this.Sun.visible = false;
 		this.Sun.position.set(0, 1, 1);
+
+		var target = new THREE.Object3D();
+		target.position.set( new THREE.Vector3( 0, 0, 0));
+		this.Sun.target = target;
+
+		this.sunOn  = false;
+		this.starOn = true;
 		scene.add( this.Sun );
 
 		//Create the stars
@@ -67,21 +76,50 @@ class LightManager {
 
 
 	toggleStars() {
-		var nStars = this.stars.length;
-		for (var i=0; i < nStars ; i++) { 
-			this.stars[i].visible = !this.stars[i].visible; 
-			this.starsHelpers[i].visible = !this.starsHelpers[i].visible; 
+		if(this.lightsOn ){
+			var nStars = this.stars.length;
+			for (var i=0; i < nStars ; i++) {
+				this.stars[i].visible = !this.stars[i].visible;
+				this.starsHelpers[i].visible = !this.starsHelpers[i].visible;
+			}
+			this.starOn = this.stars[0].visible;
 		}
 	}
-	
+
 	toggleSun() {
-		this.Sun.visible= !this.Sun.visible;
+		if(this.lightsOn) {
+			this.Sun.visible= !this.Sun.visible;
+			this.sunOn = this.Sun.visible;
+		}
 	}
 
 	toggle() {
-		this.toggleSun();
-		this.toggleStars();
+
+		this.lightsOn = !this.lightsOn;
+		if(this.lightsOn == true){
+			this.turnOnLights();
+		} else {
+			this.turnOffLights();
+		}
 	}
 
-	
+	turnOnLights(){
+		this.Sun.visible= this.sunOn;
+		var nStars = this.stars.length;
+		for (var i=0; i < nStars ; i++) {
+			this.stars[i].visible = this.starOn;
+			this.starsHelpers[i].visible = this.starOn;
+		}
+	}
+
+	turnOffLights(){
+		this.Sun.visible= false;
+		var nStars = this.stars.length;
+		for (var i=0; i < nStars ; i++) {
+			this.stars[i].visible = false;
+			this.starsHelpers[i].visible = false;
+		}
+	}
+
+
 }
