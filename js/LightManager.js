@@ -170,6 +170,7 @@ class LightManager {
 	}
 
 	toggleHelpers(){
+		var nStars = this.stars.length;
 		for (var i=0; i < nStars ; i++) {
 			this.starsHelpers[i].visible = !this.starsHelpers[i].visible;
 		}
