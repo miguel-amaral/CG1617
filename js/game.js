@@ -15,6 +15,9 @@ var cheat_infinite_ammo = false;
 var bullet_counter=0;
 var pause = false;
 
+var aliensDown = 0;
+var lives = 5;
+var game_speed = 1;
 const DEBUG       = 1;
 
 //Game Boundaries
@@ -134,7 +137,6 @@ function createScene(){
 	}
 	createLights();
 	restart();
-
 }
 
 function createLights(){
@@ -179,6 +181,13 @@ function calculateColisions(dt){
 				inimigos[j].updatePosition(dt);
 			}
 		}
+		if(nave.hasColision(inimigos[i])){
+//			inimigos[i].collidedAnotherEnemy();//Lets inverse its setSpeed
+			scene.remove(inimigos[i]);
+			inimigos.splice(i,1);
+			shipCollision();
+			break;
+		}
 		var bullet_colision = false;
 		for (var b = 0; b < bullets.length; b++) {
 			if(inimigos[i].hasColision(bullets[b])){
@@ -187,11 +196,26 @@ function calculateColisions(dt){
 				inimigos.splice(i,1);
 				bullets.splice(b,1);
 				bullet_colision = true;
+				shotOneAlien();
 				break;
 			}
 		}
 		if(!bullet_colision) { i++; }
 	}
+}
+
+function shipCollision(){
+	nave.stop();
+	lives--;
+	console.log("shipCollision: " + lives + " lives remaining");
+	if(lives == 0){
+		endOfGame();
+	}
+
+}
+
+function shotOneAlien(){
+	aliensDown++;
 }
 
 function restart(){
@@ -213,6 +237,9 @@ function restart(){
 	nave.add(spotLight);
 
 	createMoreEnemies()
+	lives = 5;
+	aliensDown = 0;
+	pause = false;
 }
 
 function createMoreEnemies(){
@@ -231,10 +258,16 @@ function createMoreEnemies(){
 	}
 }
 
+function endOfGame(){
+	console.log("you lost") ;
+	console.log("killed: " + aliensDown + " aliens");
+	pause = true;
+}
 
 function animate(){
 	stats.begin();
-	var dt = clk.getDelta();
+	var real_dt = clk.getDelta();
+	var dt = real_dt / game_speed;
 	if(!pause){
 		//cheat_infinite_ammo ACTIVATED
 		if(cheat_infinite_ammo) {
@@ -277,7 +310,6 @@ function animate(){
 	renderer.render(scene, camera);
 	requestAnimationFrame(animate);
 }
-
 
 function createNewBullet(){
 	var bulletPosition = ( new THREE.Vector3 (nave.getPositionX(), nave.getPositionY(), nave.getPositionZ()) ).add(nave.getObjectCenter());
@@ -415,6 +447,18 @@ function onKeyDown (event) {
         	camera=cameras[5];
 			camera_index = 5;
 			calculateCameraBondaries(camera);
+        	break;
+    	case 56: // 8
+			game_speed *= 0.9;
+			if(game_speed <= 0) {
+				game_speed=0.0001;
+			}
+        	break;
+    	case 57: // 9
+			game_speed *= 1.1;
+			if(game_speed >= 2.5) {
+				game_speed=2.4;
+			}
         	break;
     }
 }
