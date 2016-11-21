@@ -26,4 +26,8 @@ class Bullet extends Movable{
 	getPowRadius() {
 		return 4;
 	}
+
+	hitEnemy(){
+		scene.remove(this);
+	}
 }

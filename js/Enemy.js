@@ -87,6 +87,11 @@ class Enemy extends Movable{
 		this.setSpeed(this.getSpeedX(),this.getSpeedY(),-1*this.getSpeedZ());
 	}
 
+	gotShot(bullet) {
+		scene.remove(this);
+		bullet.hitEnemy();
+	}
+
 	getObjectCenter() {
 		return new THREE.Vector3(5,0,0);
 	}

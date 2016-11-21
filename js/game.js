@@ -15,10 +15,11 @@ var cheat_infinite_ammo = false;
 var bullet_counter=0;
 var pause = false;
 
-var aliensDown = 0;
-var lives = 5;
+var startingEnemies = 18;
+
 var game_speed = 1;
 const DEBUG       = 1;
+const ALIENS_PER_ROW = 9;
 
 //Game Boundaries
 const X_MAX = 100;
@@ -150,12 +151,12 @@ function inverseFloor(){
 }
 
 function calculateColisions(dt){
-
+// ------------- Ship Collides with the worlds borders -------------------------
 	if (nave.hasLeftRightWallColision(X_MIN,X_MAX)) {
 		nave.stop();
 		nave.updatePosition(dt);
 	}
-
+// ------------- Bullet Collides with the worlds borders -------------------------
 	for (var b = 0; b < bullets.length;) {
 		if(bullets[b].hasTopBotWallColision(Z_MIN,Z_MAX)) {
 			scene.remove(bullets[b]);
@@ -165,7 +166,9 @@ function calculateColisions(dt){
 		}
 	}
 
-	for (var i = 0; i < inimigos.length;) {
+	for (var i = 0; i < inimigos.length; i++) {
+
+	// ------------- Enemy Collides with the worlds borders -------------------------
 		if(inimigos[i].hasLeftRightWallColision(X_MIN,X_MAX)) {
 			inimigos[i].collidedLeftRightWall();
 			inimigos[i].updatePosition(dt);
@@ -173,6 +176,7 @@ function calculateColisions(dt){
 			inimigos[i].collidedTopBotWall();
 			inimigos[i].updatePosition(dt);
 		}
+	// ------------- Enemy Collides with enemy -------------------------------------
 		for (var j = i+1; j < inimigos.length; j++) {
 			if(inimigos[i].hasColision(inimigos[j])){
 				inimigos[i].collidedAnotherEnemy();
@@ -181,42 +185,35 @@ function calculateColisions(dt){
 				inimigos[j].updatePosition(dt);
 			}
 		}
+	// ------------- Enemy Collides with ship ---------------------------------------
 		if(nave.hasColision(inimigos[i])){
-			//			inimigos[i].collidedAnotherEnemy();//Lets inverse its setSpeed
 			scene.remove(inimigos[i]);
 			inimigos.splice(i,1);
-			shipCollision();
+			shipCollision(); // TODO: this logic needs to go to Ship Class
 			break;
 		}
-		var bullet_colision = false;
+	// ------------- Enemy Collides with bullet --------------------------------------
 		for (var b = 0; b < bullets.length; b++) {
 			if(inimigos[i].hasColision(bullets[b])){
-				scene.remove(inimigos[i]);
-				scene.remove(bullets[b]);
+				inimigos[i].gotShot(bullets[b]);
 				inimigos.splice(i,1);
+				i--;
 				bullets.splice(b,1);
-				bullet_colision = true;
-				shotOneAlien();
 				break;
 			}
 		}
-		if(!bullet_colision) { i++; }
 	}
 }
 
 function shipCollision(){
-	nave.stop();
-	lives--;
-	console.log("shipCollision: " + lives + " lives remaining");
-	if(lives == 0){
+	nave.alienCollision(); // TODO: passar logica de danificacao da nave para a classe Ship
+	console.log("shipCollision: " + nave.getLives() + " lives remaining");
+	if(nave.getLives() == 0){
 		endOfGame();
 	}
 
 }
 
-function shotOneAlien(){
-	aliensDown++;
-}
 
 function restart(){
 	//Remove Everything
@@ -237,17 +234,16 @@ function restart(){
 	nave.add(spotLight);
 	nave.add(spotLight.target);
 	createMoreEnemies()
-	lives = 5;
-	aliensDown = 0;
 	pause = false;
 }
 
 function createMoreEnemies(){
+	var rows = startingEnemies/ALIENS_PER_ROW;
 	var j = 0;
-	while(j < 2){
-		var i = 0;
+	while(j < rows){
 		var pos_x = X_MIN+5;
-		while(i < 9){
+		var i = 0;
+		while(i < ALIENS_PER_ROW){
 
 			var enemy1 = new Enemy(scene,pos_x,0,j*20-50,nave.complex,nave.complexIndex);
 			inimigos.push(enemy1);
@@ -260,13 +256,14 @@ function createMoreEnemies(){
 
 function endOfGame(){
 	console.log("you lost") ;
-	console.log("killed: " + aliensDown + " aliens");
+	console.log("killed: " + (startingEnemies - inimigos.length) + " aliens");
 	pause = true;
 }
 
 function animate(){
 	stats.begin();
 	var real_dt = clk.getDelta();
+	renderer.autoClear = false; // Se isto ficar, passar para a instanciacao do renderer
 	renderer.clear();
 	var dt = real_dt / game_speed;
 	if(!pause){
@@ -306,10 +303,9 @@ function animate(){
 			bullets[i].realUpdatePosition();
 		}
 		updateSpotlightTarget();
+		renderer.render(scene, camera);
 	}
 	stats.end();
-	renderer.render(scene, camera);
-	renderer.autoClear = false;
 	requestAnimationFrame(animate);
 }
 

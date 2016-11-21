@@ -8,6 +8,7 @@ class Ship extends Movable {
 
 		this.left = false;
 		this.right = false;
+		this.lives = 5;
 		this.MIN_SPEED = MIN_SPEED_c;
 		this.TOP_SPEED = TOP_SPEED_c;
 		this.single = true;
@@ -83,6 +84,10 @@ class Ship extends Movable {
 
 	getPowRadius() {
 		return 57.56557289;
+	}
+
+	getLives () {
+		return this.lives;
 	}
 	calculategeometry(material) {
 		var cor = 0x0000ff;
@@ -222,15 +227,9 @@ class Ship extends Movable {
 
 		}
 
-
-		// this.material = new THREE.MeshBasicMaterial({color: cor, wireframe:false});
-		// this.geometry = new THREE.CubeGeometry(14, 10, 5);
-		// this.positionElement(this.geometry, this.material, 0, 0, 0);
-		// this.geometry = new THREE.CubeGeometry(8, 8, 5);
-		// this.positionElement(this.geometry, this.material, 0, 0, -2);
-		// this.geometry = new THREE.CubeGeometry(4, 4, 4);
-		// this.positionElement(this.geometry, this.material, 0, 0, -4);
-		// this.geometry = new THREE.CubeGeometry(2, 2, 2);
-		// this.positionElement(this.geometry, this.material, 0, 0, -6);
+		alienCollision () {
+			this.stop();
+			this.lives--;
+		}
 
 }
