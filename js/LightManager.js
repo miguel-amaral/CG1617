@@ -6,7 +6,7 @@ class LightManager {
 
 		this.spotLight = this.createSpotlight();
 		scene.add( this.spotLight );
-	    scene.add( this.spotLight.target);
+	  scene.add( this.spotLight.target);
 		this.spotLightHelper = new THREE.SpotLightHelper( this.spotLight);
 		scene.add( this.spotLightHelper );
 
@@ -75,7 +75,7 @@ class LightManager {
 		this.z = -10;
 		spotLight.position.set( this.x, this.y,this.z);
 //		spotLight.position.set( 0, 0, 0);
-		spotLight.target.position.set( 0, 0, 0 );
+		spotLight.target.position.set( this.x, this.y,this.z -100 );
 
 //		spotLight.castShadow = true;
 //
@@ -105,10 +105,10 @@ class LightManager {
 
 	}
 
-	updateSpotlightTarget(x){
-		this.spotLight.target.position.set(this.x+x, 0, 0 );
-		this.spotLightHelper.update();
-	}
+	//updateSpotlightTarget(x){
+	//	// /this.spotLight.target.position.set(this.x+x, 0, 0 );
+	//	// /this.spotLightHelper.update();
+	//}
 
 
 	toggleStars() {
@@ -175,7 +175,5 @@ class LightManager {
 			this.starsHelpers[i].visible = !this.starsHelpers[i].visible;
 		}
 		this.spotLightHelper.visible  = !this.spotLightHelper.visible;
-
 	}
-
 }

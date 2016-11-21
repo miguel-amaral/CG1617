@@ -45,21 +45,18 @@ const RESTART_TIME = 5; //SECONDS
 var spotLight;
 
 function updateSpotlightTarget(){
-	lights.updateSpotlightTarget(nave.getPositionX());
-
+	lights.getSpotlightHelper().update();
 }
 
 function init(){
 	clk = new THREE.Clock();
+	
+	renderer = new THREE.WebGLRenderer();
+  renderer.setSize( window.innerWidth, window.innerHeight );
+	document.body.appendChild( renderer.domElement ) ;
 
 	createScene();
 	createCameras();
-
-
-	renderer = new THREE.WebGLRenderer();
-  	renderer.setSize( window.innerWidth, window.innerHeight );
-	document.body.appendChild( renderer.domElement ) ;
-
 
 	window.addEventListener("keydown", onKeyDown);
 	window.addEventListener("keyup", onKeyUp);
@@ -124,6 +121,10 @@ function createScene(){
 	'use strict';
 	scene  = new THREE.Scene();
 
+	//var squareForTexture = new THREE.Object3D();
+	//var textureMaterial = new THREE.MeshBasicMaterial({color: 0xffffff});
+	//var textureGeometry = new THREE.CubeGeometry(400,1,400);
+	//var textureMesh	  = new THREE.Mesh(textureGeometry,textureMaterial);
 
 	var background = new THREE.Object3D();
 	back_material = new THREE.MeshPhongMaterial({color: 0xffffff,specular: 0xffffff,shininess: 64, wireframe:false, visible:false});
@@ -142,7 +143,6 @@ function createScene(){
 function createLights(){
 	lights = new LightManager(scene);
 	spotLight = lights.getSpotlight();
-	scene.add(spotLight)
 }
 
 function inverseFloor(){
@@ -182,7 +182,7 @@ function calculateColisions(dt){
 			}
 		}
 		if(nave.hasColision(inimigos[i])){
-//			inimigos[i].collidedAnotherEnemy();//Lets inverse its setSpeed
+			//			inimigos[i].collidedAnotherEnemy();//Lets inverse its setSpeed
 			scene.remove(inimigos[i]);
 			inimigos.splice(i,1);
 			shipCollision();
@@ -235,7 +235,7 @@ function restart(){
 
 	nave = new Ship(scene,20,0,95,true,0);
 	nave.add(spotLight);
-
+	nave.add(spotLight.target);
 	createMoreEnemies()
 	lives = 5;
 	aliensDown = 0;
@@ -267,6 +267,7 @@ function endOfGame(){
 function animate(){
 	stats.begin();
 	var real_dt = clk.getDelta();
+	renderer.clear();
 	var dt = real_dt / game_speed;
 	if(!pause){
 		//cheat_infinite_ammo ACTIVATED
@@ -308,6 +309,7 @@ function animate(){
 	}
 	stats.end();
 	renderer.render(scene, camera);
+	renderer.autoClear = false;
 	requestAnimationFrame(animate);
 }
 
