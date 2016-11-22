@@ -87,6 +87,10 @@ class Enemy extends Movable{
 		this.setSpeed(this.getSpeedX(),this.getSpeedY(),-1*this.getSpeedZ());
 	}
 
+	collidedShip() {
+		scene.remove(this);
+	}
+
 	gotShot(bullet) {
 		scene.remove(this);
 		bullet.hitEnemy();

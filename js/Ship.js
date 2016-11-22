@@ -8,7 +8,7 @@ class Ship extends Movable {
 
 		this.left = false;
 		this.right = false;
-		this.lives = 5;
+		this.shield = 4;
 		this.MIN_SPEED = MIN_SPEED_c;
 		this.TOP_SPEED = TOP_SPEED_c;
 		this.single = true;
@@ -86,8 +86,8 @@ class Ship extends Movable {
 		return 57.56557289;
 	}
 
-	getLives () {
-		return this.lives;
+	getShield () {
+		return this.shield;
 	}
 	calculategeometry(material) {
 		var cor = 0x0000ff;
@@ -227,9 +227,11 @@ class Ship extends Movable {
 
 		}
 
-		alienCollision () {
+		alienCollision (alien) {
 			this.stop();
-			this.lives--;
+			this.shield--;
+			if (this.shield == -1) { scene.remove(this); }
+			alien.collidedShip();
 		}
 
 }

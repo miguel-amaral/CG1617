@@ -4,6 +4,7 @@ var scene, camera, renderer;
 var lights;
 var back_material;
 var nave;
+var naves = [];
 var inimigos = [];
 var bullets = [];
 var cameras = [];
@@ -43,9 +44,7 @@ var noEnemiesTime = 0;
 const STAR_DIST = 70;
 const RESTART_TIME = 5; //SECONDS
 
-var spotLight;
-
-function updateSpotlightTarget(){
+function updateSpotlightHelper(){
 	lights.getSpotlightHelper().update();
 }
 
@@ -53,7 +52,7 @@ function init(){
 	clk = new THREE.Clock();
 	
 	renderer = new THREE.WebGLRenderer();
-  renderer.setSize( window.innerWidth, window.innerHeight );
+  	renderer.setSize( window.innerWidth, window.innerHeight );
 	document.body.appendChild( renderer.domElement ) ;
 
 	createScene();
@@ -143,7 +142,6 @@ function createScene(){
 
 function createLights(){
 	lights = new LightManager(scene);
-	spotLight = lights.getSpotlight();
 }
 
 function inverseFloor(){
@@ -187,9 +185,14 @@ function calculateColisions(dt){
 		}
 	// ------------- Enemy Collides with ship ---------------------------------------
 		if(nave.hasColision(inimigos[i])){
-			scene.remove(inimigos[i]);
+			nave.alienCollision(inimigos[i]);			
+			//scene.remove(inimigos[i]);
 			inimigos.splice(i,1);
-			shipCollision(); // TODO: this logic needs to go to Ship Class
+			if(nave.getShield() == -1) { 
+				naves.pop();	
+				if (naves.length == 0) { endOfGame(); }
+				else { nave=naves[nave.length-1]; }
+			}
 			break;
 		}
 	// ------------- Enemy Collides with bullet --------------------------------------
@@ -203,15 +206,6 @@ function calculateColisions(dt){
 			}
 		}
 	}
-}
-
-function shipCollision(){
-	nave.alienCollision(); // TODO: passar logica de danificacao da nave para a classe Ship
-	console.log("shipCollision: " + nave.getLives() + " lives remaining");
-	if(nave.getLives() == 0){
-		endOfGame();
-	}
-
 }
 
 
@@ -231,8 +225,10 @@ function restart(){
 	}
 
 	nave = new Ship(scene,20,0,95,true,0);
-	nave.add(spotLight);
-	nave.add(spotLight.target);
+	naves.push(nave);
+	var spotlight = lights.getSpotlight()
+	nave.add(spotlight);
+	nave.add(spotlight.target);
 	createMoreEnemies()
 	pause = false;
 }
@@ -302,8 +298,12 @@ function animate(){
 		for (var i = 0; i < bullets.length; i++) {
 			bullets[i].realUpdatePosition();
 		}
-		updateSpotlightTarget();
+		updateSpotlightHelper();
 		renderer.render(scene, camera);
+		// --------------------- GameStatus Viewport rendering ---------------------- //
+
+
+		//------------------------------------------------------------------------------
 	}
 	stats.end();
 	requestAnimationFrame(animate);

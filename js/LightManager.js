@@ -6,7 +6,7 @@ class LightManager {
 
 		this.spotLight = this.createSpotlight();
 		scene.add( this.spotLight );
-	  scene.add( this.spotLight.target);
+	  	scene.add( this.spotLight.target);
 		this.spotLightHelper = new THREE.SpotLightHelper( this.spotLight);
 		scene.add( this.spotLightHelper );
 
