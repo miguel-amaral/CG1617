@@ -1,5 +1,5 @@
 'use strict'
-var scene, camera, renderer;
+var scene, scoresScene, camera, renderer;
 
 var lights;
 var back_material;
@@ -21,12 +21,18 @@ var startingEnemies = 18;
 var game_speed = 1;
 const DEBUG       = 1;
 const ALIENS_PER_ROW = 9;
+const MAXLIVES = 3;
 
 //Game Boundaries
 const X_MAX = 100;
 const X_MIN = -100;
 const Z_MAX = 100;
 const Z_MIN = -100;
+var gameView = {x_min:X_MIN, x_max:X_MAX, z_max:Z_MAX, z_min:Z_MIN }
+
+//Status Viewport
+var statusCamera;
+var statusView = { x_min: X_MIN, x_max:X_MAX, z_max:20*(MAXLIVES), z_min:Z_MIN }
 
 //Bullet
 const BULLET_SPEED = 50;
@@ -56,6 +62,8 @@ function init(){
 	document.body.appendChild( renderer.domElement ) ;
 
 	createScene();
+	// ------create scoresScene:
+	createScoresScene();
 	createCameras();
 
 	window.addEventListener("keydown", onKeyDown);
@@ -70,14 +78,21 @@ function init(){
 }
 
 function createCameras(){
-	// ---------- Ortographic Camera ------------- //
+	// ---------- GameView Ortographic Camera ------------- //
 	camera = new THREE.OrthographicCamera( 0, 0, 0, 0, 1, 1000 );
-	calculateCameraBondaries(camera);
+	calculateCameraBondaries(camera, gameView);
 
 	camera.position.set(0,150,0);
 	camera.lookAt(new THREE.Vector3(0,0,0));
 	cameras.push(camera);
 
+	// ---------- GameScores Ortographic Camera ------------- //
+	statusCamera = new THREE.OrthographicCamera( 0, 0, 0, 0, 1, 1000 );
+	calculateCameraBondaries(statusCamera, gameView);
+
+	statusCamera.position.set(0,150,0);
+	statusCamera.lookAt(new THREE.Vector3(0,0,0));
+	
 	// ----------Fixed Perspective Camera ------------- //
 
 	camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 1000 );
@@ -138,6 +153,16 @@ function createScene(){
 	}
 	createLights();
 	restart();
+}
+
+function createScoresScene () {
+	scoresScene = new THREE.Scene();
+	var spareShip;
+
+	for (var i=0; i < MAXLIVES; i++) {
+		spareShip = new Ship(scoresScene,20*i,0,95,false,0);	
+		naves.push(spareShip);
+	}
 }
 
 function createLights(){
@@ -299,9 +324,13 @@ function animate(){
 			bullets[i].realUpdatePosition();
 		}
 		updateSpotlightHelper();
+		renderer.setViewport(0,0, window.innerWidth, window.innerHeight);
 		renderer.render(scene, camera);
 		// --------------------- GameStatus Viewport rendering ---------------------- //
-
+		
+		renderer.setViewport(0, 0, 200, 200)
+		renderer.render(scoresScene, statusCamera);
+		// ...GOES HERE...TODO.
 
 		//------------------------------------------------------------------------------
 	}
@@ -414,37 +443,37 @@ function onKeyDown (event) {
 			var num_cameras = cameras.length;
 			camera_index = (camera_index+1)%num_cameras;
 			camera = cameras[camera_index];
-			calculateCameraBondaries(camera)
+			calculateCameraBondaries(camera, gameView)
 			break;
     	case 49: // 1
         	camera=cameras[0];
 			camera_index = 0;
-			calculateCameraBondaries(camera);
+			calculateCameraBondaries(camera, gameView);
         	break;
     	case 50: // 2
         	camera=cameras[1];
 			camera_index = 1;
-			calculateCameraBondaries(camera);
+			calculateCameraBondaries(camera, gameView);
         	break;
     	case 51: // 3
         	camera=cameras[2];
 			camera_index = 2;
-			calculateCameraBondaries(camera);
+			calculateCameraBondaries(camera, gameView);
         	break;
     	case 52: // 4
         	camera=cameras[3];
 			camera_index = 3;
-			calculateCameraBondaries(camera);
+			calculateCameraBondaries(camera, gameView);
         	break;
     	case 53: // 5
         	camera=cameras[4];
 			camera_index = 4;
-			calculateCameraBondaries(camera);
+			calculateCameraBondaries(camera, gameView);
         	break;
     	case 54: // 6
         	camera=cameras[5];
 			camera_index = 5;
-			calculateCameraBondaries(camera);
+			calculateCameraBondaries(camera, gameView);
         	break;
     	case 56: // 8
 			game_speed *= 0.9;
@@ -483,12 +512,16 @@ function onKeyUp (event) {
 
 function onResize(){
 	'use strict';
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        calculateCameraBondaries(camera);
+	renderer.setSize(window.innerWidth, window.innerHeight);
+	// ----- gameViewport on resize:
+	calculateCameraBondaries(camera, gameView);
+	// ----- statusViewport on resize:
+	calculateCameraBondaries(statusCamera, statusView);
+			
 }
 
-function calculateCameraBondaries(camera) {
-	if(camera_index != 0 ) {
+function calculateCameraBondaries(camera, view) {
+	if(camera_index != 0 ) { // TODO: Este if vai provocar um bug. Ao tentar fazer resize com camera_index != 0, o statusViewport nao actualiza
 		renderer.setSize(window.innerWidth, window.innerHeight);
 		if (window.innerHeight > 0 && window.innerWidth > 0) {
 			camera.aspect = window.innerWidth / window.innerHeight;
@@ -498,24 +531,26 @@ function calculateCameraBondaries(camera) {
 		var windowHeight = window.innerHeight;
 		var windowWidth = window.innerWidth;
 		var aspect = windowWidth / windowHeight;
-		var innerGameAspect = (X_MAX-X_MIN)/(Z_MAX-Z_MIN);
-		var lowX = X_MIN;
-		var upX  = X_MAX;
-		var lowZ = Z_MIN;
-		var upZ  = Z_MAX;
+		var innerGameAspect = (view.x_max-view.x_min)/(view.z_max-view.z_min);
+		var lowX = view.x_min;
+		var highX  = view.x_max;
+		var lowZ = view.z_min;
+		var highZ  = view.z_max;
 		if (aspect > innerGameAspect) {
-			var newWidth = aspect*(X_MAX-X_MIN);
+			var newWidth = aspect*(view.x_max-view.x_min);
 			lowX = -newWidth/2;
-			upX  =  newWidth/2;
+			highX  =  newWidth/2;
 		} else {
-			var newHeight = (Z_MAX-Z_MIN)/aspect;
+			var newHeight = (view.z_max-view.z_min)/aspect;
 			lowZ = -newHeight/2;
-			upZ  = newHeight/2;
+			highZ  = newHeight/2;
 		}
 		camera.left   = lowX;
-		camera.right  = upX;
+		camera.right  = highX;
 		camera.bottom = lowZ;
-		camera.top    = upZ;
+		camera.top    = highZ;
+		console.log("top:"+camera.top);
+		console.log("bottom:"+camera.bottom);
 		camera.updateProjectionMatrix();
 	}
 }
