@@ -32,7 +32,7 @@ var gameView = {x_min:X_MIN, x_max:X_MAX, z_max:Z_MAX, z_min:Z_MIN }
 
 //scores Viewport
 var scoresCamera;
-var squareSide = (20*(MAXLIVES))/2; //Hack nojento para ultrapassar a limitacao de calculateCameraBondaries() (so funciona para lados simetricos)
+var squareSide = (15*(MAXLIVES))/2; //Hack nojento para ultrapassar a limitacao de calculateCameraBondaries() (so funciona para lados simetricos)
 var scoresView = { x_min:-squareSide, x_max:squareSide, z_max:squareSide, z_min:-squareSide }
 
 //Bullet
@@ -154,25 +154,22 @@ function createScene(){
 		scene.add(new THREE.AxisHelper(10));
 	}
 	createLights();
-	restart();
+	populate();
 }
 
 function createScoresScene () {
 	scoresScene = new THREE.Scene();
 
-	var background = new THREE.Object3D();
+	/*var background = new THREE.Object3D();
 	var background_material = new THREE.MeshBasicMaterial({color: 0x00f0ff, wireframe:false});
 	var back_geometry = new THREE.CubeGeometry((X_MAX-X_MIN),1,(Z_MAX-Z_MIN));
 	var back_mesh	  = new THREE.Mesh(back_geometry,background_material);
 	background.add(back_mesh);
 	background.position.copy(new THREE.Vector3(0,-5,0));
-	scoresScene.add(background);
-	var spareShip;
+	scoresScene.add(background);*/
 
-	for (var i=0; i < MAXLIVES; i++) {
-		spareShip = new Ship(scoresScene,scoresView.x_max-20*(1+i),0,squareSide,false,0);	
-		naves.push(spareShip);
-	}
+	replenishLives();
+
 }
 
 function createLights(){
@@ -223,10 +220,10 @@ function calculateColisions(dt){
 			nave.alienCollision(inimigos[i]);			
 			//scene.remove(inimigos[i]);
 			inimigos.splice(i,1);
-			if(nave.getShield() == -1) { 
+			if(nave.getShield() == -1) { 				
 				scoresScene.remove(naves.pop());	
 				if (naves.length == 0) { endOfGame(); }
-				else { reviveShip(); }
+				else { nave.replenishShield(); }
 			}
 			break;
 		}
@@ -243,23 +240,20 @@ function calculateColisions(dt){
 	}
 }
 
-function reviveShip() {
-	/*var newShip = naves[naves.length-1];
-	newShip.material=nave.material;
-	newShip.updateMaterial();
-	newShip.add(lights.getSpotlight());
-	newShip.add(lights.getSpotlight().target);
-	nave=newShip;
-	scoresScene.remove(nave);
-	scene.add(nave);
-	nave.setNextPosition(20,0,95);*/
-	nave.replenishShield();
+function populate () {
+	nave = new Ship(scene,20,0,95,true,0);
+	naves.push(nave);
+	var spotlight = lights.getSpotlight()
+	nave.add(spotlight);
+	nave.add(spotlight.target);
+	createMoreEnemies();
 }
 
 function restart(){
 	//Remove Everything
 	if(nave != null){
 		scene.remove(nave);
+		naves.pop();
 	}
 	for (var b = 0; b < bullets.length;) {
 		scene.remove(bullets[b]);
@@ -271,13 +265,23 @@ function restart(){
 		inimigos.splice(i,1);
 	}
 
-	nave = new Ship(scene,20,0,95,true,0);
-	naves.push(nave);
-	var spotlight = lights.getSpotlight()
-	nave.add(spotlight);
-	nave.add(spotlight.target);
-	createMoreEnemies()
+	for (var j = 0; j < naves.length; ) {
+		scoresScene.remove(naves[j]);
+		naves.splice(j, 1);
+	}
+
+	populate();
+	replenishLives();
 	pause = false;
+}
+
+function replenishLives () {
+	var spareShip;
+	for (var i=0; i < MAXLIVES; i++) {
+		//spareShip = new Ship(scoresScene,scoresView.x_max-20*(1+i),0,squareSide,false,0);
+		spareShip = new Ship(scoresScene,scoresView.x_min,0,scoresView.z_max-15*(i),false,0);	
+		naves.push(spareShip);
+	}
 }
 
 function createMoreEnemies(){
@@ -350,7 +354,7 @@ function animate(){
 		renderer.render(scene, camera);
 		// --------------------- Gamescores Viewport rendering ---------------------- //
 		
-		renderer.setViewport(0, 0, window.innerWidth/8, window.innerHeight/8)
+		renderer.setViewport(0, 0, window.innerWidth/10, window.innerHeight/6)
 		renderer.render(scoresScene, scoresCamera);
 		// ...GOES HERE...TODO.
 
@@ -543,7 +547,7 @@ function onResize(){
 }
 
 function calculateCameraBondaries(camera, view) {
-	if(camera_index != 0 ) { // TODO: Este if vai provocar um bug. Ao tentar fazer resize com camera_index != 0, o scoresViewport nao actualiza
+	if (!(camera instanceof THREE.OrthographicCamera)) { 
 		renderer.setSize(window.innerWidth, window.innerHeight);
 		if (window.innerHeight > 0 && window.innerWidth > 0) {
 			camera.aspect = window.innerWidth / window.innerHeight;

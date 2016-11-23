@@ -2,13 +2,14 @@
 const TOP_SPEED_c  = 150;
 const MIN_SPEED_c   = 0.8;
 const ACCELERATION = 200;
+const SHIELDSTRENGTH = 2;
 class Ship extends Movable {
 	constructor(scene,x,y,z,complex,index){
 		super(scene,x,y,z);
 
 		this.left = false;
 		this.right = false;
-		this.shield = 3;
+		this.shield = SHIELDSTRENGTH;
 		this.MIN_SPEED = MIN_SPEED_c;
 		this.TOP_SPEED = TOP_SPEED_c;
 		this.single = true;
@@ -234,7 +235,7 @@ class Ship extends Movable {
 		}
 
 		replenishShield () {
-			this.shield = 3;
+			this.shield = SHIELDSTRENGTH;
 		}
 
 }
