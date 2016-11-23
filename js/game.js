@@ -62,9 +62,8 @@ function init(){
   	renderer.setSize( window.innerWidth, window.innerHeight );
 	document.body.appendChild( renderer.domElement ) ;
 	
-	createScoresScene();	
 	createScene();
-	
+	createScoresScene();	
 
 	createCameras();
 
@@ -225,10 +224,9 @@ function calculateColisions(dt){
 			//scene.remove(inimigos[i]);
 			inimigos.splice(i,1);
 			if(nave.getShield() == -1) { 
-				scene.remove(nave);
-				naves.pop();	
+				scoresScene.remove(naves.pop());	
 				if (naves.length == 0) { endOfGame(); }
-				else { replaceShip(); } //nave=naves[nave.length-1];  
+				else { reviveShip(); }
 			}
 			break;
 		}
@@ -245,8 +243,8 @@ function calculateColisions(dt){
 	}
 }
 
-function replaceShip() {
-	var newShip = naves[naves.length-1];
+function reviveShip() {
+	/*var newShip = naves[naves.length-1];
 	newShip.material=nave.material;
 	newShip.updateMaterial();
 	newShip.add(lights.getSpotlight());
@@ -254,7 +252,8 @@ function replaceShip() {
 	nave=newShip;
 	scoresScene.remove(nave);
 	scene.add(nave);
-	nave.setNextPosition(20,0,95);
+	nave.setNextPosition(20,0,95);*/
+	nave.replenishShield();
 }
 
 function restart(){

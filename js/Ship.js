@@ -233,4 +233,8 @@ class Ship extends Movable {
 			alien.collidedShip();
 		}
 
+		replenishShield () {
+			this.shield = 3;
+		}
+
 }
