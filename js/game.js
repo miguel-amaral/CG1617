@@ -30,9 +30,10 @@ const Z_MAX = 100;
 const Z_MIN = -100;
 var gameView = {x_min:X_MIN, x_max:X_MAX, z_max:Z_MAX, z_min:Z_MIN }
 
-//Status Viewport
-var statusCamera;
-var statusView = { x_min: X_MIN, x_max:X_MAX, z_max:20*(MAXLIVES), z_min:Z_MIN }
+//scores Viewport
+var scoresCamera;
+var squareSide = (20*(MAXLIVES))/2; //Hack nojento para ultrapassar a limitacao de calculateCameraBondaries() (so funciona para lados simetricos)
+var scoresView = { x_min:-squareSide, x_max:squareSide, z_max:squareSide, z_min:-squareSide }
 
 //Bullet
 const BULLET_SPEED = 50;
@@ -60,10 +61,11 @@ function init(){
 	renderer = new THREE.WebGLRenderer();
   	renderer.setSize( window.innerWidth, window.innerHeight );
 	document.body.appendChild( renderer.domElement ) ;
-
+	
+	createScoresScene();	
 	createScene();
-	// ------create scoresScene:
-	createScoresScene();
+	
+
 	createCameras();
 
 	window.addEventListener("keydown", onKeyDown);
@@ -87,11 +89,12 @@ function createCameras(){
 	cameras.push(camera);
 
 	// ---------- GameScores Ortographic Camera ------------- //
-	statusCamera = new THREE.OrthographicCamera( 0, 0, 0, 0, 1, 1000 );
-	calculateCameraBondaries(statusCamera, gameView);
 
-	statusCamera.position.set(0,150,0);
-	statusCamera.lookAt(new THREE.Vector3(0,0,0));
+	scoresCamera = new THREE.OrthographicCamera( 0, 0, 0, 0, 1, 1000 );
+	calculateCameraBondaries(scoresCamera, scoresView);
+
+	scoresCamera.position.set(0,150,0);
+	scoresCamera.lookAt(new THREE.Vector3(0,0,0));
 	
 	// ----------Fixed Perspective Camera ------------- //
 
@@ -157,10 +160,18 @@ function createScene(){
 
 function createScoresScene () {
 	scoresScene = new THREE.Scene();
+
+	var background = new THREE.Object3D();
+	var background_material = new THREE.MeshBasicMaterial({color: 0x00f0ff, wireframe:false});
+	var back_geometry = new THREE.CubeGeometry((X_MAX-X_MIN),1,(Z_MAX-Z_MIN));
+	var back_mesh	  = new THREE.Mesh(back_geometry,background_material);
+	background.add(back_mesh);
+	background.position.copy(new THREE.Vector3(0,-5,0));
+	scoresScene.add(background);
 	var spareShip;
 
 	for (var i=0; i < MAXLIVES; i++) {
-		spareShip = new Ship(scoresScene,20*i,0,95,false,0);	
+		spareShip = new Ship(scoresScene,scoresView.x_max-20*(1+i),0,squareSide,false,0);	
 		naves.push(spareShip);
 	}
 }
@@ -214,9 +225,10 @@ function calculateColisions(dt){
 			//scene.remove(inimigos[i]);
 			inimigos.splice(i,1);
 			if(nave.getShield() == -1) { 
+				scene.remove(nave);
 				naves.pop();	
 				if (naves.length == 0) { endOfGame(); }
-				else { nave=naves[nave.length-1]; }
+				else { replaceShip(); } //nave=naves[nave.length-1];  
 			}
 			break;
 		}
@@ -233,6 +245,17 @@ function calculateColisions(dt){
 	}
 }
 
+function replaceShip() {
+	var newShip = naves[naves.length-1];
+	newShip.material=nave.material;
+	newShip.updateMaterial();
+	newShip.add(lights.getSpotlight());
+	newShip.add(lights.getSpotlight().target);
+	nave=newShip;
+	scoresScene.remove(nave);
+	scene.add(nave);
+	nave.setNextPosition(20,0,95);
+}
 
 function restart(){
 	//Remove Everything
@@ -326,10 +349,10 @@ function animate(){
 		updateSpotlightHelper();
 		renderer.setViewport(0,0, window.innerWidth, window.innerHeight);
 		renderer.render(scene, camera);
-		// --------------------- GameStatus Viewport rendering ---------------------- //
+		// --------------------- Gamescores Viewport rendering ---------------------- //
 		
-		renderer.setViewport(0, 0, 200, 200)
-		renderer.render(scoresScene, statusCamera);
+		renderer.setViewport(0, 0, window.innerWidth/8, window.innerHeight/8)
+		renderer.render(scoresScene, scoresCamera);
 		// ...GOES HERE...TODO.
 
 		//------------------------------------------------------------------------------
@@ -515,13 +538,13 @@ function onResize(){
 	renderer.setSize(window.innerWidth, window.innerHeight);
 	// ----- gameViewport on resize:
 	calculateCameraBondaries(camera, gameView);
-	// ----- statusViewport on resize:
-	calculateCameraBondaries(statusCamera, statusView);
+	// ----- scoresViewport on resize:
+	calculateCameraBondaries(scoresCamera, scoresView);
 			
 }
 
 function calculateCameraBondaries(camera, view) {
-	if(camera_index != 0 ) { // TODO: Este if vai provocar um bug. Ao tentar fazer resize com camera_index != 0, o statusViewport nao actualiza
+	if(camera_index != 0 ) { // TODO: Este if vai provocar um bug. Ao tentar fazer resize com camera_index != 0, o scoresViewport nao actualiza
 		renderer.setSize(window.innerWidth, window.innerHeight);
 		if (window.innerHeight > 0 && window.innerWidth > 0) {
 			camera.aspect = window.innerWidth / window.innerHeight;
@@ -549,8 +572,6 @@ function calculateCameraBondaries(camera, view) {
 		camera.right  = highX;
 		camera.bottom = lowZ;
 		camera.top    = highZ;
-		console.log("top:"+camera.top);
-		console.log("bottom:"+camera.bottom);
 		camera.updateProjectionMatrix();
 	}
 }

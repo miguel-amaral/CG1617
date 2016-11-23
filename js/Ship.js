@@ -8,7 +8,7 @@ class Ship extends Movable {
 
 		this.left = false;
 		this.right = false;
-		this.shield = 4;
+		this.shield = 3;
 		this.MIN_SPEED = MIN_SPEED_c;
 		this.TOP_SPEED = TOP_SPEED_c;
 		this.single = true;
@@ -230,7 +230,6 @@ class Ship extends Movable {
 		alienCollision (alien) {
 			this.stop();
 			this.shield--;
-			if (this.shield == -1) { scene.remove(this); }
 			alien.collidedShip();
 		}
 

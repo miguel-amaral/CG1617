@@ -28,6 +28,9 @@ class Movable extends THREE.Object3D{
 	setPosition(x,y,z){
 		this.position.set(x,y,z);
 	}
+	setNextPosition(x,y,z){
+		this.nextPosition.set(x,y,z);
+	}
 	setAcceleration(ax,ay,az) {
 		this.acceleration.set(ax,ay,az);
 	}
