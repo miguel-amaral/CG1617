@@ -138,21 +138,42 @@ function createScene(){
 	'use strict';
 	scene  = new THREE.Scene();
 
-	//var squareForTexture = new THREE.Object3D();
-	//var textureMaterial = new THREE.MeshBasicMaterial({color: 0xffffff});
-	//var textureGeometry = new THREE.CubeGeometry(400,1,400);
-	//var textureMesh	  = new THREE.Mesh(textureGeometry,textureMaterial);
+	var geometry = new THREE.SphereGeometry( 200, 10, 60 );
+	geometry.scale(  -1, 1, 1 );
+	var material = new THREE.MeshBasicMaterial( {
+		map: new THREE.TextureLoader().load( 'nebula.jpg' )
+		} );
+	var mesh = new THREE.Mesh( geometry, material );
+	mesh.rotateZ(.5*Math.PI);
+	scene.add( mesh );
 
-	var background = new THREE.Object3D();
-	back_material = new THREE.MeshPhongMaterial({color: 0xffffff,specular: 0xffffff,shininess: 64, wireframe:false, visible:false});
-	var back_geometry = new THREE.CubeGeometry((X_MAX-X_MIN),1,(Z_MAX-Z_MIN));
-	var back_mesh	  = new THREE.Mesh(back_geometry,back_material);
-	background.add(back_mesh);
-	background.position.copy(new THREE.Vector3(0,-5,0));
-	scene.add(background);
+	 	var loader = new THREE.TextureLoader();
+	 	var texture = loader.load("nebula.jpg");
+	// 	texture.minFilter = THREE.LinearFilter;
+	 	var textureMaterial = new THREE.MeshBasicMaterial({map: texture, side: THREE.DoubleSide, depthWrite: false});
+	 	var textureGeometry = new THREE.PlaneGeometry(400, 400, 8, 8);
+	 	var textureMesh = new THREE.Mesh(textureGeometry, textureMaterial);
+	// 	var textureMesh2 = new THREE.Mesh(textureGeometry, textureMaterial);
+	// 	var textureMesh3 = new THREE.Mesh(textureGeometry, textureMaterial);
+	// 	var textureMesh4 = new THREE.Mesh(textureGeometry, textureMaterial);
+
+	 textureMesh.translateY(-10.5);
+         textureMesh.rotateX(0.5*Math.PI);
+	// textureMesh2.translateZ(-Z_MAX);
+	// textureMesh3.translateX(X_MAX);
+	// textureMesh3.rotateY(0.5*Math.PI);
+	// textureMesh4.translateX(X_MIN);
+	// textureMesh4.rotateY(-0.5*Math.PI);
+
+	 	scene.add(textureMesh);
+	// 	//scene.add(textureMesh2);
+	// 	//scene.add(textureMesh3);
+	// 	scene.add(textureMesh4);
+
 	if(DEBUG){
 		scene.add(new THREE.AxisHelper(10));
 	}
+	
 	createLights();
 	populate();
 }
