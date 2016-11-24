@@ -1,5 +1,6 @@
 'use strict'
-var scene, scoresScene, scenePause, camera_pause, camera, renderer;
+var scene, scoresScene, scenePause, sceneGameover, camera, renderer;
+var camera_pause, cameraGameover;
 
 var lights;
 var back_material;
@@ -11,6 +12,7 @@ var cameras = [];
 var camera_pause;
 
 var camera_index = 0;
+var gameover;
 var clk;
 var stats;
 var cheat_infinite_ammo = false;
@@ -63,7 +65,8 @@ function init(){
   	renderer.setSize( window.innerWidth, window.innerHeight );
 	document.body.appendChild( renderer.domElement ) ;
 	
-	createPauseScene();	
+	createPauseScene();
+	createGameOver();	
 	createScene();
 	createScoresScene();
 
@@ -182,15 +185,6 @@ function createScene(){
 
 function createScoresScene () {
 	scoresScene = new THREE.Scene();
-
-	/*var background = new THREE.Object3D();
-	var background_material = new THREE.MeshBasicMaterial({color: 0x00f0ff, wireframe:false});
-	var back_geometry = new THREE.CubeGeometry((X_MAX-X_MIN),1,(Z_MAX-Z_MIN));
-	var back_mesh	  = new THREE.Mesh(back_geometry,background_material);
-	background.add(back_mesh);
-	background.position.copy(new THREE.Vector3(0,-5,0));
-	scoresScene.add(background);*/
-
 	replenishLives();
 
 }
@@ -206,16 +200,31 @@ function createPauseScene(){
 	var loader = new THREE.TextureLoader();
 	var texture = loader.load("pause.jpg");
 	var textureMaterial = new THREE.MeshBasicMaterial({map: texture, side: THREE.DoubleSide});
-	var textureGeometry = new THREE.PlaneGeometry(400, 400, 8, 8);
+	var textureGeometry = new THREE.PlaneGeometry(400, (Z_MAX-Z_MIN), 1, 1);
 	var textureMesh = new THREE.Mesh(textureGeometry, textureMaterial);
 	textureMesh.translateY(-10);
     textureMesh.rotateX(-0.5*Math.PI);
 
-    //--adicionar camera e textura--
-	scenePause.add(textureMesh);
-	if(DEBUG){
-		scenePause.add(new THREE.AxisHelper(10));
-	}
+    scenePause.add(textureMesh);
+	
+}
+function createGameOver(){
+	sceneGameover = new THREE.Scene();
+	cameraGameover = new THREE.OrthographicCamera( 0, 0, 0, 0, 1, 1000 );
+	calculateCameraBondaries(camera_pause, gameView);
+	camera_pause.position.set(0,150,0);
+	camera_pause.lookAt(new THREE.Vector3(0,0,0));
+	sceneGameover.add(cameraGameover);
+
+	var loader = new THREE.TextureLoader();
+	var texture = loader.load("gameover.jpg");
+	var textureMaterial = new THREE.MeshBasicMaterial({map: texture, side: THREE.DoubleSide});
+	var textureGeometry = new THREE.PlaneGeometry(400, (Z_MAX-Z_MIN), 1, 1);
+	var textureMesh = new THREE.Mesh(textureGeometry, textureMaterial);
+	textureMesh.translateY(-10);
+    textureMesh.rotateX(-0.5*Math.PI);
+
+   sceneGameover.add(textureMesh);
 }
 
 function createLights(){
@@ -351,6 +360,7 @@ function endOfGame(){
 	console.log("you lost") ;
 	console.log("killed: " + (startingEnemies - inimigos.length) + " aliens");
 	pause = true;
+	gameover = true;
 }
 
 function animate(){
@@ -410,8 +420,12 @@ function animate(){
 	}
 	if(pause == true) {
 	//---pause---
-	renderer.setViewport(0,0, window.innerWidth, window.innerHeight);
-	renderer.render(scenePause, camera_pause);
+		renderer.setViewport(0,0, window.innerWidth, window.innerHeight);
+		renderer.render(scenePause, camera_pause);
+	}
+	if(gameover ==true) {
+		renderer.setViewport(0,0, window.innerWidth, window.innerHeight);
+		renderer.render(sceneGameover, cameraGameover);
 	}
 
 
@@ -419,30 +433,8 @@ function animate(){
 	requestAnimationFrame(animate);
 }
 
-function texturePause() {
-	//-- textura pause --
-	var loader = new THREE.TextureLoader();
-	var texture = loader.load("pause.jpg");
-	var textureMaterial = new THREE.MeshBasicMaterial({map: texture, side: THREE.DoubleSide});
-	var textureGeometry = new THREE.PlaneGeometry(400, 400, 8, 8);
-	var textureMesh = new THREE.Mesh(textureGeometry, textureMaterial);
-	textureMesh.translateY(1);
-    textureMesh.rotateX(-0.5*Math.PI);
-
-    //--adicionar camera e textura--
-	scenePause.add(textureMesh);
-	if(DEBUG){
-		scenePause.add(new THREE.AxisHelper(10));
-	}
-	renderer.setViewport(0,0, window.innerWidth, window.innerHeight);
-	renderer.render(scenePause, camera_pause);
-}
-
 function togglePause(){
 	pause = !pause;
-	if (pause == true) {
-		//texturePause();
-	}
 }
 
 function createNewBullet(){
