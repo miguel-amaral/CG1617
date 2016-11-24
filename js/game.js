@@ -12,12 +12,12 @@ var cameras = [];
 var camera_pause;
 
 var camera_index = 0;
-var gameover;
 var clk;
 var stats;
 var cheat_infinite_ammo = false;
 var bullet_counter=0;
 var pause = false;
+var gameover = false;
 
 var startingEnemies = 18;
 
@@ -211,9 +211,9 @@ function createPauseScene(){
 function createGameOver(){
 	sceneGameover = new THREE.Scene();
 	cameraGameover = new THREE.OrthographicCamera( 0, 0, 0, 0, 1, 1000 );
-	calculateCameraBondaries(camera_pause, gameView);
-	camera_pause.position.set(0,150,0);
-	camera_pause.lookAt(new THREE.Vector3(0,0,0));
+	calculateCameraBondaries(cameraGameover, gameView);
+	cameraGameover.position.set(0,150,0);
+	cameraGameover.lookAt(new THREE.Vector3(0,0,0));
 	sceneGameover.add(cameraGameover);
 
 	var loader = new THREE.TextureLoader();
@@ -305,6 +305,8 @@ function populate () {
 }
 
 function restart(){
+	pause = false;
+	gameover =false;
 	//Remove Everything
 	if(nave != null){
 		scene.remove(nave);
@@ -327,7 +329,6 @@ function restart(){
 
 	populate();
 	replenishLives();
-	pause = false;
 }
 
 function replenishLives () {
@@ -359,8 +360,8 @@ function createMoreEnemies(){
 function endOfGame(){
 	console.log("you lost") ;
 	console.log("killed: " + (startingEnemies - inimigos.length) + " aliens");
-	pause = true;
 	gameover = true;
+	pause = true;
 }
 
 function animate(){
@@ -418,16 +419,25 @@ function animate(){
 
 		//------------------------------------------------------------------------------
 	}
-	if(pause == true) {
+	if(gameover == true) {
+
+		// console.log("oi");
+		// renderer.setViewport(0,0, window.innerWidth, window.innerHeight);
+		// renderer.render(sceneGameover, cameraGameover);
+	}
+	
+	if (pause == true) {
 	//---pause---
+		if(gameover ==true) {
+			console.log("oi");
+			renderer.setViewport(0,0, window.innerWidth, window.innerHeight);
+			renderer.render(sceneGameover, cameraGameover);
+		}
+		else {
 		renderer.setViewport(0,0, window.innerWidth, window.innerHeight);
 		renderer.render(scenePause, camera_pause);
+		}
 	}
-	if(gameover ==true) {
-		renderer.setViewport(0,0, window.innerWidth, window.innerHeight);
-		renderer.render(sceneGameover, cameraGameover);
-	}
-
 
 	stats.end();
 	requestAnimationFrame(animate);
@@ -531,7 +541,7 @@ function onKeyDown (event) {
 			break;
 		case 82: //R
 		case 114: //r
-			restart()
+			restart();
 			break;
 		case 86: // V
 		case 118: // v
