@@ -1,5 +1,5 @@
 'use strict'
-var scene, scoresScene, camera, renderer;
+var scene, scoresScene, scenePause, camera_pause, camera, renderer;
 
 var lights;
 var back_material;
@@ -8,6 +8,7 @@ var naves = [];
 var inimigos = [];
 var bullets = [];
 var cameras = [];
+var camera_pause;
 
 var camera_index = 0;
 var clk;
@@ -62,8 +63,9 @@ function init(){
   	renderer.setSize( window.innerWidth, window.innerHeight );
 	document.body.appendChild( renderer.domElement ) ;
 	
+	createPauseScene();	
 	createScene();
-	createScoresScene();	
+	createScoresScene();
 
 	createCameras();
 
@@ -149,7 +151,7 @@ function createScene(){
 
 	 	var loader = new THREE.TextureLoader();
 	 	var texture = loader.load("nebula.jpg");
-	// 	texture.minFilter = THREE.LinearFilter;
+	 	texture.minFilter = THREE.LinearFilter;
 	 	var textureMaterial = new THREE.MeshBasicMaterial({map: texture, side: THREE.DoubleSide, depthWrite: false});
 	 	var textureGeometry = new THREE.PlaneGeometry(400, 400, 8, 8);
 	 	var textureMesh = new THREE.Mesh(textureGeometry, textureMaterial);
@@ -158,7 +160,7 @@ function createScene(){
 	// 	var textureMesh4 = new THREE.Mesh(textureGeometry, textureMaterial);
 
 	 textureMesh.translateY(-10.5);
-         textureMesh.rotateX(0.5*Math.PI);
+     textureMesh.rotateX(0.5*Math.PI);
 	// textureMesh2.translateZ(-Z_MAX);
 	// textureMesh3.translateX(X_MAX);
 	// textureMesh3.rotateY(0.5*Math.PI);
@@ -191,6 +193,29 @@ function createScoresScene () {
 
 	replenishLives();
 
+}
+
+function createPauseScene(){
+	scenePause = new THREE.Scene();
+	camera_pause = new THREE.OrthographicCamera( 0, 0, 0, 0, 1, 1000 );
+	calculateCameraBondaries(camera_pause, gameView);
+	camera_pause.position.set(0,150,0);
+	camera_pause.lookAt(new THREE.Vector3(0,0,0));
+	scenePause.add(camera_pause);
+
+	var loader = new THREE.TextureLoader();
+	var texture = loader.load("pause.jpg");
+	var textureMaterial = new THREE.MeshBasicMaterial({map: texture, side: THREE.DoubleSide});
+	var textureGeometry = new THREE.PlaneGeometry(400, 400, 8, 8);
+	var textureMesh = new THREE.Mesh(textureGeometry, textureMaterial);
+	textureMesh.translateY(-10);
+    textureMesh.rotateX(-0.5*Math.PI);
+
+    //--adicionar camera e textura--
+	scenePause.add(textureMesh);
+	if(DEBUG){
+		scenePause.add(new THREE.AxisHelper(10));
+	}
 }
 
 function createLights(){
@@ -334,6 +359,8 @@ function animate(){
 	renderer.autoClear = false; // Se isto ficar, passar para a instanciacao do renderer
 	renderer.clear();
 	var dt = real_dt / game_speed;
+
+
 	if(!pause){
 		//cheat_infinite_ammo ACTIVATED
 		if(cheat_infinite_ammo) {
@@ -381,8 +408,41 @@ function animate(){
 
 		//------------------------------------------------------------------------------
 	}
+	if(pause == true) {
+	//---pause---
+	renderer.setViewport(0,0, window.innerWidth, window.innerHeight);
+	renderer.render(scenePause, camera_pause);
+	}
+
+
 	stats.end();
 	requestAnimationFrame(animate);
+}
+
+function texturePause() {
+	//-- textura pause --
+	var loader = new THREE.TextureLoader();
+	var texture = loader.load("pause.jpg");
+	var textureMaterial = new THREE.MeshBasicMaterial({map: texture, side: THREE.DoubleSide});
+	var textureGeometry = new THREE.PlaneGeometry(400, 400, 8, 8);
+	var textureMesh = new THREE.Mesh(textureGeometry, textureMaterial);
+	textureMesh.translateY(1);
+    textureMesh.rotateX(-0.5*Math.PI);
+
+    //--adicionar camera e textura--
+	scenePause.add(textureMesh);
+	if(DEBUG){
+		scenePause.add(new THREE.AxisHelper(10));
+	}
+	renderer.setViewport(0,0, window.innerWidth, window.innerHeight);
+	renderer.render(scenePause, camera_pause);
+}
+
+function togglePause(){
+	pause = !pause;
+	if (pause == true) {
+		//texturePause();
+	}
 }
 
 function createNewBullet(){
@@ -391,10 +451,6 @@ function createNewBullet(){
 	bullet.setSpeed(0,0,-BULLET_SPEED);
 	bullets.push(bullet);
 	bullet_counter = bullet_counter+1;
-}
-
-function togglePause(){
-	pause = !pause;
 }
 
 function onKeyDown (event) {
