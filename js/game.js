@@ -378,6 +378,10 @@ function animate(){
 			createNewBullet();
 		}
 
+		if(inimigos.length == 0) {
+			endOfGame();
+		}
+
 		//CalculateNextPositions
 		//Update ship
 		nave.update(dt);
