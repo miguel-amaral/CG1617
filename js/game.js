@@ -60,17 +60,16 @@ function updateSpotlightHelper(){
 
 function init(){
 	clk = new THREE.Clock();
-	
+
 	renderer = new THREE.WebGLRenderer();
   	renderer.setSize( window.innerWidth, window.innerHeight );
 	document.body.appendChild( renderer.domElement ) ;
-	
+
 	createPauseScene();
-	createGameOver();	
+	createGameOver();
 	createScene();
 	createScoresScene();
 
-	createCameras();
 
 	window.addEventListener("keydown", onKeyDown);
 	window.addEventListener("keyup", onKeyUp);
@@ -85,7 +84,7 @@ function init(){
 
 function createCameras(){
 	// ---------- GameView Ortographic Camera ------------- //
-	camera = new THREE.OrthographicCamera( 0, 0, 0, 0, 1, 1000 );
+	camera = new THREE.OrthographicCamera( 0, 0, 0, 0, 1, 500 );
 	calculateCameraBondaries(camera, gameView);
 
 	camera.position.set(0,150,0);
@@ -99,7 +98,7 @@ function createCameras(){
 
 	scoresCamera.position.set(0,150,0);
 	scoresCamera.lookAt(new THREE.Vector3(0,0,0));
-	
+
 	// ----------Fixed Perspective Camera ------------- //
 
 	camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 1000 );
@@ -109,10 +108,9 @@ function createCameras(){
 
 	// ----------Ship's Perspective Camera ------------- //
 
-	camera = new THREE.PerspectiveCamera( 85, window.innerWidth / window.innerHeight, 1, 1000 );
+	camera = new THREE.PerspectiveCamera( 85, window.innerWidth / window.innerHeight, 1, 2000 );
 	camera.up.set(0, 1, 0);
 	camera.lookAt(new THREE.Vector3(0,0,0));
-	nave.addChild(camera, 0, 20, 35); //Add to ship
 	cameras.push(camera);
 
 	// ----------Fixed Perspective Camera Behind ------------- //
@@ -148,22 +146,22 @@ function createScene(){
 	var material = new THREE.MeshBasicMaterial( {
 		map: new THREE.TextureLoader().load( 'nebula.jpg' )
 		} );
-	var mesh = new THREE.Mesh( geometry, material );
-	mesh.rotateZ(.5*Math.PI);
-	scene.add( mesh );
+		//	var mesh = new THREE.Mesh( geometry, material );
+		//	mesh.rotateZ(.5*Math.PI);
+		//	scene.add( mesh );
 
-	 	var loader = new THREE.TextureLoader();
-	 	var texture = loader.load("nebula.jpg");
-	 	texture.minFilter = THREE.LinearFilter;
-	 	var textureMaterial = new THREE.MeshBasicMaterial({map: texture, side: THREE.DoubleSide, depthWrite: false});
-	 	var textureGeometry = new THREE.PlaneGeometry(400, 400, 8, 8);
-	 	var textureMesh = new THREE.Mesh(textureGeometry, textureMaterial);
+		var loader = new THREE.TextureLoader();
+		var texture = loader.load("nebula.jpg");
+		texture.minFilter = THREE.LinearFilter;
+		var textureMaterial = new THREE.MeshBasicMaterial({map: texture, side: THREE.DoubleSide, depthWrite: false});
+		var textureGeometry = new THREE.PlaneGeometry(3000, 2000, 8, 8);
+		var textureMesh = new THREE.Mesh(textureGeometry, textureMaterial);
 	// 	var textureMesh2 = new THREE.Mesh(textureGeometry, textureMaterial);
 	// 	var textureMesh3 = new THREE.Mesh(textureGeometry, textureMaterial);
 	// 	var textureMesh4 = new THREE.Mesh(textureGeometry, textureMaterial);
 
-	 textureMesh.translateY(-10.5);
-     textureMesh.rotateX(0.5*Math.PI);
+	 textureMesh.translateY(-100.5);
+     textureMesh.rotateX(-0.2*Math.PI);
 	// textureMesh2.translateZ(-Z_MAX);
 	// textureMesh3.translateX(X_MAX);
 	// textureMesh3.rotateY(0.5*Math.PI);
@@ -178,8 +176,9 @@ function createScene(){
 	if(DEBUG){
 		scene.add(new THREE.AxisHelper(10));
 	}
-	
+
 	createLights();
+	createCameras();
 	populate();
 }
 
@@ -206,7 +205,7 @@ function createPauseScene(){
     textureMesh.rotateX(-0.5*Math.PI);
 
     scenePause.add(textureMesh);
-	
+
 }
 function createGameOver(){
 	sceneGameover = new THREE.Scene();
@@ -224,7 +223,7 @@ function createGameOver(){
 	textureMesh.translateY(-10);
     textureMesh.rotateX(-0.5*Math.PI);
 
-   sceneGameover.add(textureMesh);
+    sceneGameover.add(textureMesh);
 }
 
 function createLights(){
@@ -236,12 +235,12 @@ function inverseFloor(){
 }
 
 function calculateColisions(dt){
-// ------------- Ship Collides with the worlds borders -------------------------
+	// ------------- Ship Collides with the worlds borders -------------------------
 	if (nave.hasLeftRightWallColision(X_MIN,X_MAX)) {
 		nave.stop();
 		nave.updatePosition(dt);
 	}
-// ------------- Bullet Collides with the worlds borders -------------------------
+	// ------------- Bullet Collides with the worlds borders -------------------------
 	for (var b = 0; b < bullets.length;) {
 		if(bullets[b].hasTopBotWallColision(Z_MIN,Z_MAX)) {
 			scene.remove(bullets[b]);
@@ -272,11 +271,11 @@ function calculateColisions(dt){
 		}
 	// ------------- Enemy Collides with ship ---------------------------------------
 		if(nave.hasColision(inimigos[i])){
-			nave.alienCollision(inimigos[i]);			
+			nave.alienCollision(inimigos[i]);
 			//scene.remove(inimigos[i]);
 			inimigos.splice(i,1);
-			if(nave.getShield() == -1) { 				
-				scoresScene.remove(naves.pop());	
+			if(nave.getShield() == -1) {
+				scoresScene.remove(naves.pop());
 				if (naves.length == 0) { endOfGame(); }
 				else { nave.replenishShield(); }
 			}
@@ -301,6 +300,7 @@ function populate () {
 	var spotlight = lights.getSpotlight()
 	nave.add(spotlight);
 	nave.add(spotlight.target);
+	nave.addChild(cameras[2], 0, 20, 35); //Add to ship
 	createMoreEnemies();
 }
 
@@ -335,7 +335,7 @@ function replenishLives () {
 	var spareShip;
 	for (var i=0; i < MAXLIVES; i++) {
 		//spareShip = new Ship(scoresScene,scoresView.x_max-20*(1+i),0,squareSide,false,0);
-		spareShip = new Ship(scoresScene,scoresView.x_min,0,scoresView.z_max-15*(i),false,0);	
+		spareShip = new Ship(scoresScene,scoresView.x_min,0,scoresView.z_max-15*(i),false,0);
 		naves.push(spareShip);
 	}
 }
@@ -416,30 +416,28 @@ function animate(){
 		renderer.setViewport(0,0, window.innerWidth, window.innerHeight);
 		renderer.render(scene, camera);
 		// --------------------- Gamescores Viewport rendering ---------------------- //
-		
+
 		renderer.setViewport(0, 0, window.innerWidth/10, window.innerHeight/6)
 		renderer.render(scoresScene, scoresCamera);
 		// ...GOES HERE...TODO.
 
 		//------------------------------------------------------------------------------
 	}
-	if(gameover == true) {
+	//if(gameover == true) {
+	//	// console.log("oi");
+	//	// renderer.setViewport(0,0, window.innerWidth, window.innerHeight);
+	//	// renderer.render(sceneGameover, cameraGameover);
+	//}
 
-		// console.log("oi");
-		// renderer.setViewport(0,0, window.innerWidth, window.innerHeight);
-		// renderer.render(sceneGameover, cameraGameover);
-	}
-	
 	if (pause == true) {
 	//---pause---
 		if(gameover ==true) {
 			console.log("oi");
 			renderer.setViewport(0,0, window.innerWidth, window.innerHeight);
 			renderer.render(sceneGameover, cameraGameover);
-		}
-		else {
-		renderer.setViewport(0,0, window.innerWidth, window.innerHeight);
-		renderer.render(scenePause, camera_pause);
+		} else {
+			renderer.setViewport(0,0, window.innerWidth, window.innerHeight);
+			renderer.render(scenePause, camera_pause);
 		}
 	}
 
@@ -614,7 +612,7 @@ function onKeyUp (event) {
 		case 40: //space bar
 		case 98: //b
 		case 66: //B
-			createNewBullet();
+			if(!pause) createNewBullet();
 			break;
 		}
 }
@@ -626,11 +624,11 @@ function onResize(){
 	calculateCameraBondaries(camera, gameView);
 	// ----- scoresViewport on resize:
 	calculateCameraBondaries(scoresCamera, scoresView);
-			
+
 }
 
 function calculateCameraBondaries(camera, view) {
-	if (!(camera instanceof THREE.OrthographicCamera)) { 
+	if (!(camera instanceof THREE.OrthographicCamera)) {
 		renderer.setSize(window.innerWidth, window.innerHeight);
 		if (window.innerHeight > 0 && window.innerWidth > 0) {
 			camera.aspect = window.innerWidth / window.innerHeight;
