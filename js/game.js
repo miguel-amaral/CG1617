@@ -225,7 +225,6 @@ function createGameOver(){
     textureMesh.rotateX(-0.5*Math.PI);
 
     sceneGameover.add(textureMesh);
-
 }
 
 function createLights(){
@@ -364,6 +363,8 @@ function createMoreEnemies(){
 function endOfGame(){
 	console.log("you lost") ;
 	console.log("killed: " + (startingEnemies - inimigos.length) + " aliens");
+	console.log("enemies down: " + enemiesDown);
+	enemiesDown = 0;
 	gameover = true;
 	pause = true;
 }
