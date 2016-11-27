@@ -20,6 +20,7 @@ var pause = false;
 var gameover = false;
 
 var startingEnemies = 18;
+var enemiesDown = 0;
 
 var game_speed = 1;
 const DEBUG       = 1;
@@ -224,6 +225,7 @@ function createGameOver(){
     textureMesh.rotateX(-0.5*Math.PI);
 
     sceneGameover.add(textureMesh);
+
 }
 
 function createLights(){
@@ -288,6 +290,7 @@ function calculateColisions(dt){
 				inimigos.splice(i,1);
 				i--;
 				bullets.splice(b,1);
+				enemiesDown++;
 				break;
 			}
 		}
@@ -296,6 +299,7 @@ function calculateColisions(dt){
 
 function populate () {
 	nave = new Ship(scene,20,0,95,true,0);
+	enemiesDown = 0;
 	naves.push(nave);
 	var spotlight = lights.getSpotlight()
 	nave.add(spotlight);
@@ -367,7 +371,7 @@ function endOfGame(){
 function animate(){
 	stats.begin();
 	var real_dt = clk.getDelta();
-	renderer.autoClear = false; // Se isto ficar, passar para a instanciacao do renderer
+	renderer.autoClear = false;
 	renderer.clear();
 	var dt = real_dt / game_speed;
 
@@ -419,7 +423,6 @@ function animate(){
 
 		renderer.setViewport(0, 0, window.innerWidth/10, window.innerHeight/6)
 		renderer.render(scoresScene, scoresCamera);
-		// ...GOES HERE...TODO.
 
 		//------------------------------------------------------------------------------
 	}
@@ -432,7 +435,6 @@ function animate(){
 	if (pause == true) {
 	//---pause---
 		if(gameover ==true) {
-			console.log("oi");
 			renderer.setViewport(0,0, window.innerWidth, window.innerHeight);
 			renderer.render(sceneGameover, cameraGameover);
 		} else {
