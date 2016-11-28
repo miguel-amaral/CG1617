@@ -1,22 +1,22 @@
 'use strict'
-var scene, scoresScene, scenePause, sceneGameover, camera, renderer;
-var camera_pause, cameraGameover;
+var scene, scoresScene, scene, sceneGameover, camera, renderer;
+var camera_, cameraGameover;
 
 var lights;
-var back_material;
+//var back_material;
 var nave;
 var naves = [];
 var inimigos = [];
 var bullets = [];
 var cameras = [];
-var camera_pause;
-
+var camera_;
+var shotsFired;
 var camera_index = 0;
 var clk;
 var stats;
 var cheat_infinite_ammo = false;
 var bullet_counter=0;
-var pause = false;
+var  = false;
 var gameover = false;
 
 var startingEnemies = 18;
@@ -66,8 +66,8 @@ function init(){
   	renderer.setSize( window.innerWidth, window.innerHeight );
 	document.body.appendChild( renderer.domElement ) ;
 
-	createPauseScene();
-	createGameOver();
+	createScene();
+	//createGameOver();
 	createScene();
 	createScoresScene();
 
@@ -147,29 +147,26 @@ function createScene(){
 	var material = new THREE.MeshBasicMaterial( {
 		map: new THREE.TextureLoader().load( 'nebula.jpg' )
 		} );
-		//	var mesh = new THREE.Mesh( geometry, material );
-		//	mesh.rotateZ(.5*Math.PI);
-		//	scene.add( mesh );
 
-		var loader = new THREE.TextureLoader();
-		var texture = loader.load("nebula.jpg");
-		texture.minFilter = THREE.LinearFilter;
-		var textureMaterial = new THREE.MeshBasicMaterial({map: texture, side: THREE.DoubleSide, depthWrite: false});
-		var textureGeometry = new THREE.PlaneGeometry(3000, 2000, 8, 8);
-		var textureMesh = new THREE.Mesh(textureGeometry, textureMaterial);
+	var loader = new THREE.TextureLoader();
+	var texture = loader.load("nebula.jpg");
+	texture.minFilter = THREE.LinearFilter;
+	var textureMaterial = new THREE.MeshBasicMaterial({map: texture, side: THREE.DoubleSide, depthWrite: false});
+	var textureGeometry = new THREE.PlaneGeometry(2096, 1000, 8, 8);
+	var textureMesh = new THREE.Mesh(textureGeometry, textureMaterial);
 	// 	var textureMesh2 = new THREE.Mesh(textureGeometry, textureMaterial);
 	// 	var textureMesh3 = new THREE.Mesh(textureGeometry, textureMaterial);
 	// 	var textureMesh4 = new THREE.Mesh(textureGeometry, textureMaterial);
 
 	 textureMesh.translateY(-100.5);
-     textureMesh.rotateX(-0.2*Math.PI);
+     textureMesh.rotateX(-0.15*Math.PI);
 	// textureMesh2.translateZ(-Z_MAX);
 	// textureMesh3.translateX(X_MAX);
 	// textureMesh3.rotateY(0.5*Math.PI);
 	// textureMesh4.translateX(X_MIN);
 	// textureMesh4.rotateY(-0.5*Math.PI);
 
-	 	scene.add(textureMesh);
+	scene.add(textureMesh);
 	// 	//scene.add(textureMesh2);
 	// 	//scene.add(textureMesh3);
 	// 	scene.add(textureMesh4);
@@ -189,26 +186,26 @@ function createScoresScene () {
 
 }
 
-function createPauseScene(){
-	scenePause = new THREE.Scene();
-	camera_pause = new THREE.OrthographicCamera( 0, 0, 0, 0, 1, 1000 );
-	calculateCameraBondaries(camera_pause, gameView);
-	camera_pause.position.set(0,150,0);
-	camera_pause.lookAt(new THREE.Vector3(0,0,0));
-	scenePause.add(camera_pause);
+function createScene(){
+	scene = new THREE.Scene();
+	camera_ = new THREE.OrthographicCamera( 0, 0, 0, 0, 1, 1000 );
+	calculateCameraBondaries(camera_, gameView);
+	camera_.position.set(0,150,0);
+	camera_.lookAt(new THREE.Vector3(0,0,0));
+	scene.add(camera_);
 
 	var loader = new THREE.TextureLoader();
-	var texture = loader.load("pause.jpg");
+	var texture = loader.load(".jpg");
 	var textureMaterial = new THREE.MeshBasicMaterial({map: texture, side: THREE.DoubleSide});
 	var textureGeometry = new THREE.PlaneGeometry(400, (Z_MAX-Z_MIN), 1, 1);
 	var textureMesh = new THREE.Mesh(textureGeometry, textureMaterial);
 	textureMesh.translateY(-10);
     textureMesh.rotateX(-0.5*Math.PI);
 
-    scenePause.add(textureMesh);
+    scene.add(textureMesh);
 
 }
-function createGameOver(){
+function createGameOver(imageLocation){
 	sceneGameover = new THREE.Scene();
 	cameraGameover = new THREE.OrthographicCamera( 0, 0, 0, 0, 1, 1000 );
 	calculateCameraBondaries(cameraGameover, gameView);
@@ -217,7 +214,7 @@ function createGameOver(){
 	sceneGameover.add(cameraGameover);
 
 	var loader = new THREE.TextureLoader();
-	var texture = loader.load("gameover.jpg");
+	var texture = loader.load(imageLocation);
 	var textureMaterial = new THREE.MeshBasicMaterial({map: texture, side: THREE.DoubleSide});
 	var textureGeometry = new THREE.PlaneGeometry(400, (Z_MAX-Z_MIN), 1, 1);
 	var textureMesh = new THREE.Mesh(textureGeometry, textureMaterial);
@@ -277,6 +274,7 @@ function calculateColisions(dt){
 			//scene.remove(inimigos[i]);
 			inimigos.splice(i,1);
 			if(nave.getShield() == -1) {
+				console.log("-1 shield");
 				scoresScene.remove(naves.pop());
 				if (naves.length == 0) { endOfGame(); }
 				else { nave.replenishShield(); }
@@ -298,6 +296,7 @@ function calculateColisions(dt){
 }
 
 function populate () {
+	shotsFired=0;
 	nave = new Ship(scene,20,0,95,true,0);
 	enemiesDown = 0;
 	naves.push(nave);
@@ -309,12 +308,12 @@ function populate () {
 }
 
 function restart(){
-	pause = false;
+	 = false;
 	gameover =false;
 	//Remove Everything
 	if(nave != null){
 		scene.remove(nave);
-		naves.pop();
+		//naves.pop();
 	}
 	for (var b = 0; b < bullets.length;) {
 		scene.remove(bullets[b]);
@@ -330,7 +329,7 @@ function restart(){
 		scoresScene.remove(naves[j]);
 		naves.splice(j, 1);
 	}
-
+	naves = [];
 	populate();
 	replenishLives();
 }
@@ -362,10 +361,18 @@ function createMoreEnemies(){
 }
 
 function endOfGame(){
-	console.log("you lost") ;
 	console.log("killed: " + (startingEnemies - inimigos.length) + " aliens");
+	console.log("shotsFired: " + shotsFired);
+	if(inimigos.length > 0) {
+		createGameOver("gameover.jpg");
+		console.log("Mission Failed");
+	} else {
+		createGameOver("the_winner.jpg");
+		console.log("Mission Complete");
+	}
 	gameover = true;
-	pause = true;
+	 = true;
+
 }
 
 function animate(){
@@ -376,7 +383,7 @@ function animate(){
 	var dt = real_dt / game_speed;
 
 
-	if(!pause){
+	if(!){
 		//cheat_infinite_ammo ACTIVATED
 		if(cheat_infinite_ammo) {
 			createNewBullet();
@@ -425,21 +432,14 @@ function animate(){
 		renderer.render(scoresScene, scoresCamera);
 
 		//------------------------------------------------------------------------------
-	}
-	//if(gameover == true) {
-	//	// console.log("oi");
-	//	// renderer.setViewport(0,0, window.innerWidth, window.innerHeight);
-	//	// renderer.render(sceneGameover, cameraGameover);
-	//}
-
-	if (pause == true) {
-	//---pause---
-		if(gameover ==true) {
+	} else {
+		//------
+		if(gameover == true) {
 			renderer.setViewport(0,0, window.innerWidth, window.innerHeight);
 			renderer.render(sceneGameover, cameraGameover);
 		} else {
 			renderer.setViewport(0,0, window.innerWidth, window.innerHeight);
-			renderer.render(scenePause, camera_pause);
+			renderer.render(scene, camera_);
 		}
 	}
 
@@ -447,11 +447,12 @@ function animate(){
 	requestAnimationFrame(animate);
 }
 
-function togglePause(){
-	pause = !pause;
+function toggle(){
+	 = !;
 }
 
 function createNewBullet(){
+	shotsFired++;
 	var bulletPosition = ( new THREE.Vector3 (nave.getPositionX(), nave.getPositionY(), nave.getPositionZ()) ).add(nave.getObjectCenter());
 	var bullet = new Bullet(scene, bulletPosition, nave.complex, nave.complexIndex);
 	bullet.setSpeed(0,0,-BULLET_SPEED);
@@ -518,7 +519,7 @@ function onKeyDown (event) {
 			break;
 		case 80://P
 		case 114://p
-			togglePause();
+			toggle();
 			break;
 		case 81://Q
 		case 113://q
@@ -614,7 +615,7 @@ function onKeyUp (event) {
 		case 40: //space bar
 		case 98: //b
 		case 66: //B
-			if(!pause) createNewBullet();
+			if(!) createNewBullet();
 			break;
 		}
 }
