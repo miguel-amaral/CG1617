@@ -16,7 +16,7 @@ var clk;
 var stats;
 var cheat_infinite_ammo = false;
 var bullet_counter=0;
-var  = false;
+var pause  = false;
 var gameover = false;
 
 var startingEnemies = 18;
@@ -66,7 +66,7 @@ function init(){
   	renderer.setSize( window.innerWidth, window.innerHeight );
 	document.body.appendChild( renderer.domElement ) ;
 
-	createScene();
+	createPauseScene();
 	//createGameOver();
 	createScene();
 	createScoresScene();
@@ -186,7 +186,7 @@ function createScoresScene () {
 
 }
 
-function createScene(){
+function createPauseScene(){
 	scene = new THREE.Scene();
 	camera_ = new THREE.OrthographicCamera( 0, 0, 0, 0, 1, 1000 );
 	calculateCameraBondaries(camera_, gameView);
@@ -195,7 +195,7 @@ function createScene(){
 	scene.add(camera_);
 
 	var loader = new THREE.TextureLoader();
-	var texture = loader.load(".jpg");
+	var texture = loader.load("pause.jpg");
 	var textureMaterial = new THREE.MeshBasicMaterial({map: texture, side: THREE.DoubleSide});
 	var textureGeometry = new THREE.PlaneGeometry(400, (Z_MAX-Z_MIN), 1, 1);
 	var textureMesh = new THREE.Mesh(textureGeometry, textureMaterial);
@@ -308,7 +308,7 @@ function populate () {
 }
 
 function restart(){
-	 = false;
+	pause = false;
 	gameover =false;
 	//Remove Everything
 	if(nave != null){
@@ -371,7 +371,7 @@ function endOfGame(){
 		console.log("Mission Complete");
 	}
 	gameover = true;
-	 = true;
+	pause = true;
 
 }
 
@@ -383,7 +383,7 @@ function animate(){
 	var dt = real_dt / game_speed;
 
 
-	if(!){
+	if(!pause){
 		//cheat_infinite_ammo ACTIVATED
 		if(cheat_infinite_ammo) {
 			createNewBullet();
@@ -448,7 +448,7 @@ function animate(){
 }
 
 function toggle(){
-	 = !;
+	pause = !pause;
 }
 
 function createNewBullet(){
@@ -615,7 +615,7 @@ function onKeyUp (event) {
 		case 40: //space bar
 		case 98: //b
 		case 66: //B
-			if(!) createNewBullet();
+			if(!pause) createNewBullet();
 			break;
 		}
 }
