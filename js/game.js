@@ -222,7 +222,6 @@ function createGameOver(imageLocation){
     textureMesh.rotateX(-0.5*Math.PI);
 
     sceneGameover.add(textureMesh);
-
 }
 
 function createLights(){
@@ -370,6 +369,8 @@ function endOfGame(){
 		createGameOver("the_winner.jpg");
 		console.log("Mission Complete");
 	}
+	console.log("enemies down: " + enemiesDown);
+	enemiesDown = 0;
 	gameover = true;
 	pause = true;
 
